@@ -1,0 +1,28 @@
+{
+  "name": "interoperability",
+  "version": "1.0.0",
+  "description": "This is a placeholder for 2023 interoperability project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medic/interoperability-placeholder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/medic/interoperability-placeholder/issues"
+  },
+  "homepage": "https://github.com/medic/interoperability-placeholder#readme",
+  "devDependencies": {
+    "eslint": "^8.31.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1"
+  }
+}
