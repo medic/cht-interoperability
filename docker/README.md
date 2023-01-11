@@ -52,13 +52,13 @@ Once the volume is created you can continue with the rest of the start up script
 From the instant root directory, run the following command to start up the core.
 
 ```bash
-./core/docker/compose.sh init
+.docker/compose.sh init
 ```
 
 To take down the core run:
 
 ```bash
-./core/docker/compose.sh destroy
+./docker/compose.sh destroy
 ```
 
 ## Accessing the services
