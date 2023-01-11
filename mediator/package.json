@@ -1,0 +1,24 @@
+{
+  "name": "mediator",
+  "version": "1.0.0",
+  "description": "Loss to follow up mediator for chis",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest test",
+    "start": "node./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/medic/interoperability-placeholder"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "openhim-mediator-utils": "^0.2.4"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1"
+  }
+}
