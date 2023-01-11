@@ -1,12 +1,12 @@
-const { PORT, OPENHIM } = require('./config');
+const {PORT, OPENHIM} = require('./config');
 const express = require('express');
-const { registerMediator } = require('openhim-mediator-utils');
+const {registerMediator} = require('openhim-mediator-utils');
 const mediatorConfig = require('./mediator-config.json');
 
 const app = express();
 
 app.all('*', (_, res) => {
-  res.send({ status: 'successful' });
+  res.send({status: 'successful'});
 });
 
 app.listen(PORT, () => {
@@ -15,7 +15,7 @@ app.listen(PORT, () => {
 
 registerMediator(OPENHIM, mediatorConfig, err => {
   if (err) {
-    throw new Error(`Failed to register mediator, Check your mediator configuration. ${err}`);
+    throw new Error(`Mediator Registration Failed: Reason ${err}`);
   }
 
   console.log('Successfully registered mediator.');
