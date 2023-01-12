@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "wait-on https://localhost:8080/heartbeat && node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
     "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "wait-on": "^7.0.1"
   }
 }

@@ -12,7 +12,7 @@
           "name": "Mediator",
           "host": "mediator",
           "path": "/",
-          "port": "3000",
+          "port": "6000",
           "primary": true,
           "type": "http"
         }
@@ -35,7 +35,7 @@
       "name": "Mediator",
       "host": "mediator",
       "path": "/",
-      "port": "3000",
+      "port": "6000",
       "primary": true,
       "type": "http"
     }
