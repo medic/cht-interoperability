@@ -1,43 +1,26 @@
 const crypto = require('crypto');
-const request = require('request');
 const {
   OPENHIM_API_USERNAME, OPENHIM_API_PASSWORD,
   OPENHIM_API_HOSTNAME, OPENHIM_API_PORT
-} = require('../config/api');
+} = require('../config');
+const {fetch} = require('../utils');
 
 // authenticate the username is valid
 const authenticate = async (options) => {
-  return new Promise((resolve, reject) => {
-    // authenticate the username
-    const reqOptions = {
-      url: `${options.apiURL}/authenticate/${options.username}`,
-      rejectUnauthorized: options.rejectUnauthorized
-    };
+    const response = await fetch(`${options.apiURL}/authenticate/${options.username}`);
 
-    request.get(reqOptions, (err, resp, body) => {
-      if (err) {
-        return reject(err);
-      }
-      // if user isn't found
-      if (resp.statusCode !== 200) {
-        return reject(
-          new Error(`User ${options.username} not found when authenticating with core API`));
-      }
-      try {
-        body = JSON.parse(body);
-        resolve(body);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  });
+    if (!response.ok) {
+      new Error(`User ${options.username} not found when authenticating with core API`);
+    }
+
+    return response.json();
 };
 
 // Generate the relevant auth headers
-const genAuthHeaders = async (options) => {
+const generateAuthHeaders = async (options) => {
   const authDetails = await authenticate(options);
 
-  const salt = authDetails.salt;
+  const {salt} = authDetails;
   const now = new Date();
 
   // create passhash
@@ -70,7 +53,7 @@ function generateApiOptions (endpoint) {
 }
 
 module.exports = {
-  genAuthHeaders,
+  generateAuthHeaders,
   authenticate,
   generateApiOptions
 };
