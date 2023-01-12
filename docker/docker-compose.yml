@@ -1,23 +1,39 @@
-version: '3.3'
+version: '3'
 
 services:
+  mongo:
+    image: mongo:4.2
+    container_name: openhim-mongo
+    ports:
+      - "27017:27017"
+    
   openhim-core:
     container_name: openhim-core
-    image: jembi/openhim-core:7
+    image: jembi/openhim-core
     environment:
-      - mongo_url=mongodb://mongo-1:27017,mongo-2:27017,mongo-3:27017/openhim?replicaSet=mongo-set
-      - mongo_atnaUrl=mongodb://mongo-1:27017,mongo-2:27017,mongo-3:27017/openhim?replicaSet=mongo-set
-      - api_authenticationTypes=["token", "basic"]
-      - authentication_enableCustomTokenAuthentication=true
-    restart: unless-stopped
-
+      - mongo_url=mongodb://mongo/openhim
+      - mongo_atnaUrl=mongodb://mongo/openhim
+    ports:
+      - "8080:8080"
+      - "5000:5000"
+      - "5001:5001"
+      - "5050:5050"
+      - "5051:5051"
+      - "5052:5052"
+      - "7788:7788"
+    depends_on:
+      - mongo
+  
   openhim-console:
     container_name: openhim-console
-    image: jembi/openhim-console:1.14.4
+    image: jembi/openhim-console
+    ports:
+        - "9000:80"
+    volumes:
+      - ./default.json:/usr/share/nginx/html/config/default.json
     depends_on:
       - openhim-core
-    restart: unless-stopped
-
+  
   hapi-fhir:
     container_name: hapi-fhir
     image: hapiproject/hapi:v5.5.1
@@ -33,7 +49,6 @@ services:
       - CATALINA_OPTS=-Xmx2g
     depends_on:
       - hapi-db
-    restart: unless-stopped
 
   hapi-db:
     container_name: hapi-db
@@ -44,7 +59,7 @@ services:
       POSTGRES_DB: hapi
     volumes:
       - 'hapi-db-volume:/var/lib/postgresql/data'
-    restart: unless-stopped
 
 volumes:
+  mongo:
   hapi-db-volume:

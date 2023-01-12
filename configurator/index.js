@@ -3,21 +3,20 @@
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
+const {
+    OPENHIM_API_HOSTNAME,
+    OPENHIM_API_PASSWORD,
+    OPENHIM_API_PORT,
+    OPENHIM_API_USERNAME
+} = require('./config');
 const {Buffer} = require('buffer');
-
-const OPENHIM_API_HOSTNAME = process.env.OPENHIM_API_HOSTNAME || 'openhim-core';
-const OPENHIM_API_PASSWORD =
-  process.env.OPENHIM_API_PASSWORD || 'openhim-password';
-const OPENHIM_API_PORT = process.env.OPENHIM_API_PORT || 8080;
-const OPENHIM_API_USERNAME =
-  process.env.OPENHIM_API_USERNAME || 'root@openhim.org';
 
 const authHeader = Buffer.from(
   `${OPENHIM_API_USERNAME}:${OPENHIM_API_PASSWORD}`
 ).toString('base64');
 
 const jsonData = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'openhim-import.json'))
+  fs.readFileSync(path.resolve(__dirname, 'openhim-config.json'))
 );
 
 const data = JSON.stringify(jsonData);
