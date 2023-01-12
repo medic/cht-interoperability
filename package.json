@@ -4,11 +4,11 @@
   "description": "This is a placeholder for 2023 interoperability project",
   "main": "index.js",
   "scripts": {
-    "test": "test.sh",
     "lint": "eslint . --fix",
-    "dev": "./startup.sh dev",
-    "start": "./startup.sh prod",
-    "docker:instant": "./deploy.sh"
+    "init": "./startup.sh init",
+    "down": "./startup.sh down",
+    "destory": "./startup.sh destroy",
+    "up": "./startup.sh up"
   },
   "repository": {
     "type": "git",
