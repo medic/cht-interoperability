@@ -2,10 +2,10 @@ require('dotenv/config');
 
 const OPENHIM_API_HOSTNAME = process.env.OPENHIM_API_HOSTNAME || 'localhost';
 const OPENHIM_API_PASSWORD =
-  process.env.OPENHIM_API_PASSWORD || 'openhim-password';
+  process.env.OPENHIM_PASSWORD || 'openhim-password';
 const OPENHIM_API_PORT = process.env.OPENHIM_API_PORT || 8080;
 const OPENHIM_API_USERNAME =
-  process.env.OPENHIM_API_USERNAME || 'root@openhim.org';
+  process.env.OPENHIM_USERNAME || 'root@openhim.org';
 const OPENHIM_CLIENT_PASSWORD = process.env.OPENHIM_CLIENT_PASSWORD || 'interop-password';
 const OPENHIM_USER_PASSWORD = process.env.OPENHIM_USER_PASSWORD || 'interop-password';
 

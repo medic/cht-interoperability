@@ -1,12 +1,12 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 10
+  },
   "env": {
     "node": true,
-    "es6": true
+    "es2018": true
   },
-  "parserOptions": {
-    "ecmaVersion": 8
-  },
-  "extends": "semistandard",
+  "extends": "eslint:recommended",
   "rules": {
     "array-bracket-spacing": [2, "never"],
     "block-scoped-var": 2,
@@ -29,6 +29,7 @@
     "quotes": [2, "single", "avoid-escape"],
     "semi": [2, "always"],
     "keyword-spacing": [2, {"before": true, "after": true}],
-    "space-unary-ops": 2
+    "space-unary-ops": 2,
+    "prefer-destructuring": "warn"
   }
 }

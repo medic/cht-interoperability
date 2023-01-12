@@ -13,6 +13,8 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
+// TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'
+
 registerMediator(OPENHIM, mediatorConfig, err => {
   if (err) {
     throw new Error(`Mediator Registration Failed: Reason ${err}`);
