@@ -26,14 +26,10 @@ async function generateUser (password) {
     ],
     firstname: 'Interop',
     surname: 'User',
-    email: 'root@openhim.org',
+    email: 'interop@openhim.org',
     passwordAlgorithm,
     passwordHash,
-    passwordSalt,
-    expiry: null,
-    locked: false,
-    token: null,
-    tokenType: null
+    passwordSalt
   };
 }
 

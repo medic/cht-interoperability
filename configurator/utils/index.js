@@ -10,16 +10,16 @@ const fetch = (url, options = {}) => {
 const generatePassword = (password) => {
   return new Promise((resolve) => {
     const passwordSalt = crypto.randomBytes(16);
+    const salt = passwordSalt.toString('hex');
     const algorithm = 'sha512';
 
-    // create passhash
     const shasum = crypto.createHash(algorithm);
+    shasum.update(salt);
     shasum.update(password);
-    shasum.update(passwordSalt.toString('hex'));
     const passwordHash = shasum.digest('hex');
 
     resolve({
-      passwordSalt: passwordSalt.toString('hex'),
+      passwordSalt: salt,
       passwordHash,
       passwordAlgorithm: algorithm
     });
