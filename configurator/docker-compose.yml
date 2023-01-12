@@ -6,7 +6,7 @@ services:
     container_name: core-config-importer
     image: jembi/instantohie-config-importer
     environment:
-      OPENHIM_API_HOSTNAME: 'openhim-core'
+      OPENHIM_API_HOSTNAME: 'localhost:5001' # 'openhim-core'
       OPENHIM_API_PORT: 8080
       OPENHIM_API_USERNAME: 'root@openhim.org'
       OPENHIM_API_PASSWORD: 'openhim-password'
