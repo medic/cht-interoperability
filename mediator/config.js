@@ -1,7 +1,7 @@
 require('dotenv/config');
 
 module.exports = {
-  PORT: process.env.PORT || 5001,
+  PORT: process.env.PORT || 6000,
   OPENHIM: {
     username: process.env.OPENHIM_USERNAME || 'interop@openhim.org',
     password: process.env.OPENHIM_PASSWORD || 'interop-password',
