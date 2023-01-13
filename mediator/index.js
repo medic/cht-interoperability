@@ -6,7 +6,7 @@ const mediatorConfig = require('./mediator-config.json');
 const app = express();
 
 app.all('*', (_, res) => {
-  res.send({status: 'successful'});
+  res.send({status: 'success'});
 });
 
 app.listen(PORT, () => {

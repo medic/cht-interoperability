@@ -19,9 +19,9 @@ else
   
   Help:
 
-  init      starts docker containers and configures OpenHIM
-  up        starts docker containers
-  down      stops docker containers
-  destroy   stops docker containers and deletes volumes
+  init      starts the docker containers and configures OpenHIM
+  up        starts the docker containers
+  down      stops the docker containers
+  destroy   shutdown the docker containers and deletes volumes
   "
 fi
