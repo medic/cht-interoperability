@@ -19,7 +19,7 @@
       ],
       "allow": [
         "admin",
-        "lftu"
+        "interop"
       ],
       "methods": [
         "GET",

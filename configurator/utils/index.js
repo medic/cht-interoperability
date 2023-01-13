@@ -7,7 +7,7 @@ const fetch = (url, options = {}) => {
   return nodeFetch(url, {...options, agent: httpsAgent});
 };
 
-const generatePassword = (password) => {
+const generateUserPassword = (password) => {
   return new Promise((resolve) => {
     const passwordSalt = crypto.randomBytes(16);
     const salt = passwordSalt.toString('hex');
@@ -26,7 +26,27 @@ const generatePassword = (password) => {
   });
 };
 
+const generateClientPassword = (password) => {
+  return new Promise((resolve) => {
+    const passwordSalt = crypto.randomBytes(16);
+    const salt = passwordSalt.toString('hex');
+    const algorithm = 'sha512';
+
+    const shasum = crypto.createHash(algorithm);
+    shasum.update(password);
+    shasum.update(salt);
+    const passwordHash = shasum.digest('hex');
+
+    resolve({
+      passwordSalt: salt,
+      passwordHash,
+      passwordAlgorithm: algorithm
+    });
+  });
+};
+
 module.exports = {
   fetch,
-  generatePassword
+  generateUserPassword,
+  generateClientPassword,
 };

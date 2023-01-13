@@ -1,10 +1,10 @@
-const {generatePassword} = require('../utils');
+const {generateClientPassword, generateUserPassword} = require('../utils');
 
 const CLIENT_ROLES = ['interop'];
 
 async function generateClient (password) {
   const {passwordSalt, passwordHash, passwordAlgorithm} =
-    await generatePassword(password);
+    await generateClientPassword(password);
 
   return {
     clientID: 'interop-client',
@@ -18,7 +18,7 @@ async function generateClient (password) {
 
 async function generateUser (password) {
   const {passwordSalt, passwordHash, passwordAlgorithm} =
-    await generatePassword(password);
+    await generateUserPassword(password);
 
   return {
     groups: [
