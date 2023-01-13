@@ -1,5 +1,4 @@
 # Interoperability
-This is a placeholder for 2023 interoperability project 
 
 ## Get Started
 
