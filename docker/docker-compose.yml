@@ -9,7 +9,7 @@ services:
     
   openhim-core:
     container_name: openhim-core
-    image: jembi/openhim-core
+    image: jembi/openhim-core:7
     environment:
       - mongo_url=mongodb://mongo/openhim
       - mongo_atnaUrl=mongodb://mongo/openhim
@@ -26,7 +26,7 @@ services:
   
   openhim-console:
     container_name: openhim-console
-    image: jembi/openhim-console
+    image: jembi/openhim-console:1.14.4
     ports:
         - "9000:80"
     volumes:
