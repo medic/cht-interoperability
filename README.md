@@ -9,10 +9,13 @@ This project implements a Loss to Follow Up (LTFU) workflow system for CHIS base
 
 1. `./startup.sh down` or `./startup.sh destroy` to shutdown the servers.
 
-1. Visit https://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`.
+1. Visit http://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`.
 
-1. Once logged in, visit https://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
+1. Once logged in, visit http://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
 
 1. Select the green `+` button to the right of the default channel to add the mediator.
 
 1. You can test the mediator by running `curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"`. You should get the following response `{"status": "success" }`
+
+1. If the curl request fails, visit http://localhost:9000/#!/clients and click on the icon the red arrow points to in the image below.
+![](./docs/images/bad-client-screen.png) If everything is success full you should see this ![](./docs/images/good-client-screen.png)
