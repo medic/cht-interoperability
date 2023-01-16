@@ -12,14 +12,14 @@
           "name": "Mediator",
           "host": "mediator",
           "path": "/",
-          "port": "3000",
+          "port": "6000",
           "primary": true,
           "type": "http"
         }
       ],
       "allow": [
         "admin",
-        "lftu"
+        "interop"
       ],
       "methods": [
         "GET",
@@ -35,7 +35,7 @@
       "name": "Mediator",
       "host": "mediator",
       "path": "/",
-      "port": "3000",
+      "port": "6000",
       "primary": true,
       "type": "http"
     }

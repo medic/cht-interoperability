@@ -1,4 +1,5 @@
 FROM node:18-alpine
+
 WORKDIR /app
 
 COPY . /app
@@ -6,4 +7,5 @@ COPY . /app
 RUN npm install
 
 CMD npm start
-EXPOSE 3000
+
+EXPOSE 6000

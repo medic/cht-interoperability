@@ -5,13 +5,15 @@ const mediatorConfig = require('./mediator-config.json');
 
 const app = express();
 
-app.all('*', (_, res) => {
-  res.send({status: 'successful'});
+app.get('*', (_, res) => {
+  res.send({status: 'success'});
 });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+// TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'
 
 registerMediator(OPENHIM, mediatorConfig, err => {
   if (err) {

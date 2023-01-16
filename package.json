@@ -4,8 +4,11 @@
   "description": "This is a placeholder for 2023 interoperability project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "init": "./startup.sh init",
+    "down": "./startup.sh down",
+    "destory": "./startup.sh destroy",
+    "up": "./startup.sh up"
   },
   "repository": {
     "type": "git",
