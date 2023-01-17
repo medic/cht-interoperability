@@ -14,13 +14,13 @@ A first version of the project can be found in the [chis-interoperability](https
 
 1. Visit http://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`.
 
-2. Once logged in, visit http://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
+1. Once logged in, visit http://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
 
-3. Select the green `+` button to the right of the default channel to add the mediator.
+1. Select the green `+` button to the right of the default channel to add the mediator.
 
-4. You can test the mediator by running `curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"`. You should get the following response `{"status": "success" }`
+1. You can test the mediator by running `curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"`. You should get the following response `{"status": "success" }`.
 
-5. If the curl request fails, visit http://localhost:9000/#!/clients and click on the icon the red arrow points to in the image below.
+1. If the curl request fails, visit http://localhost:9000/#!/clients and click on the icon the red arrow points to in the image below.
 ![](./docs/images/bad-client-screen.png) If everything is success full you should see this ![](./docs/images/good-client-screen.png)
 
 ## Shutdown the servers
@@ -29,4 +29,4 @@ A first version of the project can be found in the [chis-interoperability](https
 - To then restart the containers, run `./startup.sh up`. You do not need to run init again like you did in install above.
 - To shut-down and delete everything, run `./startup.sh destroy`.
 
-Users getting errors when running the installation steps, please see our [Troubleshooting guide](/troubleshooting.md).
+Users getting errors when running the installation steps, please see the [Troubleshooting guide](/troubleshooting.md).
