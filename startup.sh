@@ -10,6 +10,9 @@ if [ "$1" == "init" ]; then
   docker compose -p chis-interop -f ./mediator/docker-compose.yml up -d --build
 elif [ "$1" == "up" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./mediator/docker-compose.yml up -d
+elif [ "$1" == "up-dev" ]; then
+  docker compose -p chis-interop -f ./docker/docker-compose.yml up -d
+  docker compose -p chis-interop -f ./mediator/docker-compose.yml up -d --build
 elif [ "$1" == "down" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./mediator/docker-compose.yml stop
 elif [ "$1" == "destroy" ]; then
