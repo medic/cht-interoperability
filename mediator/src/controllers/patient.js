@@ -1,33 +1,9 @@
 const axios = require('axios');
+const { genereateFHIRPatientResource } = require('../utils/patient');
 const FHIR_ROOT_URL = 'http://openhim-core:5001/fhir';
 
-function genereateFHITPatientResource(patient) {
-  const patientLastName = patient.name.split(' ').slice(-1);
-  const FHITPatientResource = {
-    resourceType: 'Patient',
-    id: patient.id,
-    identifier: [
-      {
-        system: 'cht',
-        value: patient._id
-      }
-    ],
-    name: [
-      {
-        use: 'official',
-        family: patientLastName,
-        given: [patient.name]
-      }
-    ],
-    gender: patient.sex,
-    birthDate: patient.date_of_birth
-  };
-
-  return FHITPatientResource;
-}
-
-async function createPatient(req) {
-  const FHITPatientResource = genereateFHITPatientResource(req.body);
+async function createPatient(CHTpatientDoc) {
+  const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
 
   try {
     const res = await axios.post(`${FHIR_ROOT_URL}/Patient`, FHITPatientResource, { auth: {

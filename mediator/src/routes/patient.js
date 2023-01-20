@@ -3,8 +3,8 @@ const router = express.Router();
 const patientController = require('../controllers/patient');
 
 router.post('/', async function(req, res) {
-  const patient = await patientController.createPatient(req);
-  res.send({status: 'success', patient});
+  const { status, patient } = await patientController.createPatient(req.body);
+  res.send({status, patient});
 });
 
 module.exports = router;
