@@ -33,10 +33,12 @@ async function handleConfiguration () {
   });
 
   if (response.status !== 201) {
+    // todo => replace with a logger.
     console.log('Failed to setup OpenHIM Server.');
     throw new Error(JSON.stringify(response, null, 4));
   }
 
+  // todo => replace with a logger.
   console.log('OpenHIM Server setup was successful');
 }
 

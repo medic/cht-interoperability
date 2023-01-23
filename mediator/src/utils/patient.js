@@ -24,5 +24,5 @@ function genereateFHIRPatientResource(patient) {
 }
 
 module.exports = {
-  genereateFHIRPatientResource
+  genereateFHIRPatientResource,
 };
