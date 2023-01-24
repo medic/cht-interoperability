@@ -1,6 +1,7 @@
 const axios = require('axios');
 const {FHIR} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
+const logger = require('../../logger');
 
 async function createServiceRequest(request) {
   try {
@@ -19,12 +20,11 @@ async function createServiceRequest(request) {
       return {status: res.status, data: res.data};
     }
 
-    // todo => @ngoz to add task creation process.
+    // todo => @njogz to add task creation process.
 
     return {status: res.status, data: res.data};
   } catch ({response: res}) {
-    // todo => replace with a logger.
-    console.log(res.data);
+    logger.error(JSON.stringify(res.data, null, 4));
     return {status: res.status, data: res.data};
   }
 }
