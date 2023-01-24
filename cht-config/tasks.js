@@ -354,15 +354,12 @@ module.exports = [
     actions: [
       {
         type: 'report',
-        form: 'pnc_danger_sign_follow_up_baby',
-        modifyContent: function (content, contact, report) {
-          content.delivery_uuid = getField(report, 'inputs.delivery_uuid');
-        }
+        form: 'interop_follow_up'
       }
     ],
     events: [
       {
-        id: 'pnc-danger-sign-follow-up-baby',
+        id: 'interop-follow-up',
         start: 7,
         end: 0,
         days: 7,
