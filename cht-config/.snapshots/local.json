@@ -1,0 +1,68 @@
+{
+  "form:death_report": {
+    "localhost/medic": "U/yKCnetblHLX0ULh6uGoA=="
+  },
+  "form:delivery": {
+    "localhost/medic": "qgrBqH20VcfRC28IVCxBfQ=="
+  },
+  "form:pnc_danger_sign_follow_up_baby": {
+    "localhost/medic": "OgSP4iMIk/6xeYkdCvSGFg=="
+  },
+  "form:pnc_danger_sign_follow_up_mother": {
+    "localhost/medic": "cjbI/Kocq3EyrTDRosINZQ=="
+  },
+  "form:pregnancy": {
+    "localhost/medic": "h/9DQCxG8UKd5mU/7+ak3w=="
+  },
+  "form:pregnancy_danger_sign": {
+    "localhost/medic": "dObBUxXgwkWBaGuAB/M0iA=="
+  },
+  "form:pregnancy_danger_sign_follow_up": {
+    "localhost/medic": "R3gQBjS3W/KnatrZjjyuaw=="
+  },
+  "form:pregnancy_facility_visit_reminder": {
+    "localhost/medic": "AQVNBKZGeEtA6GTKzdZ6hA=="
+  },
+  "form:pregnancy_home_visit": {
+    "localhost/medic": "CabXVmH326vn57UCYgVAhw=="
+  },
+  "form:replace_user": {
+    "localhost/medic": "YVssAg0vpiRTifcvH0g8HA=="
+  },
+  "form:undo_death_report": {
+    "localhost/medic": "wcRKcVHUjcBls6KFRP78mw=="
+  },
+  "form:contact:clinic:create": {
+    "localhost/medic": "9695PWPKhVptfjzkbqM6fA=="
+  },
+  "form:contact:clinic:edit": {
+    "localhost/medic": "vyx6QmZMU32CDSIR/unqWQ=="
+  },
+  "form:contact:district_hospital:create": {
+    "localhost/medic": "hDwesn3eLw+Xmj1OXDm4Yg=="
+  },
+  "form:contact:district_hospital:edit": {
+    "localhost/medic": "SIl9GMDjSQc1riBxpevb0g=="
+  },
+  "form:contact:health_center:create": {
+    "localhost/medic": "k9UwLqP0pkbwd9EeNQZLYw=="
+  },
+  "form:contact:health_center:edit": {
+    "localhost/medic": "gFlezISMKzVTU1otm9ItdA=="
+  },
+  "form:contact:person:create": {
+    "localhost/medic": "Om5I0PsLCyJYZzVczrZBIw=="
+  },
+  "form:contact:person:edit": {
+    "localhost/medic": "1wT1zZT/rA0CG7rpU486Bg=="
+  },
+  "resources": {
+    "localhost/medic": "OjWexAxhUvNcp4XSNUasNg=="
+  },
+  "messages-en": {
+    "localhost/medic": "4dZTe3PvC/RBEZuSfdiNOg=="
+  },
+  "form:interop_follow_up": {
+    "localhost/medic": "Pfz5zrif0lgAq1H3V9KtGw=="
+  }
+}

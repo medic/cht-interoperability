@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms">
+  <h:head>
+    <h:title>Interoperability Follow Up</h:title>
+    <model>
+      <itext>
+        <translation lang="en">
+          <text id="/interop_follow_up/inputs/contact/_id:label">
+            <value>What is the patient's name?</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/date_of_birth:label">
+            <value>Date of Birth</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/name:label">
+            <value>Name</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/parent/parent/contact/name:label">
+            <value>CHW name</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/parent/parent/contact/phone:label">
+            <value>CHW phone</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/parent/parent/contact:label">
+            <value>Contact</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/parent/parent:label">
+            <value>Parent</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/parent:label">
+            <value>Parent</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/patient_id:label">
+            <value>Patient ID</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact/sex:label">
+            <value>Sex</value>
+          </text>
+          <text id="/interop_follow_up/inputs/contact:label">
+            <value>Contact</value>
+          </text>
+          <text id="/interop_follow_up/inputs/is_covid_vaccine_referral:label">
+            <value>Is covid vaccine follow up</value>
+          </text>
+          <text id="/interop_follow_up/inputs/source:label">
+            <value>Source</value>
+          </text>
+          <text id="/interop_follow_up/inputs/source_id:label">
+            <value>Source ID</value>
+          </text>
+          <text id="/interop_follow_up/inputs:label">
+            <value>Patient</value>
+          </text>
+          <text id="/interop_follow_up/vaccination_details/interop_follow_up/no:label">
+            <value>No</value>
+          </text>
+          <text id="/interop_follow_up/vaccination_details/interop_follow_up/yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/interop_follow_up/vaccination_details/interop_follow_up:label">
+            <value>Should the patient have a follow up appointment?</value>
+          </text>
+          <text id="/interop_follow_up/vaccination_details:label">
+            <value>Vaccination details</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <interop_follow_up id="interop_follow_up" prefix="J1!interop_follow_up!" delimiter="#" version="2023-01-20 05:01:41">
+          <inputs>
+            <meta>
+              <location>
+                <lat/>
+                <long/>
+                <error/>
+                <message/>
+              </location>
+            </meta>
+            <source>user</source>
+            <source_id/>
+            <is_covid_vaccine_referral/>
+            <contact>
+              <_id/>
+              <name/>
+              <patient_id/>
+              <date_of_birth>0</date_of_birth>
+              <sex/>
+              <parent>
+                <parent>
+                  <contact>
+                    <name/>
+                    <phone/>
+                  </contact>
+                </parent>
+              </parent>
+            </contact>
+          </inputs>
+          <vaccination_details>
+            <interop_follow_up/>
+          </vaccination_details>
+          <meta tag="hidden">
+            <instanceID/>
+          </meta>
+        </interop_follow_up>
+      </instance>
+      <instance id="contact-summary"/>
+      <bind nodeset="/interop_follow_up/inputs" relevant="./source = 'user'"/>
+      <bind nodeset="/interop_follow_up/inputs/source" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/source_id" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/is_covid_vaccine_referral" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/_id" type="db:person"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/name" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/patient_id" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/date_of_birth" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/sex" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/parent/parent/contact/name" type="string"/>
+      <bind nodeset="/interop_follow_up/inputs/contact/parent/parent/contact/phone" type="string"/>
+      <bind nodeset="/interop_follow_up/vaccination_details/interop_follow_up" type="select1" required="true()"/>
+      <bind nodeset="/interop_follow_up/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:', uuid())"/>
+    </model>
+  </h:head>
+  <h:body class="pages">
+    <group appearance="field-list" ref="/interop_follow_up/inputs">
+      <label ref="jr:itext('/interop_follow_up/inputs:label')"/>
+      <group ref="/interop_follow_up/inputs/contact">
+        <label ref="jr:itext('/interop_follow_up/inputs/contact:label')"/>
+        <input appearance="db-object" ref="/interop_follow_up/inputs/contact/_id">
+          <label ref="jr:itext('/interop_follow_up/inputs/contact/_id:label')"/>
+        </input>
+        <group ref="/interop_follow_up/inputs/contact/parent">
+          <label ref="jr:itext('/interop_follow_up/inputs/contact/parent:label')"/>
+          <group ref="/interop_follow_up/inputs/contact/parent/parent">
+            <label ref="jr:itext('/interop_follow_up/inputs/contact/parent/parent:label')"/>
+            <group ref="/interop_follow_up/inputs/contact/parent/parent/contact">
+              <label ref="jr:itext('/interop_follow_up/inputs/contact/parent/parent/contact:label')"/>
+            </group>
+          </group>
+        </group>
+      </group>
+    </group>
+    <group appearance="field-list" ref="/interop_follow_up/vaccination_details">
+      <label ref="jr:itext('/interop_follow_up/vaccination_details:label')"/>
+      <select1 ref="/interop_follow_up/vaccination_details/interop_follow_up">
+        <label ref="jr:itext('/interop_follow_up/vaccination_details/interop_follow_up:label')"/>
+        <item>
+          <label ref="jr:itext('/interop_follow_up/vaccination_details/interop_follow_up/yes:label')"/>
+          <value>yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/interop_follow_up/vaccination_details/interop_follow_up/no:label')"/>
+          <value>no</value>
+        </item>
+      </select1>
+    </group>
+  </h:body>
+</h:html>
