@@ -22,10 +22,10 @@ async function createServiceRequest(request) {
     // todo => @ngoz to add task creation process.
 
     return {status: res.status, data: res.data};
-  } catch (error) {
+  } catch ({response: res}) {
     // todo => replace with a logger.
-    console.log(error);
-    return {status: error.status, data: error.data};
+    console.log(res.data);
+    return {status: res.status, data: res.data};
   }
 }
 
