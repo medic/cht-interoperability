@@ -1,6 +1,7 @@
 const axios = require('axios');
 const {genereateFHIRPatientResource} = require('../utils/patient');
 const {FHIR} = require('../../config');
+const logger = require('../../logger');
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 async function createPatient(CHTpatientDoc) {
@@ -13,7 +14,7 @@ async function createPatient(CHTpatientDoc) {
     }});
     return {status: res.status, patient: res.data};
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return {status: error.status, patient: error.data};
   }
 }

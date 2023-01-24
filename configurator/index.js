@@ -2,6 +2,7 @@ const {OPENHIM_USER_PASSWORD, OPENHIM_CLIENT_PASSWORD} = require('./config');
 const {generateApiOptions, generateAuthHeaders} = require('./libs/authentication');
 const {generateUser, generateClient, generateHapiFihrChannel} = require('./libs/generators');
 const {fetch} = require('./utils');
+const logger = require('./logger');
 
 async function handleConfiguration () {
   const metadata = {
@@ -33,13 +34,11 @@ async function handleConfiguration () {
   });
 
   if (response.status !== 201) {
-    // todo => replace with a logger.
-    console.log('Failed to setup OpenHIM Server.');
+    logger.error('Failed to setup OpenHIM Server.');
     throw new Error(JSON.stringify(response, null, 4));
   }
 
-  // todo => replace with a logger.
-  console.log('OpenHIM Server setup was successful');
+  logger.info('OpenHIM Server setup was successful');
 }
 
 handleConfiguration();
