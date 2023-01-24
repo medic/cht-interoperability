@@ -1,13 +1,13 @@
-const express = require('express');
-const router = express.Router();
+const {Router} = require('express');
+const router = Router();
 const patientController = require('../controllers/patient');
-const { validateBodyAgainst } = require('../middlewares');
-const { createPatientSchema } = require('../middlewares/schemas/patient');
+const {validateBodyAgainst} = require('../middlewares');
+const {createPatientSchema} = require('../middlewares/schemas/patient');
 
 router.post('/',
   validateBodyAgainst(createPatientSchema),
   async function(req, res) {
-    const { status, patient } = await patientController.createPatient(req.body);
+    const {status, patient} = await patientController.createPatient(req.body);
     res.send({status, patient});
 });
 

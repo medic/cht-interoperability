@@ -4,7 +4,7 @@ const {PORT, OPENHIM} = require('./config');
 const {registerMediator} = require('openhim-mediator-utils');
 const mediatorConfig = require('./mediator-config.json');
 const patientRoutes = require('./src/routes/patient');
-const taskRoutes = require('./src/routes/task');
+const serviceRequestRoutes = require('./src/routes/service-request');
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.get('*', (_, res) => {
 });
 
 app.use('/patient', patientRoutes);
-app.use('/task', taskRoutes);
+app.use('/service-request', serviceRequestRoutes);
 
 app.listen(PORT, () => {
   // todo => replace with a logger.

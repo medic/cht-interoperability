@@ -1,9 +1,9 @@
 const joi = require('joi');
 
-const createTaskSchema = joi.object({
+const createServiceSchema = joi.object({
   patientId: joi.number().required()
 });
 
 module.exports = {
-  createTaskSchema,
+  createServiceSchema,
 };

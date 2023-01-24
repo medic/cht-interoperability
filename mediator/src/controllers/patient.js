@@ -1,13 +1,13 @@
 const axios = require('axios');
-const { genereateFHIRPatientResource } = require('../utils/patient');
-const { FHIR } = require('../../config');
-const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
+const {genereateFHIRPatientResource} = require('../utils/patient');
+const {FHIR} = require('../../config');
+const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 async function createPatient(CHTpatientDoc) {
   const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
 
   try {
-    const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, { auth: {
+    const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, {auth: {
       username: fhirUsername,
       password: fhirPassword,
     }});
