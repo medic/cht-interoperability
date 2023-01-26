@@ -2,7 +2,7 @@ function genereateFHIRPatientResource(patient) {
   const patientLastName = patient.name.split(' ').slice(-1);
   const FHITPatientResource = {
     resourceType: 'Patient',
-    id: patient.id,
+    id: patient._id,
     identifier: [
       {
         system: 'cht',

@@ -5,10 +5,10 @@ const logger = require('../../logger');
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 async function createPatient(CHTpatientDoc) {
-  const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
+  const FHIRPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
 
   try {
-    const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, {auth: {
+    const res = await axios.post(`${fhirUrl}/Patient`, FHIRPatientResource, {auth: {
       username: fhirUsername,
       password: fhirPassword,
     }});

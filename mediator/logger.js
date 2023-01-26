@@ -21,7 +21,7 @@ const logger = createLogger({
         format.printf(
           info =>
           `${info.timestamp} ${info.level}: ${info.message} ${info.stack ? info.stack : ''}`
-          )
+        )
       ),
     }),
   ],

@@ -2,10 +2,11 @@ const axios = require('axios');
 const {FHIR} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 const logger = require('../../logger');
+const{generateFHIRSubscriptionResource} = require('../utils/subscription');
 
 async function createServiceRequest(request) {
   try {
-    const {patientId} = request;
+    const {patientId, callbackURL} = request;
 
     const options = {
       auth: {
@@ -14,18 +15,24 @@ async function createServiceRequest(request) {
       }
     };
 
-    const res = await axios.get(`${fhirUrl}/Patient/${patientId}`, options);
+    const res = await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
 
     if (res.status !== 200) {
       return {status: res.status, data: res.data};
     }
 
-    // todo => @njogz to add task creation process.
+    // generate subscription resource
+    const FHITSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
+    const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHITSubscriptionResource, options);
 
-    return {status: res.status, data: res.data};
-  } catch ({response: res}) {
-    logger.error(JSON.stringify(res.data, null, 4));
-    return {status: res.status, data: res.data};
+    logger.info(JSON.stringify(subscriptionRes.data, null, 4));
+
+
+    return {status: res.status};
+  } catch (err) {
+    logger.error(`Error: ${err}`);
+    console.log(err);
+    return {status: 500};
   }
 }
 
