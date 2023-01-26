@@ -466,7 +466,7 @@
           "expr": "'usual'"
         },
         "identifier.value": {
-          "expr": "'cht/'.concat(doc._id)"
+          "expr": "doc._id"
         },
         "birthDate": "doc.date_of_birth",
         "telecom": {
@@ -516,11 +516,11 @@
         }
       }
     },
-    "FHIR_serviceRequest": {
+    "FHIR_encounter": {
       "relevant_to": "doc.type === 'data_record' && doc.form === 'interop_follow_up'",
       "destination": {
         "base_url": "http://localhost:5001",
-        "path": "/fhir/ServiceRequest",
+        "path": "/fhir/Encounter",
         "auth": {
           "type": "basic",
           "username": "interop-client",
@@ -529,25 +529,31 @@
       },
       "mapping": {
         "resourceType": {
-          "expr": "'ServiceRequest'"
+          "expr": "'Encounter'"
+        },
+        "identifier": {
+          "expr": "[ { \"use\":\"official\", \"value\": doc.fields.inputs.contact._id } ]"
         },
         "status": {
-          "expr": "'active'"
+          "expr": "'finished'"
         },
-        "intent": {
-          "expr": "'order'"
+        "class": {
+          "expr": "'outpatient'"
         },
         "subject": {
-          "expr": "doc.contact._id"
+          "expr": "doc.fields.inputs.contact._id"
         },
-        "authoredOn": {
+        "period.start": {
           "expr": "new Date().toISOString()"
         },
-        "requester": {
+        "period.end": {
+          "expr": "new Date().toISOString()"
+        },
+        "participant.individual": {
           "expr": "doc.contact._id"
         },
-        "code": {
-          "expr": "'follow-up'"
+        "participant.type": {
+          "expr": "[ 'attender' ]"
         }
       }
     }
