@@ -14,7 +14,7 @@ module.exports = {
     password: process.env.FHIR_PASSWORD || 'interop-password',
   },
   CHT: {
-    url: process.env.CHT_URL || 'https://njugunamedic.pagekite.me',
+    url: process.env.CHT_URL || 'http://localhost:5988',
     username: process.env.CHT_USERNAME || 'admin',
     password: process.env.CHT_PASSWORD || 'medicadmin',
   }
