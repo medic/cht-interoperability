@@ -1,19 +1,21 @@
 const axios = require('axios');
-const { genereateFHIRPatientResource } = require('../utils/patient');
-const FHIR_ROOT_URL = 'http://openhim-core:5001/fhir';
+const {genereateFHIRPatientResource} = require('../utils/patient');
+const {FHIR} = require('../../config');
+const logger = require('../../logger');
+const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 async function createPatient(CHTpatientDoc) {
   const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
 
   try {
-    const res = await axios.post(`${FHIR_ROOT_URL}/Patient`, FHITPatientResource, { auth: {
-      username: 'interop-client',
-      password: 'interop-password'
+    const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, {auth: {
+      username: fhirUsername,
+      password: fhirPassword,
     }});
-    return {status: res.status, patient: res.data}
+    return {status: res.status, patient: res.data};
   } catch (error) {
-    console.error(error);
-    return {status: error.status, patient: error.data}
+    logger.error(error);
+    return {status: error.status, patient: error.data};
   }
 }
 
