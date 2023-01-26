@@ -1,8 +1,9 @@
 const axios = require('axios');
-const {FHIR} = require('../../config');
+const {FHIR, CHT} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 const logger = require('../../logger');
-const{generateFHIRSubscriptionResource} = require('../utils/subscription');
+const {generateFHIRSubscriptionResource, gen} = require('../utils/subscription');
+const {generateApiUrl} = require('../utils/service-request');
 
 async function createServiceRequest(request) {
   try {
@@ -25,8 +26,25 @@ async function createServiceRequest(request) {
     const FHITSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
     const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHITSubscriptionResource, options);
 
-    logger.info(JSON.stringify(subscriptionRes.data, null, 4));
+    if (subscriptionRes.status !== 200) {
+      return {status: subscriptionRes.status, data: subscriptionRes.data};
+    }
 
+    // call the CHT API to set up the follow up task
+    const chtApiUrl = generateApiUrl(CHT.url, CHT.username, CHT.password);
+    const chtRes = await axios.post(chtApiUrl, {
+      _meta: {
+        form: "interop_follow_up",
+      },
+      patient_uuid: patientId,
+    });
+
+    if (chtRes.data.success !== true) {
+      // TODO: delete the subscription
+      return {status: 500, data: 'unable to create the follow up task'};
+    }
+
+    logger.info(JSON.stringify(chtRes.data, null, 4));
 
     return {status: res.status};
   } catch (err) {

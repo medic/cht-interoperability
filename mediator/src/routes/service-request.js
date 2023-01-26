@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const {createServiceRequest} = require('../controllers/service-request');
-const {requestHandler} = require('../utils/request');
+const {requestHandler} = require('../utils/service-request');
 const {validateBodyAgainst} = require('../middlewares');
 const {createServiceSchema} = require('../middlewares/schemas/service-request');
 

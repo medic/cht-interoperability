@@ -12,5 +12,10 @@ module.exports = {
     url: process.env.FHIR_URL || 'http://openhim-core:5001/fhir',
     username: process.env.FHIR_USERNAME || 'interop-client',
     password: process.env.FHIR_PASSWORD || 'interop-password',
+  },
+  CHT: {
+    url: process.env.CHT_URL || 'https://njugunamedic.pagekite.me',
+    username: process.env.CHT_USERNAME || 'admin',
+    password: process.env.CHT_PASSWORD || 'medicadmin',
   }
 };
