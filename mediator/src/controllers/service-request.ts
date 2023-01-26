@@ -10,7 +10,7 @@ type ServiceRequest = {
 
 async function createServiceRequest(request: ServiceRequest) {
   try {
-    const {patientId} = request;
+    const {patient_id: patientId} = request;
 
     const options = {
       auth: {

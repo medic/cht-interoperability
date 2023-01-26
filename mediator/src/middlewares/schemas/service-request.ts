@@ -1,7 +1,7 @@
 import joi from 'joi';
 
 const createServiceSchema = joi.object({
-  patientId: joi.number().required()
+  patient_id: joi.number().required()
 });
 
 module.exports = {

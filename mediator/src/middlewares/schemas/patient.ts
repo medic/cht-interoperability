@@ -1,10 +1,12 @@
 import joi from "joi";
 
 const createPatientSchema = joi.object({
-  name: joi.string().optional(),
-  _id: joi.string().optional(),
-  sex: joi.string().optional(),
-  birthDate: joi.string().optional(),
+  name: joi.string().required(),
+  _id: joi.string().required(),
+  id: joi.string().optional(),
+  sex: joi.string().trim().regex(/^(male|female|other|unknown)$/).required(),
+  // eslint-disable-next-line camelcase
+  date_of_birth: joi.string().optional(),
 });
 
 module.exports = {
