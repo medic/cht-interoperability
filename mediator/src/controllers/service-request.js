@@ -26,7 +26,7 @@ async function createServiceRequest(request) {
     const FHITSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
     const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHITSubscriptionResource, options);
 
-    if (subscriptionRes.status !== 200) {
+    if (subscriptionRes.status !== 201) {
       return {status: subscriptionRes.status, data: subscriptionRes.data};
     }
 
