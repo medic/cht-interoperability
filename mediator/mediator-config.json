@@ -6,19 +6,18 @@
   "defaultChannelConfig": [
     {
       "name": "Mediator",
-      "urlPattern": "^/mediator$",
+      "urlPattern": "^/mediator/.*$",
       "routes": [
         {
           "name": "Mediator",
           "host": "mediator",
-          "path": "/",
-          "port": "6000",
+          "pathTransform": "s/\\/mediator/",
+          "port": 6000,
           "primary": true,
           "type": "http"
         }
       ],
       "allow": [
-        "admin",
         "interop"
       ],
       "methods": [
