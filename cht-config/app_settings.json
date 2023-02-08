@@ -446,7 +446,7 @@
       "relevant_to": "doc.type === 'person' && doc.role == 'patient'",
       "destination": {
         "base_url": "http://localhost:5001",
-        "path": "/fhir/Patient",
+        "path": "/mediator/patient",
         "auth": {
           "type": "basic",
           "username": "interop-client",
@@ -457,7 +457,7 @@
         "resourceType": {
           "expr": "'Patient'"
         },
-        "gender": "doc.sex",
+        "sex": "doc.sex",
         "name": {
           "expr": "[ { \"use\":\"official\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
           "optional": false
@@ -468,7 +468,7 @@
         "identifier.value": {
           "expr": "doc._id"
         },
-        "birthDate": "doc.date_of_birth",
+        "date_of_birth": "doc.date_of_birth",
         "telecom": {
           "expr": "[{ \"system\":\"phone\", \"value\": doc.phone, \"use\":\"mobile\" } ]",
           "optional": true
