@@ -1,5 +1,6 @@
-const axios = require('axios');
-const {genereateFHIRPatientResource} = require('../utils/patient');
+import axios from "axios";
+import { genereateFHIRPatientResource } from "../utils/patient";
+
 const {FHIR} = require('../../config');
 const logger = require('../../logger');
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;

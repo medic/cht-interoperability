@@ -1,4 +1,4 @@
-function genereateFHIRPatientResource(patient: any) {
+export const genereateFHIRPatientResource = (patient: any) => {
   const patientLastName = patient.name.split(' ').slice(-1);
   const FHITPatientResource = {
     resourceType: 'Patient',
@@ -22,7 +22,3 @@ function genereateFHIRPatientResource(patient: any) {
 
   return FHITPatientResource;
 }
-
-module.exports = {
-  genereateFHIRPatientResource,
-};
