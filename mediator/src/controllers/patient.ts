@@ -4,7 +4,7 @@ const {FHIR} = require('../../config');
 const logger = require('../../logger');
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
-async function createPatient(CHTpatientDoc) {
+export async function createPatient(CHTpatientDoc: any) {
   const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
 
   try {
@@ -13,12 +13,8 @@ async function createPatient(CHTpatientDoc) {
       password: fhirPassword,
     }});
     return {status: res.status, patient: res.data};
-  } catch (error) {
+  } catch (error: any) {
     logger.error(error);
     return {status: error.status, patient: error.data};
   }
 }
-
-module.exports = {
-  createPatient
-};

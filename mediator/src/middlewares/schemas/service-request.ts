@@ -1,4 +1,4 @@
-const joi = require('joi');
+import joi from 'joi';
 
 const createServiceSchema = joi.object({
   patientId: joi.number().required()
