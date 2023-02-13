@@ -4,7 +4,11 @@ const axios = require('axios');
 const {FHIR} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 
-async function createServiceRequest(request: { patientId: string; }) {
+type ServiceRequest = {
+  patientId: string;
+};
+
+async function createServiceRequest(request: ServiceRequest) {
   try {
     const {patientId} = request;
 
