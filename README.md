@@ -24,6 +24,11 @@ A first version of the project can be found in the [chis-interoperability](https
 
 ![](./docs/images/bad-client-screen.png) If everything is successful you should see this ![](./docs/images/good-client-screen.png)
 
+## Loading CHT configuration
+1. Go into the `cht-config` directory by running `cd cht-config`.
+1. Run `npm install` to install the dependencies.
+1. Ensure you have [cht-conf](https://www.npmjs.com/package/cht-conf) installed and Run `cht --local` to compile and upload that configurationto upload the app settings to your local CHT-core instance.
+
 ## Shutdown the servers
 
 - To shut-down the containers run `./startup.sh down` to stop the instances.
