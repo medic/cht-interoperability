@@ -1,4 +1,4 @@
-function genereateFHIRPatientResource(patient) {
+function genereateFHIRPatientResource(patient: any) {
   const patientLastName = patient.name.split(' ').slice(-1);
   const FHITPatientResource = {
     resourceType: 'Patient',

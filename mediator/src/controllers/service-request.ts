@@ -1,9 +1,14 @@
+import {logger} from '../../logger';
+
 const axios = require('axios');
 const {FHIR} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
-const logger = require('../../logger');
 
-async function createServiceRequest(request) {
+type ServiceRequest = {
+  patientId: string;
+};
+
+async function createServiceRequest(request: ServiceRequest) {
   try {
     const {patientId} = request;
 
@@ -23,9 +28,9 @@ async function createServiceRequest(request) {
     // todo => @njogz to add task creation process.
 
     return {status: res.status, data: res.data};
-  } catch ({response: res}) {
-    logger.error(JSON.stringify(res.data, null, 4));
-    return {status: res.status, data: res.data};
+  } catch (err) {
+    logger.error(JSON.stringify(err, null, 4));
+    return {status: 500, data: err};
   }
 }
 

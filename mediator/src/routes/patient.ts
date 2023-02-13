@@ -1,13 +1,14 @@
-const {Router} = require('express');
+import {Request, Response, Router} from 'express';
+import { createPatient } from '../controllers/patient';
+
 const router = Router();
-const patientController = require('../controllers/patient');
 const {validateBodyAgainst} = require('../middlewares');
 const {createPatientSchema} = require('../middlewares/schemas/patient');
 
 router.post('/',
   validateBodyAgainst(createPatientSchema),
-  async function(req, res) {
-    const {status, patient} = await patientController.createPatient(req.body);
+  async function(req: Request, res: Response) {
+    const {status, patient} = await createPatient(req.body);
     res.send({status, patient});
 });
 

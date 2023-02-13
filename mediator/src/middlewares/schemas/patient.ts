@@ -1,4 +1,4 @@
-const joi = require('joi');
+import joi from "joi";
 
 const createPatientSchema = joi.object({
   name: joi.string().optional(),
