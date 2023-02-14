@@ -1,12 +1,12 @@
-const axios = require('axios');
-const {genereateFHIRPatientResource} = require('../utils/patient');
-const {FHIR} = require('../../config');
-const logger = require('../../logger');
+import axios from 'axios';
+import {generateFHIRPatientResource} from '../utils/patient';
+import {FHIR} from '../../config';
+import {logger} from '../../logger';
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 export async function createPatient(CHTpatientDoc: any) {
   try {
-    const FHITPatientResource = genereateFHIRPatientResource(CHTpatientDoc);
+    const FHITPatientResource = generateFHIRPatientResource(CHTpatientDoc);
     const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, {auth: {
       username: fhirUsername,
       password: fhirPassword,

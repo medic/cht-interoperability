@@ -1,4 +1,4 @@
-function genereateFHIRPatientResource(patient: any) {
+export function generateFHIRPatientResource(patient: any) {
   const patientLastName = patient.name.split(' ').slice(-1);
   const birthDate = new Date(patient.date_of_birth);
 
@@ -29,10 +29,6 @@ function genereateFHIRPatientResource(patient: any) {
   return FHITPatientResource;
 }
 
-function isValidDate(d) {
-  return d instanceof Date && !isNaN(d);
+function isValidDate(d: any) {
+  return d instanceof Date && !isNaN(d as any);
 }
-
-module.exports = {
-  genereateFHIRPatientResource,
-};

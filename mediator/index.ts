@@ -1,13 +1,13 @@
 import {Request, Response} from 'express';
 import { mediatorConfig } from './mediator-config';
 import { logger } from './logger';
+import express from 'express';
+import bodyParser from 'body-parser';
+import {PORT, OPENHIM} from './config';
+import patientRoutes from './src/routes/patient';
+import serviceRequestRoutes from './src/routes/service-request';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const {PORT, OPENHIM} = require('./config');
 const {registerMediator} = require('openhim-mediator-utils');
-const patientRoutes = require('./src/routes/patient');
-const serviceRequestRoutes = require('./src/routes/service-request');
 
 const app = express();
 
@@ -33,4 +33,4 @@ const registerMediatorCallback = (err: string): void => {
   logger.info('Successfully registered mediator.');
 };
 
-registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
+// registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);

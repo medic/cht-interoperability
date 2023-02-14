@@ -1,6 +1,6 @@
 import joi from "joi";
 
-const createPatientSchema = joi.object({
+export const createPatientSchema = joi.object({
   parent: joi.any().optional(),
   type: joi.string().optional(),
   name: joi.string().required(),
@@ -11,6 +11,3 @@ const createPatientSchema = joi.object({
   date_of_birth: joi.string().optional(),
 });
 
-module.exports = {
-  createPatientSchema,
-};
