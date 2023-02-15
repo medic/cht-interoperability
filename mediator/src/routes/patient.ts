@@ -1,9 +1,9 @@
 import {Request, Response, Router} from 'express';
 import { createPatient } from '../controllers/patient';
+import {validateBodyAgainst}  from '../middlewares';
+import {createPatientSchema} from '../middlewares/schemas/patient';
 
 const router = Router();
-const {validateBodyAgainst} = require('../middlewares');
-const {createPatientSchema} = require('../middlewares/schemas/patient');
 
 router.post('/',
   validateBodyAgainst(createPatientSchema),
@@ -12,4 +12,4 @@ router.post('/',
     res.send({status, patient});
 });
 
-module.exports = router;
+export default router;

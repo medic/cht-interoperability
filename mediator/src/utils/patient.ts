@@ -1,5 +1,11 @@
-function genereateFHIRPatientResource(patient: any) {
+export function generateFHIRPatientResource(patient: any) {
   const patientLastName = patient.name.split(' ').slice(-1);
+  const birthDate = new Date(patient.date_of_birth);
+
+  if (!isValidDate(birthDate)) {
+    throw new RangeError("Invalid 'date_of_birth' range: received " + patient.date_of_birth);
+  }
+
   const FHITPatientResource = {
     resourceType: 'Patient',
     id: patient.id,
@@ -17,12 +23,12 @@ function genereateFHIRPatientResource(patient: any) {
       }
     ],
     gender: patient.sex,
-    birthDate: patient.date_of_birth
+    birthDate: birthDate.toISOString()
   };
 
   return FHITPatientResource;
 }
 
-module.exports = {
-  genereateFHIRPatientResource,
-};
+function isValidDate(d: any) {
+  return d instanceof Date && !isNaN(d as any);
+}

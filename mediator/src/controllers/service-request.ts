@@ -5,12 +5,12 @@ const {FHIR} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 
 type ServiceRequest = {
-  patientId: string;
+  patient_id: string;
 };
 
 async function createServiceRequest(request: ServiceRequest) {
   try {
-    const {patientId} = request;
+    const {patient_id: patientId} = request;
 
     const options = {
       auth: {
