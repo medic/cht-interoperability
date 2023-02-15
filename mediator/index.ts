@@ -33,4 +33,4 @@ const registerMediatorCallback = (err: string): void => {
   logger.info('Successfully registered mediator.');
 };
 
-// registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
+registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
