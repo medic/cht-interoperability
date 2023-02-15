@@ -5,10 +5,12 @@ This project implements a Loss to Follow Up (LTFU) workflow system for CHIS base
 
 A first version of the project can be found in the [chis-interoperability](https://github.com/medic/chis-interoperability) repository.
 
-## Prerequisites
+## Get Started
+
+### Prerequisites
 - `docker`
 
-## Get Started
+### Install & First Time Run
 
 1. Run `./startup.sh init` to start-up the docker containers on the first run or after calling `./startup.sh destroy`. Use `./startup.sh up` for subsequent runs after calling `init` without calling `destroy`.
 
@@ -24,7 +26,7 @@ A first version of the project can be found in the [chis-interoperability](https
 
 ![](./docs/images/bad-client-screen.png) If everything is successful you should see this ![](./docs/images/good-client-screen.png)
 
-## Shutdown the servers
+### Shutdown the servers
 
 - To shut-down the containers run `./startup.sh down` to stop the instances.
 - To then restart the containers, run `./startup.sh up`. You do not need to run init again like you did in install above.
