@@ -55,7 +55,6 @@ async function createServiceRequest(request: ServiceRequest) {
     return {status: res.status};
   } catch (err) {
     logger.error(`Error: ${err}`);
-    console.log(err);
     return {status: 500};
   }
 }
