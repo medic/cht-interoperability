@@ -1,10 +1,10 @@
+import axios from 'axios';
 import {logger} from '../../logger';
+import {FHIR, CHT} from '../../config';
+import { generateFHIRSubscriptionResource } from '../utils/subscription';
+import { generateApiUrl } from '../utils/service-request';
 
-const axios = require('axios');
-const {FHIR, CHT} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
-const {generateFHIRSubscriptionResource, gen} = require('../utils/subscription');
-const {generateApiUrl} = require('../utils/service-request');
 
 type ServiceRequest = {
   patient_id: string;

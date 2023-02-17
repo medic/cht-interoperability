@@ -14,3 +14,9 @@ export const FHIR = {
   username: process.env.FHIR_USERNAME || "interop-client",
   password: process.env.FHIR_PASSWORD || "interop-password",
 };
+
+export const CHT = {
+  url: process.env.CHT_URL || "http://localhost:5988",
+  username: process.env.CHT_USERNAME || "admin",
+  password: process.env.CHT_PASSWORD || "password",
+};

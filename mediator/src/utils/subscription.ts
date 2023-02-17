@@ -1,4 +1,4 @@
-function generateFHIRSubscriptionResource(patientId, callbackUrl) {
+export function generateFHIRSubscriptionResource(patientId: string, callbackUrl: string) {
   const FHIRSubscriptionResource = {
     resourceType: 'Subscription',
     id: patientId,
@@ -15,7 +15,3 @@ function generateFHIRSubscriptionResource(patientId, callbackUrl) {
 
   return FHIRSubscriptionResource;
 }
-
-module.exports = {
-  generateFHIRSubscriptionResource,
-};
