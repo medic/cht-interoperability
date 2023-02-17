@@ -1,7 +1,7 @@
 const {format, createLogger, transports} = require('winston');
 const isProduction = process.env.NODE_ENV === 'production';
 
-const logger = createLogger({
+export const logger = createLogger({
   level: !isProduction ? 'debug' : 'info',
   format: format.combine(
     format.splat(),
@@ -10,7 +10,7 @@ const logger = createLogger({
   transports: [
     new transports.Console({
       format: format.combine(
-        format(info => {
+        format((info: { level: string; }) => {
           info.level = info.level.toUpperCase();
           return info;
         })(),
@@ -19,12 +19,10 @@ const logger = createLogger({
           format: 'YYYY-MM-DD HH:mm:ss',
         }),
         format.printf(
-          info =>
+          (          info: { timestamp: any; level: any; message: any; stack: any; }) =>
           `${info.timestamp} ${info.level}: ${info.message} ${info.stack ? info.stack : ''}`
         )
       ),
     }),
   ],
 });
-
-module.exports = logger;

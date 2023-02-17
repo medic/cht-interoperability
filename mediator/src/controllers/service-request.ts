@@ -1,13 +1,19 @@
+import {logger} from '../../logger';
+
 const axios = require('axios');
 const {FHIR, CHT} = require('../../config');
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
-const logger = require('../../logger');
 const {generateFHIRSubscriptionResource, gen} = require('../utils/subscription');
 const {generateApiUrl} = require('../utils/service-request');
 
-async function createServiceRequest(request) {
+type ServiceRequest = {
+  patient_id: string;
+  callbackURL: string;
+};
+
+async function createServiceRequest(request: ServiceRequest) {
   try {
-    const {patientId, callbackURL} = request;
+    const {patient_id: patientId, callbackURL} = request;
 
     const options = {
       auth: {
@@ -23,8 +29,8 @@ async function createServiceRequest(request) {
     }
 
     // generate subscription resource
-    const FHITSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
-    const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHITSubscriptionResource, options);
+    const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
+    const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
 
     if (subscriptionRes.status !== 201) {
       return {status: subscriptionRes.status, data: subscriptionRes.data};
