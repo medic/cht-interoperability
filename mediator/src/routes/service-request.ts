@@ -14,4 +14,4 @@ router.post(
   requestHandler((req: Request) => createServiceRequest(req.body))
 );
 
-module.exports = router;
+export default router;
