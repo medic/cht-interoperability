@@ -8,12 +8,12 @@ const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 
 type ServiceRequest = {
   patient_id: string;
-  callbackURL: string;
+  callback_url: string;
 };
 
 async function createServiceRequest(request: ServiceRequest) {
   try {
-    const {patient_id: patientId, callbackURL} = request;
+    const {patient_id: patientId, callback_url} = request;
 
     const options = {
       auth: {
@@ -29,7 +29,7 @@ async function createServiceRequest(request: ServiceRequest) {
     }
 
     // generate subscription resource
-    const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackURL);
+    const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callback_url);
     const subscriptionRes = await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
 
     if (subscriptionRes.status !== 201) {
