@@ -11,9 +11,17 @@ services:
     depends_on:
       - configurator
     restart: 'unless-stopped'
+    networks:
+      - cht-net
     
   configurator:
     build:
       context: ../
       dockerfile: ./configurator/Dockerfile
+    networks:
+      - cht-net
+
+networks:
+  cht-net:
+    name: ${CHT_NETWORK:-cht-net}
       
