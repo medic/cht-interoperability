@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  mediator:
+    build: 
+      context: ../mediator
+      dockerfile: ./Dockerfile
+    container_name: mediator
+    ports:
+      - "6000:6000"
+    depends_on:
+      - configurator
+    restart: 'unless-stopped'
+    
+  configurator:
+    build:
+      context: ../
+      dockerfile: ./configurator/Dockerfile
+      
