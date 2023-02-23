@@ -1,4 +1,4 @@
-import { genereateFHIRPatientResource } from "./patient";
+import { generateFHIRPatientResource } from "./patient";
 
 test("generateFHIRPatientResource produces the correct format", () => {
   const chtPatient = {
@@ -6,10 +6,10 @@ test("generateFHIRPatientResource produces the correct format", () => {
     _id: "456",
     name: "John Doe",
     sex: "male",
-    date_of_birth: "200 0-01-01"
+    date_of_birth: "2000-01-01"
   };
 
-  const FHIRPatient = genereateFHIRPatientResource(chtPatient);
+  const FHIRPatient = generateFHIRPatientResource(chtPatient);
   expect(FHIRPatient).toEqual({
     resourceType: "Patient",
     id: "123",
@@ -27,6 +27,6 @@ test("generateFHIRPatientResource produces the correct format", () => {
       }
     ],
     gender: 'male',
-    birthDate: '200 0-01-01'
+    birthDate: '2000-01-01T00:00:00.000Z'
   });
 });
