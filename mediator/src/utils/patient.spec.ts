@@ -1,6 +1,6 @@
 import { genereateFHIRPatientResource } from "./patient";
 
-test("genereateFHIRPatientResource produces the correct format", () => {
+test("generateFHIRPatientResource produces the correct format", () => {
   const chtPatient = {
     id: "123",
     _id: "456",
