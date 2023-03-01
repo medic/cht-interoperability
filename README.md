@@ -14,7 +14,7 @@ Services are currently available at these URLs:
 * **CHT with LTFU configuration** - TODO
 
 ### Workflow Diagram
-![](./docs/images/diagram.png) 
+![](./docs/diagram/diagram.png) 
 
 ## Get Started
 
