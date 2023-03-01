@@ -35,7 +35,11 @@ Services are currently available at these URLs:
 
 1. If the curl request fails, visit http://localhost:9000/#!/clients and click on the icon the red arrow points to in the image below.
 
-![](./docs/images/bad-client-screen.png) If everything is successful you should see this ![](./docs/images/good-client-screen.png)
+![](./docs/images/bad-client-screen.png) 
+
+If everything is successful you should see this:
+
+ ![](./docs/images/good-client-screen.png)
 
 ### Shutdown the servers
 
