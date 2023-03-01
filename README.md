@@ -13,6 +13,9 @@ Services are currently available at these URLs:
 * **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - TODO
 
+### Workflow Diagram
+![](./docs/images/diagram.png) 
+
 ## Get Started
 
 ### Prerequisites
