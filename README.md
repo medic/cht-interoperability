@@ -9,7 +9,7 @@ A first version of the project can be found in the [chis-interoperability](https
 Services are currently available at these URLs:
 
 * **OpenHIM Admin Console** - TODO
-* **OpenHIM** - TODO 
+* **OpenHIM Mediator** - TODO 
 * **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - TODO
 
