@@ -8,6 +8,6 @@ export const createPatientSchema = joi.object({
   id: joi.string().optional(),
   sex: joi.string().trim().valid('male', 'female', 'other', 'unkown').required(),
   // eslint-disable-next-line camelcase
-  date_of_birth: joi.string().optional(),
+  date_of_birth: joi.date().iso().required(),
 });
 
