@@ -4,8 +4,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 const logger = createLogger({
   level: !isProduction ? 'debug' : 'info',
   format: format.combine(
+    format.errors({stack: true}),
     format.splat(),
-    format.simple()
+    format.simple(),
   ),
   transports: [
     new transports.Console({
