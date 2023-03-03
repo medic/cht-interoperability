@@ -1,17 +1,23 @@
-FROM node:18-alpine
+FROM node:16-alpine
 
 RUN apk add g++ make py3-pip git
 
-WORKDIR /scripts
+WORKDIR /scripts/configurator
 
-COPY ./configurator /scripts
+COPY ./configurator ./
 
 RUN npm install
 
-RUN mkdir cht-config
+WORKDIR /scripts/cht-config
 
-COPY ../cht-config ./cht-config
+COPY ../cht-config ./
 
-RUN cd cht-config && npm install -g cht-conf && python -m pip install git+https://github.com/medic/pyxform.git@medic-conf-1.17#egg=pyxform-medic
+RUN npm install && npm install -g cht-conf && python -m pip install git+https://github.com/medic/pyxform.git@medic-conf-1.17#egg=pyxform-medic
 
-CMD ["sh", "./scripts/setup.sh"]
+WORKDIR /scripts
+
+RUN echo "cd /scripts/configurator && npm run configure && cd /scripts/cht-config && npm run deploy && exit 0" > ./startup.sh
+
+RUN chmod +x ./startup.sh
+
+CMD ["sh", "./startup.sh"]
