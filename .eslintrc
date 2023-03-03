@@ -1,12 +1,12 @@
 {
   "parserOptions": {
-    "ecmaVersion": 10
+    "ecmaVersion": 9
   },
   "env": {
-    "node": true,
-    "es2018": true
+    "node": true
   },
   "extends": "eslint:recommended",
+  "ignorePatterns": ["cht-config"],
   "rules": {
     "array-bracket-spacing": [2, "never"],
     "block-scoped-var": 2,

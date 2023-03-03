@@ -1,0 +1,68 @@
+{
+  "form:death_report": {
+    "null--archive%20mode": "1JUis6w/PUDcWXGeOTly2w=="
+  },
+  "form:delivery": {
+    "null--archive%20mode": "GaUo8r9hLnAUOVWvawC1GA=="
+  },
+  "form:pnc_danger_sign_follow_up_baby": {
+    "null--archive%20mode": "iOdQ9NXIvBNd+XNL+kNi7g=="
+  },
+  "form:pnc_danger_sign_follow_up_mother": {
+    "null--archive%20mode": "cjbI/Kocq3EyrTDRosINZQ=="
+  },
+  "form:pregnancy": {
+    "null--archive%20mode": "K/sMsovKi2TrmE+98mzwqA=="
+  },
+  "form:pregnancy_danger_sign": {
+    "null--archive%20mode": "dObBUxXgwkWBaGuAB/M0iA=="
+  },
+  "form:pregnancy_danger_sign_follow_up": {
+    "null--archive%20mode": "R3gQBjS3W/KnatrZjjyuaw=="
+  },
+  "form:pregnancy_facility_visit_reminder": {
+    "null--archive%20mode": "AQVNBKZGeEtA6GTKzdZ6hA=="
+  },
+  "form:pregnancy_home_visit": {
+    "null--archive%20mode": "TJPQu71+Y1Fc0sTMi6TKOw=="
+  },
+  "form:undo_death_report": {
+    "null--archive%20mode": "VjRjYHCVqqDeCCA6G54ieg=="
+  },
+  "form:contact:clinic:create": {
+    "null--archive%20mode": "iUA1SEmCkCIMjUL9XPKh8A=="
+  },
+  "form:contact:clinic:edit": {
+    "null--archive%20mode": "xYsxbnS62NritA69Rsohig=="
+  },
+  "form:contact:district_hospital:create": {
+    "null--archive%20mode": "hDwesn3eLw+Xmj1OXDm4Yg=="
+  },
+  "form:contact:district_hospital:edit": {
+    "null--archive%20mode": "jJp45qPIuld1b/uphH+KRw=="
+  },
+  "form:contact:health_center:create": {
+    "null--archive%20mode": "TetcF07yw79RQNr2dQxxYA=="
+  },
+  "form:contact:health_center:edit": {
+    "null--archive%20mode": "b2bSxj6J61jL6KFsZVnGcA=="
+  },
+  "form:contact:person:create": {
+    "null--archive%20mode": "Geg9dLDlsOGJfGjcUc88CQ=="
+  },
+  "form:contact:person:edit": {
+    "null--archive%20mode": "G4/pSHM+GyxKFXP/Vxb39Q=="
+  },
+  "resources": {
+    "null--archive%20mode": "IoFzGpJWPUrLVd+em8fMwQ=="
+  },
+  "messages-en": {
+    "null--archive%20mode": "XKveGAvLxTT2bIwhirPi6Q=="
+  },
+  "form:replace_user": {
+    "null--archive%20mode": "hoWziJMraO/DGmjWxwRSVQ=="
+  },
+  "form:interop_follow_up": {
+    "null--archive%20mode": "Pfz5zrif0lgAq1H3V9KtGw=="
+  }
+}

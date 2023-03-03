@@ -24,7 +24,12 @@ A first version of the project can be found in the [chis-interoperability](https
 
 ![](./docs/images/bad-client-screen.png) If everything is successful you should see this ![](./docs/images/good-client-screen.png)
 
-## Shutdown the servers
+## Loading CHT configuration
+1. Go into the `cht-config` directory by running `cd cht-config`.
+1. Run `npm install` to install the dependencies.
+1. Set up a local CHT instance using theses [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/)
+1. Set up a proxy to your local CHT instance by running using something like [nginx-local-ip](https://github.com/medic/nginx-local-ip) or [ngrok](https://ngrok.com/) and update the `CHT_URL` value in the `.env` file with the new URL.
+1. Ensure you have [cht-conf](https://www.npmjs.com/package/cht-conf) installed and run `cht --local` to compile and upload the app settings configuration to your local CHT instance.## Shutdown the servers
 
 - To shut-down the containers run `./startup.sh down` to stop the instances.
 - To then restart the containers, run `./startup.sh up`. You do not need to run init again like you did in install above.
