@@ -462,7 +462,7 @@
         "_id": {
           "expr": "doc._id"
         },
-        "birthDate": "doc.date_of_birth"
+        "date_of_birth": "doc.date_of_birth"
       }
     },
     "FHIR_practitioner": {
