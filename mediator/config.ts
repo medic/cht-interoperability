@@ -1,4 +1,5 @@
-import "dotenv/config";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export const PORT = process.env.PORT || 6000;
 
@@ -13,4 +14,10 @@ export const FHIR = {
   url: process.env.FHIR_URL || "http://openhim-core:5001/fhir",
   username: process.env.FHIR_USERNAME || "interop-client",
   password: process.env.FHIR_PASSWORD || "interop-password",
+};
+
+export const CHT = {
+  url: process.env.CHT_URL || "http://localhost:5988",
+  username: process.env.CHT_USERNAME || "admin",
+  password: process.env.CHT_PASSWORD || "password",
 };

@@ -45,6 +45,7 @@ services:
       - spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL95Dialect
       - hapi.fhir.allow_external_references=true
       - hapi.fhir.bulk_export_enabled=true
+      - hapi.fhir.subscription.resthook_enabled=true
       - JAVA_TOOL_OPTIONS=-Xmx2g
       - CATALINA_OPTS=-Xmx2g
     depends_on:
