@@ -38,19 +38,24 @@ Services are currently available at these URLs:
 ![](./docs/images/bad-client-screen.png) 
 
 If everything is successful you should see this:
-
  ![](./docs/images/good-client-screen.png)
+
+### Loading CHT configuration
+1. Go into the `cht-config` directory by running `cd cht-config`.
+1. Run `npm install` to install the dependencies.
+1. Set up a local CHT instance using theses [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/)
+1. Create a file named `.env` copy over the contents of `.env.template` and update the `CHT_USERNAME` and `CHT_PASSWORD` values with the admin credentials of your CHT instance.
+1. Set up a proxy to your local CHT instance by running using something like [nginx-local-ip](https://github.com/medic/nginx-local-ip) or [ngrok](https://ngrok.com/) and update the `CHT_URL` value in the `.env` file with the new URL.
+1. Ensure you have [cht-conf](https://www.npmjs.com/package/cht-conf) installed and run `cht --local` to compile and upload the app settings configuration to your local CHT instance.## Shutdown the servers
+1. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
+1. Securely save the `interop-client` user's password to the database using the instructions [here](https://docs.communityhealthtoolkit.org/apps/reference/api/#credentials). Change the values `mykey` and `my pass` to `openhim1` and your user's password respectively. An example of the curls request is below:
+```
+curl -X PUT -H "Content-Type: text/plain" http://medic:password@localhost:5988/api/v1/credentials/openhim1 -d 'interop-password'
+```
  
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.
 - To then restart the containers, run `./startup.sh up`. You do not need to run init again like you did in install above.
 - To shut-down and delete everything, run `./startup.sh destroy`.
-
-### Loading CHT configuration
-1. Go into the `cht-config` directory by running `cd cht-config`.
-1. Run `npm install` to install the dependencies.
-1. Set up a local CHT instance using theses [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/).
-1. Set up a proxy to your local CHT instance by running using something like [nginx-local-ip](https://github.com/medic/nginx-local-ip) or [ngrok](https://ngrok.com/) and update the `CHT_URL` value in the `.env` file with the new URL.
-1. Ensure you have [cht-conf](https://www.npmjs.com/package/cht-conf) installed and run `cht --local` to compile and upload the app settings configuration to your local CHT instance.
 
 Users getting errors when running the installation steps, please see the [Troubleshooting guide](/troubleshooting.md).

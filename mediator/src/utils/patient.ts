@@ -8,7 +8,7 @@ export function generateFHIRPatientResource(patient: any) {
 
   const FHITPatientResource = {
     resourceType: 'Patient',
-    id: patient.id,
+    id: patient._id,
     identifier: [
       {
         system: 'cht',

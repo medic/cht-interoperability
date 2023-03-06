@@ -6,8 +6,8 @@ const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
 
 export async function createPatient(CHTpatientDoc: any) {
   try {
-    const FHITPatientResource = generateFHIRPatientResource(CHTpatientDoc);
-    const res = await axios.post(`${fhirUrl}/Patient`, FHITPatientResource, {auth: {
+    const FHIRPatientResource = generateFHIRPatientResource(CHTpatientDoc);
+    const res = await axios.post(`${fhirUrl}/Patient`, FHIRPatientResource, {auth: {
       username: fhirUsername,
       password: fhirPassword,
     }});
