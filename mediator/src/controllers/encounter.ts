@@ -1,14 +1,9 @@
 import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
-import { generateFHIREncounterResource } from '../utils/encounter';
 const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 
-export interface CHTEncounterDoc {
-  patient_id: string;
-};
-
-export async function createEncounter(CHTencounterDoc: CHTEncounterDoc) {
+export async function createEncounter(CHTencounterDoc: any) {
   try {
     const FHIRencounterResource = generateFHIREncounterResource(CHTencounterDoc);
     const res = await axios.post(`${fhirUrl}/Encounter`, FHIRencounterResource, { auth: {
