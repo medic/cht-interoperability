@@ -23,10 +23,7 @@ async function createServiceRequest(request: ServiceRequest) {
       },
     };
 
-    const res = await axios.get(
-      `${fhirUrl}/Patient/?identifier=${patientId}`,
-      options
-    );
+    const res = await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
 
     if (res.status !== 200) {
       return { status: res.status, data: res.data };
@@ -49,17 +46,20 @@ async function createServiceRequest(request: ServiceRequest) {
 
     // call the CHT API to set up the follow up task
     const chtApiUrl = generateApiUrl(CHT.url, CHT.username, CHT.password);
+    
     options = {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,
       }),
     };
+    
     const body = {
       _meta: {
         form: "interop_follow_up",
       },
       patient_uuid: patientId,
     };
+    
     const chtRes = await axios.post(chtApiUrl, body, options);
 
     if (chtRes.data.success !== true) {
