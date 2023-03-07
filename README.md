@@ -65,7 +65,7 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 ### Local setup of CHT Configuration
 The following steps apply when running CHT locally in development mode and when making configuration changes locally:
 
-#### CHT
+#### CHT Development Environment
 1. Set up a local CHT instance using [these instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/).
 1. Create an offline user, for example a CHW.
 1. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
