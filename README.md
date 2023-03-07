@@ -82,6 +82,9 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 1. To verify if the configuration is loaded correctly is to create a `Patient` and to access a URL like https://*****.my.local-ip.co/#/contacts/patientUUID/report/interop_follow_up. This should retrieve correctly the follow up form.
 1. To verify if the configuration in CouchDB, access `http://localhost:5984/_utils/#database/medic/settings`.
  
+### LTFU Flow
+TODO
+
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.
 - To then restart the containers, run `./startup.sh up`. You do not need to run `init` again like you did in the initial install above.
