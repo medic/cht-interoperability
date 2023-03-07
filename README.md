@@ -33,7 +33,16 @@ Services are currently available at these URLs:
 
 1. Select the green `+` button to the right of the default channel to add the mediator.
 
-1. You can test the mediator by running `curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"`. You should get as a response `{"status": "success" }`.
+1. You can test the mediator by running: 
+
+```
+curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"
+``` 
+
+You should get as a response:
+```json
+{"status": "success" }
+``` 
 
 1. If the curl request fails, visit http://localhost:9000/#!/clients and click on the icon the red arrow points to in the image below.
 
