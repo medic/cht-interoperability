@@ -86,10 +86,13 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 ### LTFU Flow
 TODO
 
+### Postman collection
+TODO
+
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.
 - To then restart the containers, run `./startup.sh up`. You do not need to run `init` again like you did in the initial install above.
-- To shut-down and delete everything, run `./startup.sh destroy`. You will have to subsequently run `./startup.sh init` if you wish to start the containers.
+- To shut-down and delete *everything*, run `./startup.sh destroy`. You will have to subsequently run `./startup.sh init` if you wish to start the containers.
 
 ## Troubleshooting
 Users getting errors when running the installation steps, please see the [Troubleshooting guide](/troubleshooting.md).
