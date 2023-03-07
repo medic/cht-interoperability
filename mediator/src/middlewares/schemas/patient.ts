@@ -8,6 +8,6 @@ export const createPatientSchema = joi.object({
   _id: joi.string().required(),
   id: joi.string().optional(),
   sex: joi.string().trim().valid('male', 'female', 'other', 'unkown').required(),
-  // validate expecting DD-MM-YYYY
-  date_of_birth: joi.string().regex(new RegExp("[0-9]{2}-[0-9]{2}-[0-9]{4}")).required(),
+  // validate expecting YYYY-MM-DD
+  date_of_birth: joi.string().regex(new RegExp("[0-9]{4}-[0-9]{2}-[0-9]{2}")).required(),
 });
