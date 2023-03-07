@@ -9,5 +9,5 @@ export const createPatientSchema = joi.object({
   id: joi.string().optional(),
   sex: joi.string().trim().valid('male', 'female', 'other', 'unkown').required(),
   // validate expecting YYYY-MM-DD
-  date_of_birth: joi.string().regex(new RegExp("[0-9]{4}-[0-9]{2}-[0-9]{2}")).required(),
+  date_of_birth: joi.string().regex(new RegExp("^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$")).required(),
 });
