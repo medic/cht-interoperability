@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-RUN apk add g++ make py3-pip git
+RUN apk add g++ make py3-pip git curl
 
 WORKDIR /scripts/configurator
 

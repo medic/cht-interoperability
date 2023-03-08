@@ -8,6 +8,13 @@ services:
     container_name: mediator
     ports:
       - "6000:6000"
+    environment:
+      - "OPENHIM_API_HOSTNAME=${OPENHIM_API_HOSTNAME:-localhost}"
+      - "OPENHIM_API_PORT=${OPENHIM_API_PORT:-8080}"
+      - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-'openhim-password'}"
+      - "OPENHIM_USERNAME=${OPENHIM_USERNAME:-root@openhim.org}"
+      - "OPENHIM_CLIENT_PASSWORD=${OPENHIM_CLIENT_PASSWORD:-'interop-password'}"
+      - "OPENHIM_USER_PASSWORD=${OPENHIM_USER_PASSWORD:-'interop-password'}"
     depends_on:
       - configurator
     restart: 'unless-stopped'
@@ -18,6 +25,9 @@ services:
     build:
       context: ../
       dockerfile: ./configurator/Dockerfile
+    environment:
+      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
+      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
     networks:
       - cht-net
 
