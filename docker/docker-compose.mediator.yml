@@ -16,7 +16,7 @@ services:
       - "FHIR_URL=${FHIR_URL:-http://openhim-core:5001/fhir}"
       - "FHIR_USERNAME=${FHIR_USERNAME:-interop-client}"
       - "FHIR_PASSWORD=${FHIR_PASSWORD:-interop-password}"
-      - "CHT_URL=${CHT_URL:-http://nginx}"
+      - "CHT_URL=${CHT_URL:-https://nginx}"
       - "CHT_USERNAME=${CHT_USERNAME:-admin}"
       - "CHT_PASSWORD=${CHT_PASSWORD:-password}"
 

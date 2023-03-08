@@ -46,7 +46,6 @@ async function createServiceRequest(request: ServiceRequest) {
 
     // call the CHT API to set up the follow up task
     const chtApiUrl = generateApiUrl(CHT.url, CHT.username, CHT.password);
-    
     options = {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,
@@ -64,7 +63,7 @@ async function createServiceRequest(request: ServiceRequest) {
 
     if (chtRes.data.success !== true) {
       // TODO: delete the subscription
-      return { status: 500, data: "unable to create the follow up task" };
+      return { status: 500, data: { message: "unable to create the follow up task"} };
     }
 
     logger.info(JSON.stringify(chtRes.data, null, 4));
