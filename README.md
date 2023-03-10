@@ -8,10 +8,12 @@ A first version of the project can be found in the [chis-interoperability](https
 ### Services
 Services are currently available at these URLs:
 
-* **OpenHIM Admin Console** - TODO
+* **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org)
 * **OpenHIM Mediator** - TODO 
 * **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - TODO
+
+[GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
 ### Workflow Diagram
 ![](./docs/sequence-diagram/diagram.png) 
@@ -55,7 +57,6 @@ If everything is successful you should see this:
 The following steps apply when running CHT via the Docker setup provided in this repository:
 
 1. CHT can be accessed via `http://localhost:5988`, and the credentials are `admin`/`password`.
-1. Create an offline user, for example a CHW.
 1. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
 1. Securely save the `interop-client` user's password to the database using the instructions [here](https://docs.communityhealthtoolkit.org/apps/reference/api/#credentials). Change the values `mykey` and `my pass` to `openhim1` and your user's password respectively. An example of the curls request is below:
 ```
@@ -67,7 +68,6 @@ The following steps apply when running CHT locally in development mode and when 
 
 #### CHT Development Environment
 1. Set up a local CHT instance using [these instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/).
-1. Create an offline user, for example a CHW.
 1. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
 1. Securely save the `interop-client` user's password to the database using the instructions [here](https://docs.communityhealthtoolkit.org/apps/reference/api/#credentials). Change the values `mykey` and `my pass` to `openhim1` and your user's password respectively. An example of the curls request is below:
 ```
@@ -83,10 +83,10 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 1. To verify if the configuration is loaded correctly is to create a `Patient` and to access a URL like https://*****.my.local-ip.co/#/contacts/patientUUID/report/interop_follow_up. This should retrieve correctly the follow up form.
 1. To verify if the configuration in CouchDB, access `http://localhost:5984/_utils/#database/medic/settings`.
  
-### LTFU Flow
+### Test the Loss to Follow-Up (LTFU) Flow
 TODO
 
-### Postman collection
+#### Postman collection
 TODO
 
 ### Shutdown the servers
