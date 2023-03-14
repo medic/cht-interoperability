@@ -25,3 +25,6 @@ Users encoutering the error when running `npm install`:
 > npm ERR! path /Users/phil/interoperability/cht-config/node_modules/.package-lock.json
 
 need to run `npm install` as root user
+
+
+## TK
