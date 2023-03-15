@@ -1,6 +1,10 @@
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'];
 
 export function generateFHIRPatientResource(patient: any) {
+  if (!patient.name) {
+    throw new Error(`Invalid 'name' expected type of 'string' but recieved '${patient.name}'`);
+  }
+  
   const patientLastName = patient.name.split(' ').slice(-1);
   const birthDate = new Date(patient.date_of_birth);
 
@@ -8,9 +12,7 @@ export function generateFHIRPatientResource(patient: any) {
     throw new RangeError("Invalid 'date_of_birth' range: received " + patient.date_of_birth);
   } else if (!patient._id) {
     throw new Error(`Invalid '_id' epxted type of 'string' or 'number' but recieved '${typeof patient._id}' with value '${patient._id}'`);
-  } else if (!patient.name) {
-    throw new Error(`Invalid 'name' expected type of 'string' but recieved '${patient.name}'`);
-  } else if (!patient.sex || !VALID_GENDERS.includes(patient.sex)) {
+  }  else if (!patient.sex || !VALID_GENDERS.includes(patient.sex)) {
     throw new Error(`Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved '${patient.sex}'`);
   }
 
