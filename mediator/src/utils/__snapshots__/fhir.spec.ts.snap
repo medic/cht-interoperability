@@ -6,7 +6,7 @@ exports[`generateFHIRPatientResource throws an error when '_id' is an invalid id
 
 exports[`generateFHIRPatientResource throws an error when 'date_of_birth' is an invalid date 1`] = `"Invalid 'date_of_birth' range: received YYYY-MM-DD"`;
 
-exports[`generateFHIRPatientResource throws an error when 'name' is an invalid name 1`] = `"Cannot read properties of undefined (reading 'split')"`;
+exports[`generateFHIRPatientResource throws an error when 'name' is an invalid name 1`] = `"Invalid 'name' expected type of 'string' but recieved 'undefined'"`;
 
 exports[`generateFHIRPatientResource throws an error when 'sex' is an invalid sex 1`] = `"Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved 'INVALID_GENDER'"`;
 
