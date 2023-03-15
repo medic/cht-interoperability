@@ -1,9 +1,9 @@
 import axios from "axios";
 import { logger } from "../../logger";
 import { FHIR, CHT } from "../../config";
-import { generateFHIRSubscriptionResource } from "../utils/subscription";
-import { generateApiUrl } from "../utils/service-request";
+import { generateFHIRSubscriptionResource } from '../utils/fhir';
 import https from "https";
+import { generateChtRecordsApiUrl } from "../utils/url";
 
 const { url: fhirUrl, password: fhirPassword, username: fhirUsername } = FHIR;
 
@@ -45,7 +45,7 @@ async function createServiceRequest(request: ServiceRequest) {
     }
 
     // call the CHT API to set up the follow up task
-    const chtApiUrl = generateApiUrl(CHT.url, CHT.username, CHT.password);
+    const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
     options = {
       httpsAgent: new https.Agent({
         rejectUnauthorized: false,

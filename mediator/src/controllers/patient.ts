@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {generateFHIRPatientResource} from '../utils/patient';
+import {generateFHIRPatientResource} from '../utils/fhir';
 import {FHIR} from '../../config';
 import {logger} from '../../logger';
 const {url: fhirUrl, username: fhirUsername, password: fhirPassword} = FHIR;
