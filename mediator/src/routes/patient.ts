@@ -10,6 +10,6 @@ router.post('/',
   async function(req: Request, res: Response) {
     const {status, patient} = await createPatient(req.body);
     res.status(status).send(patient);
-});
+  });
 
 export default router;

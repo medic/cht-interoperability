@@ -1,14 +1,26 @@
 export function generateFHIREncounterResource(encounter: any) {
   const FHIREncounterResource = {
     resourceType: 'Encounter',
-    identifier: [],
+    identifier: [
+      {
+        use: 'official',
+        value: encounter.patient_id
+      }
+    ],
     status: 'finished',
     class: 'outpatient',
+    type: [
+      { text: 'Community health worker visit' }
+    ],
     subject: encounter.patient_id,
-    period: {
-      start: encounter.reported_date,
-      end: encounter.reported_date
-    },
-    participant: {
-      
-    }
+    participant: [
+      {
+        type: [
+          { text: 'Community health worker' }
+        ]
+      }
+    ]
+  };
+
+  return FHIREncounterResource;
+}

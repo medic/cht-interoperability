@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
+import { generateFHIREncounterResource } from '../utils/encounter';
 const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 
 export async function createEncounter(CHTencounterDoc: any) {

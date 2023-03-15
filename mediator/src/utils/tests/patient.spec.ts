@@ -1,8 +1,7 @@
-import { generateFHIRPatientResource } from "./patient";
+import { generateFHIRPatientResource } from "../patient";
 
 test("generateFHIRPatientResource produces the correct format", () => {
   const chtPatient = {
-    id: "123",
     _id: "456",
     name: "John Doe",
     sex: "male",
@@ -12,7 +11,7 @@ test("generateFHIRPatientResource produces the correct format", () => {
   const FHIRPatient = generateFHIRPatientResource(chtPatient);
   expect(FHIRPatient).toEqual({
     resourceType: "Patient",
-    id: "123",
+    id: "456",
     identifier: [
       {
         system: 'cht',
