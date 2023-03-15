@@ -1,4 +1,6 @@
-export function generateFHIREncounterResource(encounter: any) {
+import { CHTEncounterDoc } from '../controllers/encounter';
+
+export function generateFHIREncounterResource(encounter: CHTEncounterDoc) {
   const FHIREncounterResource = {
     resourceType: 'Encounter',
     identifier: [
