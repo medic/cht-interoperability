@@ -5,7 +5,7 @@
   "env": {
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": "@medic/eslint-config",
   "ignorePatterns": ["cht-config"],
   "rules": {
     "array-bracket-spacing": [2, "never"],
