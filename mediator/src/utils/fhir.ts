@@ -1,6 +1,13 @@
-export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'];
+export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
-export function generateFHIRPatientResource(patient: any) {
+export interface IPatient {
+  name: string;
+  date_of_birth: string;
+  _id: string;
+  sex: typeof VALID_GENDERS[number];
+}
+
+export function generateFHIRPatientResource(patient: IPatient) {
   if (!patient.name) {
     throw new Error(`Invalid 'name' expected type of 'string' but recieved '${patient.name}'`);
   }

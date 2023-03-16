@@ -7,74 +7,94 @@ import { generateChtRecordsApiUrl } from "../utils/url";
 
 const { url: fhirUrl, password: fhirPassword, username: fhirUsername } = FHIR;
 
-type ServiceRequest = {
+interface IServiceRequest {
   patient_id: string;
   callback_url: string;
 };
 
-async function createServiceRequest(request: ServiceRequest) {
+export async function createServiceRequest(request: IServiceRequest) {
   try {
-    const { patient_id: patientId, callback_url } = request;
+    const {patient_id: patientId, callback_url: callbackUrl} = request;
 
-    let options: Record<string, any> = {
-      auth: {
-        username: fhirUsername,
-        password: fhirPassword,
-      },
-    };
+    const patientRes = await getFHIRPatientResource(patientId) 
 
-    const res = await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
-
-    if (res.status !== 200) {
-      return { status: res.status, data: res.data };
+    if (patientRes.status !== 200) {
+      return { status: patientRes.status, data: patientRes.data };
     }
 
     // generate subscription resource
-    const FHIRSubscriptionResource = generateFHIRSubscriptionResource(
-      patientId,
-      callback_url
-    );
-    const subscriptionRes = await axios.post(
-      `${fhirUrl}/Subscription`,
-      FHIRSubscriptionResource,
-      options
-    );
+    const subRes = await createFHIRSubscriptionResource(patientId, callbackUrl)
 
-    if (subscriptionRes.status !== 201) {
-      return { status: subscriptionRes.status, data: subscriptionRes.data };
+    if (subRes.status !== 201) {
+      return { status: subRes.status, data: subRes.data };
     }
 
     // call the CHT API to set up the follow up task
-    const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
-    options = {
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false,
-      }),
-    };
-    
-    const body = {
-      _meta: {
-        form: "interop_follow_up",
-      },
-      patient_uuid: patientId,
-    };
-    
-    const chtRes = await axios.post(chtApiUrl, body, options);
+    const recRes = await createChtRecord(patientId);
 
-    if (chtRes.data.success !== true) {
+    if (recRes.data.success !== true) {
       // TODO: delete the subscription
-      return { status: 500, data: { message: "unable to create the follow up task"} };
+      await deleteFhirSubscription(subRes.data);
+      return { status: 500, data: 'unable to create the follow up task' };
     }
 
-    logger.info(JSON.stringify(chtRes.data, null, 4));
+    logger.info(JSON.stringify(recRes.data, null, 4));
 
-    return { status: res.status };
-  } catch (err) {
-    logger.error(`Error: ${err}`);
-    return { status: 500 };
+    return { status: subRes.status, data: subRes.data };
+  } catch (err: any) {
+    logger.error(err);
+
+    if (!err.status) {
+      return { status: 400, data: { message: err.message } };
+    }
+
+    return {status: 500, data: { message: err.message }};
   }
 }
 
-module.exports = {
-  createServiceRequest,
-};
+
+/* Internal Functions */
+
+async function createChtRecord(patientId: string) {
+  const record = {
+    _meta: {
+      form: "interop_follow_up",
+    },
+    patient_uuid: patientId,
+  }
+  
+  const options = {
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false,
+    }),
+  };
+
+  const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
+  
+  return await axios.post(chtApiUrl, record, options);
+}
+
+async function createFHIRSubscriptionResource(patientId: string, callbackUrl: string) {
+  const options = {
+    auth: {
+      username: fhirUsername,
+      password: fhirPassword,
+    }
+  };
+  const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackUrl);
+  return await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
+}
+
+async function getFHIRPatientResource(patientId: string) {
+  const options = {
+    auth: {
+      username: fhirUsername,
+      password: fhirPassword,
+    }
+  };
+  return await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
+}
+
+async function deleteFhirSubscription(sub: any) {
+
+}
