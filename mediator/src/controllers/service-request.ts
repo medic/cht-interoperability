@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {logger} from '../../logger';
 import {FHIR, CHT} from '../../config';
-import { generateFHIRSubscriptionResource } from '../utils/subscription';
-import { generateApiUrl } from '../utils/service-request';
+import {generateFHIRSubscriptionResource} from '../utils/subscription';
+import {generateApiUrl} from '../utils/service-request';
 
 const {url: fhirUrl, password: fhirPassword, username: fhirUsername} = FHIR;
 
@@ -11,7 +11,7 @@ type ServiceRequest = {
   callback_url: string;
 };
 
-async function createServiceRequest(request: ServiceRequest) {
+export async function createServiceRequest(request: ServiceRequest) {
   try {
     const {patient_id: patientId, callback_url} = request;
 
@@ -40,7 +40,7 @@ async function createServiceRequest(request: ServiceRequest) {
     const chtApiUrl = generateApiUrl(CHT.url, CHT.username, CHT.password);
     const chtRes = await axios.post(chtApiUrl, {
       _meta: {
-        form: "interop_follow_up",
+        form: 'interop_follow_up',
       },
       patient_uuid: patientId,
     });

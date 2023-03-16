@@ -3,7 +3,7 @@ export function generateFHIRPatientResource(patient: any) {
   const birthDate = new Date(patient.date_of_birth);
 
   if (!isValidDate(birthDate)) {
-    throw new RangeError("Invalid 'date_of_birth' range: received " + patient.date_of_birth);
+    throw new RangeError('Invalid \'date_of_birth\' range: received ' + patient.date_of_birth);
   }
 
   const FHITPatientResource = {

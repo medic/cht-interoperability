@@ -1,7 +1,6 @@
-import {Request, Response} from 'express';
-import { mediatorConfig } from './mediator-config';
-import { logger } from './logger';
-import express from 'express';
+import express, {Request, Response} from 'express';
+import {mediatorConfig} from './mediator-config';
+import {logger} from './logger';
 import bodyParser from 'body-parser';
 import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';

@@ -21,7 +21,7 @@ export const logger = createLogger({
         }),
         format.printf(
           (          info: { timestamp: any; level: any; message: any; stack: any; }) =>
-          `${info.timestamp} ${info.level}: ${info.message} ${info.stack ? info.stack : ''}`
+            `${info.timestamp} ${info.level}: ${info.message} ${info.stack ? info.stack : ''}`
         )
       ),
     }),

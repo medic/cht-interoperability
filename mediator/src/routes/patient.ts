@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import { createPatient } from '../controllers/patient';
+import {createPatient} from '../controllers/patient';
 import {validateBodyAgainst}  from '../middlewares';
 import {createPatientSchema} from '../middlewares/schemas/patient';
 
@@ -10,6 +10,6 @@ router.post('/',
   async function(req: Request, res: Response) {
     const {status, patient} = await createPatient(req.body);
     res.status(status).send(patient);
-});
+  });
 
 export default router;

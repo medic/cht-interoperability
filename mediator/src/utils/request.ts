@@ -1,13 +1,13 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 
-type RequestHandler = (req: Request) => Promise<{status: number, data: any}>;
+type RequestHandler = () => Promise<{status: number, data: any}>;
 
 function requestHandler(handler: RequestHandler) {
   return  (req: Request, res: Response) => {
-    handler(req)
-    .then(({status, data}) => {
-      res.status(status).send(data);
-    });
+    handler()
+      .then(({status, data}) => {
+        res.status(status).send(data);
+      });
   };
 }
 
