@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createPatient fails to create a patient when given an invalid patient resource 1`] = `
+{
+  "message": "Invalid 'name' expected type of 'string' but recieved 'undefined'",
+}
+`;
+
+exports[`createPatient return the right status code if the request FHIR creation request fails 1`] = `
+{
+  "message": {},
+}
+`;

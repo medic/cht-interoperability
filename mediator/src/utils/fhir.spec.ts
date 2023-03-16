@@ -1,7 +1,7 @@
-import { generateFHIRPatientResource, generateFHIRSubscriptionResource, isValidDate } from "./fhir";
+import { generateFHIRPatientResource, generateFHIRSubscriptionResource, IPatient, isValidDate } from "./fhir";
 
 describe("generateFHIRPatientResource", () => {
-  const validChtPatient = {
+  const validChtPatient: IPatient = {
     _id: "456",
     name: "John Doe",
     sex: "male",
@@ -33,7 +33,7 @@ describe("generateFHIRPatientResource", () => {
   });
 
   it("throws an error if the 'date_of_birth' is 'undefined'", () => {
-    const invalidChtPatient = { ...validChtPatient, date_of_birth: undefined };
+    const invalidChtPatient = { ...validChtPatient, date_of_birth: undefined } as any;
 
     expect(() =>
       generateFHIRPatientResource(invalidChtPatient)
@@ -52,7 +52,7 @@ describe("generateFHIRPatientResource", () => {
   });
 
   it("throws an error when 'name' is an invalid name", () => {
-    const invalidChtPatient = {
+    const invalidChtPatient: any = {
       ...validChtPatient,
       name: undefined,
     };
@@ -63,7 +63,7 @@ describe("generateFHIRPatientResource", () => {
   });
 
   it("throws an error when '_id' is an invalid id", () => {
-    const invalidChtPatient = {
+    const invalidChtPatient: any = {
       ...validChtPatient,
       _id: undefined,
     };
@@ -74,7 +74,7 @@ describe("generateFHIRPatientResource", () => {
   });
 
   it("throws an error when 'sex' is an invalid sex", () => {
-    const invalidChtPatient = {
+    const invalidChtPatient: any = {
       ...validChtPatient,
       sex: 'INVALID_GENDER',
     };
@@ -85,7 +85,7 @@ describe("generateFHIRPatientResource", () => {
   });
 
   it("throws an error when 'sex' is undefined", () => {
-    const invalidChtPatient = {
+    const invalidChtPatient: any = {
       ...validChtPatient,
       sex: undefined,
     };
