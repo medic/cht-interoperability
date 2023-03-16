@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import { mediatorConfig } from './mediator-config';
+import { mediatorConfig } from './config/mediator';
 import { logger } from './logger';
 import express from 'express';
 import bodyParser from 'body-parser';
