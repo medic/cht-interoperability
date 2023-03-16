@@ -13,7 +13,7 @@ const router = Router();
 router.post(
   "/",
   validateBodyAgainst(createServiceSchema),
-  requestHandler((req: Request) => createServiceRequest(req.body))
+  requestHandler((req) => createServiceRequest(req.body))
 );
 
 export default router;
