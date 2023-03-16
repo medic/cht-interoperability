@@ -8,7 +8,7 @@ A first version of the project can be found in the [chis-interoperability](https
 ### Services
 Services are currently available at these URLs:
 
-* **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org). Credentials: `interop@openhim.org`/`interop-password`.
+* **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
 * **OpenHIM Mediator** - TODO 
 * **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - TODO
@@ -34,13 +34,13 @@ Users getting errors when running the following installation steps, please see t
 
 1. Visit the OpenHIM Admin Console at http://localhost:9000 and login with the following credentials: email - `interop@openhim.org` and password - `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`.
 
-1. Once logged in, visit http://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
+1. Once logged in, visit [http://localhost:9000/#!/mediators](http://localhost:9000/#!/mediators) and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
 
 1. Select the green `+` button to the right of the default channel to add the mediator.
 
 1. You can test the mediator by running: 
 
-```
+```bash
 curl -X GET http://localhost:5001/mediator -H "Authorization: Basic $(echo -n interop-client:interop-password | base64)"
 ``` 
 
