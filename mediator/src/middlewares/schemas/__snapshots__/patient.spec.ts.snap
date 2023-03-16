@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 1`] = `"Invalid date expecting YYYY-MM-DD"`;
+
+exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 2`] = `"Invalid date expecting YYYY-MM-DD"`;
+
+exports[`createPatientSchema accepts only valid right genders 1`] = `[ValidationError: "sex" must be one of [male, female, other, unknown]]`;
+
+exports[`createPatientSchema accepts only valid right genders 2`] = `
+{
+  "_id": "JOHN_DOE_ID",
+  "date_of_birth": "2000-01-01",
+  "id": "OPTIONAL",
+  "name": "John Doe",
+  "parent": "OPTIONAL",
+  "sex": "female",
+  "type": "OPTIONAL",
+}
+`;
+
+exports[`createPatientSchema accepts only valid right genders 3`] = `
+{
+  "_id": "JOHN_DOE_ID",
+  "date_of_birth": "2000-01-01",
+  "id": "OPTIONAL",
+  "name": "John Doe",
+  "parent": "OPTIONAL",
+  "sex": "unknown",
+  "type": "OPTIONAL",
+}
+`;
+
+exports[`createPatientSchema accepts only valid right genders 4`] = `
+{
+  "_id": "JOHN_DOE_ID",
+  "date_of_birth": "2000-01-01",
+  "id": "OPTIONAL",
+  "name": "John Doe",
+  "parent": "OPTIONAL",
+  "sex": "other",
+  "type": "OPTIONAL",
+}
+`;
+
+exports[`createPatientSchema accepts when all values are present 1`] = `
+{
+  "_id": "JOHN_DOE_ID",
+  "date_of_birth": "2000-01-01",
+  "id": "OPTIONAL",
+  "name": "John Doe",
+  "parent": "OPTIONAL",
+  "sex": "male",
+  "type": "OPTIONAL",
+}
+`;
+
+exports[`createPatientSchema accepts when only required values are present 1`] = `
+{
+  "_id": "JOHN_DOE_ID",
+  "date_of_birth": "2000-01-01",
+  "name": "John Doe",
+  "sex": "male",
+}
+`;
