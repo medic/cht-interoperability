@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { validateBodyAgainst } from "../middlewares";
-import { requestHandler } from "../utils/url";
+import { requestHandler } from "../utils/request";
 
 const { Router } = require("express");
 const { createServiceRequest } = require("../controllers/service-request");
