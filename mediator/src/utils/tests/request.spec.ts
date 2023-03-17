@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RequestHandler, requestHandler } from "./request";
+import { RequestHandler, requestHandler } from "../request";
 
 describe("requestHandler", () => {
   it("forwards the request and returns the right 'statusCode' and 'response'", async () => {

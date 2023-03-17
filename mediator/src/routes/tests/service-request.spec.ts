@@ -2,7 +2,7 @@ import { createServiceRequest } from "../../controllers/service-request";
 import request from "supertest";
 import app from "../../..";
 
-jest.mock("../controllers/service-request");
+jest.mock("../../controllers/service-request");
 
 describe("POST /service-request", () => {
   it("calls handler for valid incoming request", async () => {

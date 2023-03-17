@@ -1,7 +1,7 @@
-import { logger } from "../../logger";
-import { registerMediatorCallback } from "./openhim";
+import { logger } from "../../../logger";
+import { registerMediatorCallback } from "../openhim";
 
-jest.mock("../../logger");
+jest.mock("../../../logger");
 
 describe("registerMediatorCallback", () => {
   it("logs if there isn't any error", () => {

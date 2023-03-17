@@ -1,4 +1,4 @@
-import { generateBasicAuthUrl, generateChtRecordsApiUrl } from "./url";
+import { generateBasicAuthUrl, generateChtRecordsApiUrl } from "../url";
 
 describe("generateChtRecordsApiUrl", () => {
   it("returns an basic auth cht url and path to records", () => {

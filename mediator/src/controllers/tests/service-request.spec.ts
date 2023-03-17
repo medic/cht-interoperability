@@ -3,7 +3,7 @@ import { logger } from "../../../logger";
 import { createServiceRequest } from "../service-request";
 
 jest.mock("axios");
-jest.mock("../../logger");
+jest.mock("../../../logger");
 
 describe("createServiceRequest", () => {
   it("creates a service request when given valid request document", async () => {

@@ -2,7 +2,7 @@ import request from "supertest";
 import app from "../../..";
 import { createPatient } from "../../controllers/patient";
 
-jest.mock("../controllers/patient");
+jest.mock("../../controllers/patient");
 
 describe("POST /patient", () => {
   it("calls handler for valid incoming request", async () => {
