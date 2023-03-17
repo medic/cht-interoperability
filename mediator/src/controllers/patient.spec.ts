@@ -23,6 +23,7 @@ describe("createPatient", () => {
     expect(res.data).toBe(data.data);
     expect(res.status).toEqual(data.status);
     expect(axios.post).toHaveBeenCalled();
+    expect(axios.post).toMatchSnapshot();
     expect(logger.error).not.toHaveBeenCalled();
   });
 
