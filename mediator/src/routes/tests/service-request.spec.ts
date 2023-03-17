@@ -1,6 +1,6 @@
-import { createServiceRequest } from "../controllers/service-request";
+import { createServiceRequest } from "../../controllers/service-request";
 import request from "supertest";
-import app from "../../";
+import app from "../../..";
 
 jest.mock("../controllers/service-request");
 

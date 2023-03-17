@@ -1,4 +1,4 @@
-import { generateFHIRPatientResource, generateFHIRSubscriptionResource, IPatient, isValidDate } from "./fhir";
+import { generateFHIRPatientResource, generateFHIRSubscriptionResource, IPatient, isValidDate } from "../fhir";
 
 describe("generateFHIRPatientResource", () => {
   const validChtPatient: IPatient = {

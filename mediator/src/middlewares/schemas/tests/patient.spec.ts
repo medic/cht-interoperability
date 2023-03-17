@@ -1,4 +1,4 @@
-import { createPatientSchema } from "./patient";
+import { createPatientSchema } from "../patient";
 
 describe("createPatientSchema", () => {
   it("accepts when all values are present", async () => {

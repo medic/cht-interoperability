@@ -1,4 +1,4 @@
-import { createServiceSchema } from "./service-request";
+import { createServiceSchema } from "../service-request";
 
 describe("createServiceSchema", () => {
   it("accepts valid values", async () => {

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { logger } from "../../logger";
-import { createServiceRequest } from "./service-request";
+import { logger } from "../../../logger";
+import { createServiceRequest } from "../service-request";
 
 jest.mock("axios");
 jest.mock("../../logger");

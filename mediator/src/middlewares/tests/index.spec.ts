@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validateBodyAgainst } from ".";
+import { validateBodyAgainst } from "..";
 
 describe("validateBodyAgainst", () => {
   const schema = Joi.object({ name: Joi.string().required() }).required();

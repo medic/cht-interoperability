@@ -1,6 +1,6 @@
 import request from "supertest";
-import app from "../../";
-import { createPatient } from "../controllers/patient";
+import app from "../../..";
+import { createPatient } from "../../controllers/patient";
 
 jest.mock("../controllers/patient");
 
