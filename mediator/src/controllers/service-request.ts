@@ -13,6 +13,8 @@ interface IServiceRequest {
 };
 
 export async function createServiceRequest(request: IServiceRequest) {
+  let subscriptionId: string;
+
   try {
     const {patient_id: patientId, callback_url: callbackUrl} = request;
 
@@ -29,15 +31,14 @@ export async function createServiceRequest(request: IServiceRequest) {
       return { status: subRes.status, data: subRes.data };
     }
 
-    subscriptionId = subscriptionRes.data.identifier;
+    subscriptionId = subRes.data.id;
 
     // call the CHT API to set up the follow up task
     const recRes = await createChtRecord(patientId);
 
     if (recRes.data.success !== true) {
-      // TODO: delete the subscription
-      await deleteFhirSubscription(subRes.data);
-      return { status: 500, data: 'unable to create the follow up task' };
+      await deleteFhirSubscription(subscriptionId);
+      return {status: 500, data: 'unable to create the follow up task'};
     }
 
     logger.info(JSON.stringify(recRes.data, null, 4));
@@ -97,14 +98,13 @@ async function getFHIRPatientResource(patientId: string) {
   return await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
 }
 
-async function deleteFhirSubscription(sub: any) {
+async function deleteFhirSubscription(id?:string) {
   const options = {
     auth: {
       username: fhirUsername,
       password: fhirPassword,
     }
   };
-  const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackUrl);
-  return await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
+  return await axios.delete(`${fhirUrl}/Subscription/${id}`, options).catch(logger.err);
 }
 
