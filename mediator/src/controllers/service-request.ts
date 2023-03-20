@@ -29,6 +29,8 @@ export async function createServiceRequest(request: IServiceRequest) {
       return { status: subRes.status, data: subRes.data };
     }
 
+    subscriptionId = subscriptionRes.data.identifier;
+
     // call the CHT API to set up the follow up task
     const recRes = await createChtRecord(patientId);
 
@@ -96,5 +98,13 @@ async function getFHIRPatientResource(patientId: string) {
 }
 
 async function deleteFhirSubscription(sub: any) {
-
+  const options = {
+    auth: {
+      username: fhirUsername,
+      password: fhirPassword,
+    }
+  };
+  const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackUrl);
+  return await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
 }
+
