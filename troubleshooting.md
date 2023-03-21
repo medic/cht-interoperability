@@ -21,7 +21,7 @@ Users encountering the error below when running `npm test`:
 
 need to run `npm i --save-dev ts-jest` before running `npm test`. 
 
-## Error "unsuccesful npm install" when running `npm install`
+## Error "unsuccessful npm install" when running `npm install`
 Users encountering the error when running `npm install`:
 
 > npm ERR! code EACCES
