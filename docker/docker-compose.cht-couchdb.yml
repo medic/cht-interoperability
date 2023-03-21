@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  couchdb:
+    image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
+    volumes:
+      - ${COUCHDB_DATA:-./srv}:/opt/couchdb/data
+      - cht-credentials:/opt/couchdb/etc/local.d/
+    environment:
+      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
+      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
+      - "COUCHDB_SECRET=${COUCHDB_SECRET:-secret}"
+      - "COUCHDB_UUID=${COUCHDB_UUID:-CC0C3BA1-88EE-4AE3-BFD3-6E0EE56ED534}"
+      - "SVC_NAME=${SVC_NAME:-couchdb}"
+      - "COUCHDB_LOG_LEVEL=${COUCHDB_LOG_LEVEL:-error}"
+    restart: always
+    logging:
+      driver: "local"
+      options:
+        max-size: "${LOG_MAX_SIZE:-50m}"
+        max-file: "${LOG_MAX_FILES:-20}"
+    networks:
+      cht-net:
+
+volumes:
+  cht-credentials:
+
+networks:
+  cht-net:
+    name: ${CHT_NETWORK:-cht-net}

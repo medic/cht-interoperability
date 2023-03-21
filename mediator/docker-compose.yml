@@ -1,8 +1,0 @@
-version: '3'
-
-services:
-  mediator:
-    build: .
-    container_name: mediator
-    ports:
-      - "6000:6000"

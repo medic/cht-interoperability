@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "wait-on https://localhost:8080/heartbeat && node index.js"
+    "configure": "wait-on https://openhim-core:8080/heartbeat && node index.js"
   },
   "author": "",
   "license": "ISC",

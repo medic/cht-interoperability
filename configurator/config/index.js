@@ -1,6 +1,6 @@
 require('dotenv/config');
 
-const OPENHIM_API_HOSTNAME = process.env.OPENHIM_API_HOSTNAME || 'localhost';
+const OPENHIM_API_HOSTNAME = process.env.OPENHIM_API_HOSTNAME || 'openhim-core';
 const OPENHIM_API_PASSWORD =
   process.env.OPENHIM_PASSWORD || 'openhim-password';
 const OPENHIM_API_PORT = process.env.OPENHIM_API_PORT || 8080;

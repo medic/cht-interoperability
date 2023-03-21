@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
   mongo:
@@ -6,6 +6,8 @@ services:
     container_name: openhim-mongo
     ports:
       - "27017:27017"
+    networks:
+      - cht-net
     
   openhim-core:
     container_name: openhim-core
@@ -23,6 +25,8 @@ services:
       - "7788:7788"
     depends_on:
       - mongo
+    networks:
+      - cht-net
   
   openhim-console:
     container_name: openhim-console
@@ -33,6 +37,8 @@ services:
       - ./default.json:/usr/share/nginx/html/config/default.json
     depends_on:
       - openhim-core
+    networks:
+      - cht-net
   
   hapi-fhir:
     container_name: hapi-fhir
@@ -50,6 +56,8 @@ services:
       - CATALINA_OPTS=-Xmx2g
     depends_on:
       - hapi-db
+    networks:
+      - cht-net
 
   hapi-db:
     container_name: hapi-db
@@ -60,6 +68,8 @@ services:
       POSTGRES_DB: hapi
     volumes:
       - 'hapi-db-volume:/var/lib/postgresql/data'
+    networks:
+      - cht-net
 
 volumes:
   mongo:

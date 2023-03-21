@@ -12,7 +12,9 @@ A first version of the project can be found in the [chis-interoperability](https
 
 1. Run `./startup.sh init` to start-up the docker containers on the first run or after calling `./startup.sh destroy`. Use `./startup.sh up` for subsequent runs after calling `init` without calling `destroy`.
 
-1. Visit http://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`.
+1. Visit http://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`. 
+
+1. Visit http://localhost:5988 to access the CHT web application. The username is `admin` and password is `password`.
 
 1. Once logged in, visit http://localhost:9000/#!/mediators and select the only mediator with the `Name` 'Loss to Follow Up Mediator'.
 
