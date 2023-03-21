@@ -19,4 +19,13 @@ Users encountering the error below when running `npm test`:
 > The "id" argument must be of type string. Received null
 > TypeError [ERR_INVALID_ARG_TYPE]: The "id" argument must be of type string. Received null
 
-need to run `npm i --save-dev ts-jest` before running `npm test`.
+need to run `npm i --save-dev ts-jest` before running `npm test`. 
+
+## **Error "unsucceeful npm install**
+Users encoutering the error when running `npm install`:
+
+> npm ERR! code EACCES
+> npm ERR! syscall unlink
+> npm ERR! path /Users/phil/interoperability/cht-config/node_modules/.package-lock.json
+
+need to run `npm install` as root user

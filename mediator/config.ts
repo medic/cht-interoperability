@@ -17,7 +17,7 @@ export const FHIR = {
 };
 
 export const CHT = {
-  url: process.env.CHT_URL || "http://localhost:5988",
+  url: process.env.CHT_URL || "https://nginx",
   username: process.env.CHT_USERNAME || "admin",
   password: process.env.CHT_PASSWORD || "password",
 };
