@@ -94,6 +94,9 @@ Users getting errors when running the following installation steps, please see t
 1. Run `./startup.sh init` to start-up the docker containers on the first run or after calling `./startup.sh destroy`. Use `./startup.sh up` for subsequent runs after calling `init` without calling `destroy`.
 
 ### OpenHIM Admin Console
+1. Visit http://localhost:9000 and login with the following credentials email: `interop@openhim.org` and password: `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`. 
+
+1. Visit http://localhost:5988 to access the CHT web application. The username is `admin` and password is `password`.
 
 1. Visit the OpenHIM Admin Console at http://localhost:9000 and login with the following credentials: email - `interop@openhim.org` and password - `interop-password`. The default User username for OpenHIM is `interop@openhim.org` and password is `interop-password`. The default Client username is `interop-client` and password is `interop-password`.
 
