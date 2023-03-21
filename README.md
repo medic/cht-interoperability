@@ -9,7 +9,7 @@ A first version of the project can be found in the [chis-interoperability](https
 Services are currently available at these URLs:
 
 * **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
-* **OpenHIM Mediator** - TODO 
+* **OpenHIM Mediator** - [https://interoperability.dev.medicmobile.org/mediator](https://interoperability.dev.medicmobile.org/mediator). 
 * **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - TODO
 
