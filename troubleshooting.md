@@ -21,11 +21,11 @@ Users encountering the error below when running `npm test`:
 
 need to run `npm i --save-dev ts-jest` before running `npm test`. 
 
-## **Error "unsucceeful npm install**
-Users encoutering the error when running `npm install`:
+## Error "unsuccesful npm install" when running `npm install`
+Users encountering the error when running `npm install`:
 
 > npm ERR! code EACCES
 > npm ERR! syscall unlink
 > npm ERR! path /Users/phil/interoperability/cht-config/node_modules/.package-lock.json
 
-need to run `npm install` as root user
+need to run `npm install` as root user.
