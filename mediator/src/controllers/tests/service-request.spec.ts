@@ -117,4 +117,52 @@ describe("createServiceRequest", () => {
     expect(axios.get).toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalled();
   });
+
+  it("deletes the subscription is cht responds with success as false", async () => {
+    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
+
+    const fhirRes = { status: 201, data: { id: "SUBSCRIPTION_ID" } };
+    const chtRes = { status: 200, data: { success: false } };
+    (axios.post as any)
+      .mockResolvedValueOnce(fhirRes)
+      .mockResolvedValue(chtRes);
+    (axios.delete as any) 
+      .mockResolvedValue({ status: 200, data: {} })
+
+    const patient = { status: 200, data: {} };
+    (axios.get as any).mockResolvedValueOnce(patient);
+
+    const res = await createServiceRequest(request);
+
+    expect(res.status).toBe(500);
+    expect(res.data).toMatchInlineSnapshot(`"unable to create the follow up task"`);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toMatchSnapshot();
+    expect(axios.post).toMatchSnapshot();
+  });
+
+  it("deletes subscription if cht request throws an error", async () => {
+    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
+
+    const fhirRes = { status: 201, data: { id: "SUBSCRIPTION_ID" } };
+    const chtRes = { status: 200, data: { success: false } };
+    (axios.post as any)
+      .mockResolvedValueOnce(fhirRes)
+      .mockRejectedValueOnce(chtRes);
+    (axios.delete as any) 
+      .mockResolvedValue({ status: 200, data: {} })
+
+    const patient = { status: 200, data: {} };
+    (axios.get as any).mockResolvedValueOnce(patient);
+
+    const res = await createServiceRequest(request);
+
+    expect(res.status).toBe(500);
+    expect(res.data).toMatchInlineSnapshot(`"Internal server error"`);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toMatchSnapshot();
+    expect(axios.post).toMatchSnapshot();
+  });
 });

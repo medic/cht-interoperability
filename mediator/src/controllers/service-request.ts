@@ -13,7 +13,7 @@ interface IServiceRequest {
 };
 
 export async function createServiceRequest(request: IServiceRequest) {
-  let subscriptionId: string;
+  let subscriptionId: string | undefined;
 
   try {
     const {patient_id: patientId, callback_url: callbackUrl} = request;
@@ -44,14 +44,18 @@ export async function createServiceRequest(request: IServiceRequest) {
     logger.info(JSON.stringify(recRes.data, null, 4));
 
     return { status: subRes.status, data: subRes.data };
-  } catch (err: any) {
-    logger.error(err);
+  } catch (error: any) {
+    logger.error(`Error: ${error}`);
 
-    if (!err.status) {
-      return { status: 400, data: { message: err.message } };
+    if (!error.status) {
+      return { status: 400, data: { message: error.message } };
     }
 
-    return {status: 500, data: { message: err.message }};
+    if (subscriptionId) {
+      await deleteFhirSubscription(subscriptionId);
+    }
+
+    return {status: 500, data: { message: error.message }};
   }
 }
 
