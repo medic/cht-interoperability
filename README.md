@@ -11,7 +11,7 @@ Services are currently available at these URLs:
 * **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
 * **OpenHIM Mediator** - [https://interoperability.dev.medicmobile.org/mediator](https://interoperability.dev.medicmobile.org/mediator). 
 * **HAPI FHIR** - TODO
-* **CHT with LTFU configuration** - TODO
+* **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/). 
 
 [GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
