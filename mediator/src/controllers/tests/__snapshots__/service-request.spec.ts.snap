@@ -50,12 +50,44 @@ exports[`createServiceRequest creates a service request when given valid request
       },
     ],
     [
-      "http:/admin:password@localhost:5988/api/v2/records",
+      "http:/admin:password@nginx/api/v2/records",
       {
         "_meta": {
           "form": "interop_follow_up",
         },
         "patient_uuid": "PATIENT_ID",
+      },
+      {
+        "httpsAgent": Agent {
+          "_events": {
+            "free": [Function],
+            "newListener": [Function],
+          },
+          "_eventsCount": 2,
+          "_maxListeners": undefined,
+          "_sessionCache": {
+            "list": [],
+            "map": {},
+          },
+          "defaultPort": 443,
+          "freeSockets": {},
+          "keepAlive": false,
+          "keepAliveMsecs": 1000,
+          "maxCachedSessions": 100,
+          "maxFreeSockets": 256,
+          "maxSockets": Infinity,
+          "maxTotalSockets": Infinity,
+          "options": {
+            "path": null,
+            "rejectUnauthorized": false,
+          },
+          "protocol": "https:",
+          "requests": {},
+          "scheduling": "lifo",
+          "sockets": {},
+          "totalSocketCount": 0,
+          Symbol(kCapture): false,
+        },
       },
     ],
   ],
@@ -124,12 +156,44 @@ exports[`createServiceRequest returns a 500 status code if record creation on ch
       },
     ],
     [
-      "http:/admin:password@localhost:5988/api/v2/records",
+      "http:/admin:password@nginx/api/v2/records",
       {
         "_meta": {
           "form": "interop_follow_up",
         },
         "patient_uuid": "PATIENT_ID",
+      },
+      {
+        "httpsAgent": Agent {
+          "_events": {
+            "free": [Function],
+            "newListener": [Function],
+          },
+          "_eventsCount": 2,
+          "_maxListeners": undefined,
+          "_sessionCache": {
+            "list": [],
+            "map": {},
+          },
+          "defaultPort": 443,
+          "freeSockets": {},
+          "keepAlive": false,
+          "keepAliveMsecs": 1000,
+          "maxCachedSessions": 100,
+          "maxFreeSockets": 256,
+          "maxSockets": Infinity,
+          "maxTotalSockets": Infinity,
+          "options": {
+            "path": null,
+            "rejectUnauthorized": false,
+          },
+          "protocol": "https:",
+          "requests": {},
+          "scheduling": "lifo",
+          "sockets": {},
+          "totalSocketCount": 0,
+          Symbol(kCapture): false,
+        },
       },
     ],
   ],
