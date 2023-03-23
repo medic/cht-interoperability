@@ -55,6 +55,8 @@ describe("createServiceRequest", () => {
     (axios.post as any)
       .mockResolvedValueOnce(fhirRes)
       .mockResolvedValue(chtRes);
+      
+    (axios.delete as any).mockResolvedValue({});
 
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
@@ -135,7 +137,11 @@ describe("createServiceRequest", () => {
     const res = await createServiceRequest(request);
 
     expect(res.status).toBe(500);
-    expect(res.data).toMatchInlineSnapshot(`"unable to create the follow up task"`);
+    expect(res.data).toMatchInlineSnapshot(`
+{
+  "message": "unable to create the follow up task",
+}
+`);
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toMatchSnapshot();
@@ -159,7 +165,11 @@ describe("createServiceRequest", () => {
     const res = await createServiceRequest(request);
 
     expect(res.status).toBe(500);
-    expect(res.data).toMatchInlineSnapshot(`"Internal server error"`);
+    expect(res.data).toMatchInlineSnapshot(`
+{
+  "message": undefined,
+}
+`);
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toMatchSnapshot();
