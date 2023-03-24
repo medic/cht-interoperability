@@ -1,4 +1,4 @@
-import { createPatientSchema } from "../patient";
+import { PatientSchema } from "../patient";
 
 describe("createPatientSchema", () => {
   it("accepts when all values are present", async () => {
@@ -12,7 +12,7 @@ describe("createPatientSchema", () => {
       type: "OPTIONAL",
     };
 
-    const res = await createPatientSchema.validateAsync(data);
+    const res = await PatientSchema.validateAsync(data);
     expect(res).toMatchSnapshot();
   });
 
@@ -24,7 +24,7 @@ describe("createPatientSchema", () => {
       date_of_birth: "2000-01-01",
     };
 
-    const res = await createPatientSchema.validateAsync(data);
+    const res = await PatientSchema.validateAsync(data);
     expect(res).toMatchSnapshot();
   });
 
@@ -39,16 +39,16 @@ describe("createPatientSchema", () => {
       type: "OPTIONAL",
     };
 
-    expect(createPatientSchema.validateAsync(data)).rejects.toMatchSnapshot();
+    expect(PatientSchema.validateAsync(data)).rejects.toMatchSnapshot();
 
     expect(
-      await createPatientSchema.validateAsync({ ...data, sex: "female" })
+      await PatientSchema.validateAsync({ ...data, sex: "female" })
     ).toMatchSnapshot();
     expect(
-      await createPatientSchema.validateAsync({ ...data, sex: "unknown" })
+      await PatientSchema.validateAsync({ ...data, sex: "unknown" })
     ).toMatchSnapshot();
     expect(
-      await createPatientSchema.validateAsync({ ...data, sex: "other" })
+      await PatientSchema.validateAsync({ ...data, sex: "other" })
     ).toMatchSnapshot();
   });
 
@@ -64,10 +64,10 @@ describe("createPatientSchema", () => {
     };
 
     expect(
-      createPatientSchema.validateAsync(data)
+      PatientSchema.validateAsync(data)
     ).rejects.toThrowErrorMatchingSnapshot();
     expect(
-      createPatientSchema.validateAsync({
+      PatientSchema.validateAsync({
         ...data,
         date_of_birth: "01-01-2000",
       })

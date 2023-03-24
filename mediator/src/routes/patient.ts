@@ -7,8 +7,8 @@ import { requestHandler } from '../utils/request';
 const router = Router();
 
 router.post(
-  '/',
-  validateBodyAgainst(createPatientSchema),
+  "/",
+  validateBodyAgainst(PatientSchema),
   requestHandler((req) => createPatient(req.body))
 );
 
