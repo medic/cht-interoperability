@@ -1,6 +1,14 @@
-import joi from 'joi';
+import joi from "joi";
 
-export const createServiceSchema = joi.object({
-  patient_id: joi.string().required(),
-  callback_url: joi.string().uri().required(),
+export const ServiceRequestSchema = joi.object({
+  subject: joi.object({ id: joi.string().required() }).required(),
+  intent: joi.string().required(),
+  orderDetail: joi.array().items(
+    joi.object({
+      parameter: joi.object({
+        code: joi.string().valid("callback_url").required(),
+        valueString: joi.string().uri().required(),
+      }),
+    })
+  ),
 });
