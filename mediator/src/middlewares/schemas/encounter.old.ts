@@ -1,5 +1,5 @@
 import joi from 'joi';
-import { CodeableConceptSchema, CodeableReferenceSchema, CodeSchema, DateSchema, IdentifierSchema, IFHIRCodeableConcept, IFHIRIdentifier, PeriodSchema, ReferenceSchema } from './types';
+import { ClassHistorySchema, CodeableConceptSchema, CodeableReferenceSchema, CodeSchema, CodingSchema, DateSchema, IdentifierSchema, IFHIRCodeableConcept, IFHIRCoding, IFHIRIdentifier, IFHIRPeriod, ParticipantSchema, PeriodSchema, ReferenceSchema } from './types';
 
 export const createEncounterSchema = joi.object({
   patient_id: joi.string().required(),
@@ -13,34 +13,33 @@ export interface IFHIREncounter {
   class: IFHIRCodeableConcept,
 }
 
+
+
+
 export const EncounterSchema = joi.object({
   identifier: joi.array().items(IdentifierSchema),
   status: CodeSchema.valid(...STATUS).required(),
-  class: joi.array().items(CodeableConceptSchema),
-  priority: CodeableConceptSchema,
+  statusHistory: StatusHistorySchema,
+  class: CodingSchema.required(),
+  classHistory: joi.array().items(ClassHistorySchema),
   type: joi.array().items(CodeableConceptSchema),
   serviceType: CodeableReferenceSchema,
+  priority: CodeableConceptSchema,
   subject: ReferenceSchema,
-  subjectStatus: CodeableConceptSchema,
   episodeOfCare: joi.array().items(ReferenceSchema),
   basedOn: joi.array().items(ReferenceSchema),
-  careTeam: joi.array().items(ReferenceSchema),
-  partOf: ReferenceSchema,
-  serviceProvider: ReferenceSchema,
   participants: joi.array().items(ParticipantSchema),
   appointment: joi.array().items(ReferenceSchema),
-  virtualService: joi.array().items(VirtualServiceDetailSchema),
-  actualPeriod: PeriodSchema,
-  plannedStartDate: DateSchema,
-  plannedEndDate: DateSchema,
-  length: DurationSchema,
+  period: PeriodSchema,
+  length: joi.string(),
+  reasonCode: joi.array().items(CodeableConceptSchema),
+  reasonReference: joi.array().items(ReferenceSchema),
   reason: joi.array().items(ReasonSchema),
   diagnosis: joi.array().items(DiagnosisSchema),
   account: joi.array().items(ReferenceSchema),
-  dietPreference: joi.array().items(CodeableConceptSchema),
-  specialArrangement: joi.array().items(CodeableConceptSchema),
-  specialCourtesy: joi.array().items(CodeableConceptSchema),
-  admission: joi.array().items(AdmissionSchema),
+  hospitalization: HospitalizationSchema,
   location: joi.array().items(LocationSchema),
+  serviceProvider: ReferenceSchema,
+  partOf: ReferenceSchema,
 });
 

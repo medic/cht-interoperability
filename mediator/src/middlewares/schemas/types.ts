@@ -290,3 +290,47 @@ export const CommunicationSchema = joi.object({
   language: CodeableConceptSchema.required(),
   preferred: joi.boolean(),
 });
+
+export interface IFHIRCodeableReference {
+  concept: IFHIRCodeableConcept,
+  reference: IFHIRReference,
+}
+
+export const CodeableReferenceSchema = joi.object({
+  concept: CodeableConceptSchema,
+  reference: ReferenceSchema,
+})
+
+export interface IFHIRClassHistory {
+  class: IFHIRCoding,
+  period: IFHIRPeriod,
+}
+
+export const ClassHistorySchema = joi.object({
+  class: CodingSchema.valid("inpatient", "outpatient", "ambulatory", "emergency"),
+  period: PeriodSchema,
+});
+
+export interface IFHIRParticipant {
+  type: IFHIRCodeableConcept,
+  period: IFHIRPeriod,
+  individual: IFHIRReference,
+}
+
+export const ParticipantSchema = joi.object({
+  type: CodeableConceptSchema,
+  period: PeriodSchema,
+  individual: ReferenceSchema,
+});
+
+
+interface IFHIRStatusHistory {
+  status: typeof STATUS[number],
+  period: IFHIRPeriod,
+}
+
+const StatusHistorySchema = joi.object({
+  status: joi.array().items(CodeSchema.valid(...STATUS)).required(),
+  period: PeriodSchema.required(),
+})
+
