@@ -23,11 +23,11 @@ describe("validateBodyAgainst", () => {
   })
 
   it("fails to validate when given a non schema as input", async () => {
-    const mockReq = {body: { name: "John Doe"}};
+    const mockReq = {body: { name: "John Doe" }};
     const mockNext = jest.fn();
 
     const handler = validateBodyAgainst(undefined)
-    expect(() => handler(mockReq as any, mockRes as any, mockNext)).toThrowErrorMatchingSnapshot();
+    expect(handler(mockReq as any, mockRes as any, mockNext)).rejects.toMatchSnapshot();
   })
 
   it("sends and error and a 400 status code when the request body is bad", async () => {

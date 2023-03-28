@@ -21,6 +21,7 @@ exports[`POST /service-request calls handler for valid incoming request 1`] = `
 
 exports[`POST /service-request returns a bad request error for invalid incoming request 1`] = `
 {
-  "message": ""callback_url" must be a valid uri",
+  "message": ""ServiceRequest.status" Missing property",
+  "valid": false,
 }
 `;

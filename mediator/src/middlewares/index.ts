@@ -7,6 +7,7 @@ export function validateBodyAgainst (...validators: any) {
 
       if (!data.valid) {
         res.status(400).send(data);
+        return;
       }
     }
     next();

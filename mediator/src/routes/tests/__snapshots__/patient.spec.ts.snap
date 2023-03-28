@@ -26,6 +26,7 @@ exports[`POST /patient calls handler for valid incoming request 1`] = `
 
 exports[`POST /patient returns a bad request error for invalid incoming request 1`] = `
 {
-  "message": "Invalid date expecting YYYY-MM-DD",
+  "message": ""Patient.name" Property is not an array",
+  "valid": false,
 }
 `;

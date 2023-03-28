@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`validateBodyAgainst fails to validate when given a non schema as input 1`] = `"Cannot read properties of undefined (reading 'validateAsync')"`;
+exports[`validateBodyAgainst fails to validate when given a non schema as input 1`] = `[TypeError: Cannot read properties of undefined (reading 'validateAsync')]`;
 
 exports[`validateBodyAgainst sends and error and a 400 status code when the request body is bad 1`] = `
 [MockFunction] {
@@ -8,6 +8,7 @@ exports[`validateBodyAgainst sends and error and a 400 status code when the requ
     [
       {
         "message": ""name" is required",
+        "valid": false,
       },
     ],
   ],
