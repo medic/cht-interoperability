@@ -1,11 +1,12 @@
 import {Request, Response} from 'express';
-import { mediatorConfig } from './mediator-config';
+import { mediatorConfig } from './config/mediator';
 import { logger } from './logger';
 import express from 'express';
 import bodyParser from 'body-parser';
 import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
+import { registerMediatorCallback } from './src/utils/openhim';
 
 const {registerMediator} = require('openhim-mediator-utils');
 
@@ -21,16 +22,12 @@ app.get('*', (_: Request, res: Response) => {
 app.use('/patient', patientRoutes);
 app.use('/service-request', serviceRequestRoutes);
 
-app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
 
-// TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
+  
+  // TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'  
+  registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
+}
 
-const registerMediatorCallback = (err: string): void => {
-  if (err) {
-    throw new Error(`Mediator Registration Failed: Reason ${err}`);
-  }
-
-  logger.info('Successfully registered mediator.');
-};
-
-registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
+export default app;

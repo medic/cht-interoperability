@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { validateBodyAgainst } from "../middlewares";
-import { requestHandler } from "../utils/service-request";
+import { requestHandler } from "../utils/request";
 
 const { Router } = require("express");
 const { createServiceRequest } = require("../controllers/service-request");
@@ -13,7 +13,7 @@ const router = Router();
 router.post(
   "/",
   validateBodyAgainst(createServiceSchema),
-  requestHandler((req: Request) => createServiceRequest(req.body))
+  requestHandler((req) => createServiceRequest(req.body))
 );
 
 export default router;
