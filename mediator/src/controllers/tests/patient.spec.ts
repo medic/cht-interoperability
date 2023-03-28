@@ -18,7 +18,7 @@ describe("createPatient", () => {
     const data = { status: 200, data: {} };
     (axios.post as any).mockResolvedValueOnce(data)
 
-    const res = await createPatient(patient);
+    const res = await createPatient(patient as any);
 
     expect(res.data).toBe(data.data);
     expect(res.status).toEqual(data.status);
@@ -33,7 +33,7 @@ describe("createPatient", () => {
     const data = { status: 200, data: {} };
     (axios.post as any).mockResolvedValueOnce(patient) as any
 
-    const res = await createPatient(patient);
+    const res = await createPatient(patient as any);
 
     expect(res.status).toBe(400);
     expect(logger.error).toHaveBeenCalled();
@@ -45,7 +45,7 @@ describe("createPatient", () => {
     const data = { status: 500, data: {} };
     axios.post = jest.fn(() => Promise.reject(data)) as any
 
-    const res = await createPatient(patient);
+    const res = await createPatient(patient as any);
 
     expect(res.status).toBe(data.status);
     expect(res.data).toMatchSnapshot();

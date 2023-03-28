@@ -9,7 +9,6 @@ import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
 import { registerMediatorCallback } from './src/utils/openhim';
 import encounterRoutes from './src/routes/encounter';
-import { registerMediatorCallback } from './src/utils/openhim';
 
 const {registerMediator} = require('openhim-mediator-utils');
 
