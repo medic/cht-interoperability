@@ -7,6 +7,10 @@ Users encountering:
 
 when running `./startup.sh init` need to update ports to available values in the `/docker/docker-compose.yml` file, under the `ports` verb.
 
+## Error when running mediator `curl` request
+If the mediator `curl` request fails, visit [http://localhost:9000/#!/clients](http://localhost:9000/#!/clients) and click on the icon the red arrow points to in the image below.
+
+![](./docs/images/bad-client-screen.png) 
 
 ## Error "Preset ts-jest is invalid:" when running `npm test`
 Users encountering the error below when running `npm test`: 
@@ -17,11 +21,11 @@ Users encountering the error below when running `npm test`:
 
 need to run `npm i --save-dev ts-jest` before running `npm test`. 
 
-## **Error "unsucceeful npm install**
-Users encoutering the error when running `npm install`:
+## Error "unsuccessful npm install" when running `npm install`
+Users encountering the error when running `npm install`:
 
 > npm ERR! code EACCES
 > npm ERR! syscall unlink
 > npm ERR! path /Users/phil/interoperability/cht-config/node_modules/.package-lock.json
 
-need to run `npm install` as root user
+need to run `npm install` as root user.

@@ -1,0 +1,17 @@
+title Loss To Follow up Flow Chart
+
+CHW->CHT: Create Patient
+CHT->OpenHIM Mediator: Create Patient
+OpenHIM Mediator->FHIR Resource: Create Patient
+Requesting System->OpenHIM Mediator: Loss To Follow Up Patient
+OpenHIM Mediator->FHIR Resource: Get Patient Information
+FHIR Resource->OpenHIM Mediator: Return Patient Information
+OpenHIM Mediator->FHIR Resource: Subscribe
+OpenHIM Mediator->CHT: Submit LTFU Patient
+CHT->CHW: Create Task
+CHW->CHW: Find Patient
+CHW->CHW: Complete Task
+CHW->CHT: Complete Task
+CHT->OpenHIM Mediator: Submit Encounter
+OpenHIM Mediator->FHIR Resource: Create Encounter
+FHIR Resource->Requesting System: POST Update via Callback URL

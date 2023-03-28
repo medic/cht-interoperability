@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  mediator:
+    build: 
+      context: ../mediator
+      dockerfile: ./Dockerfile
+    container_name: mediator
+    ports:
+      - "6000:6000"
+    environment:
+      - "OPENHIM_USERNAME=${OPENHIM_USERNAME:-interop@openhim.org}"
+      - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-interop-password}"
+      - "OPENHIM_API_URL=${OPENHIM_API_URL:-https://openhim-core:8080}"
+      - "PORT=${PORT:-6000}"
+      - "FHIR_URL=${FHIR_URL:-http://openhim-core:5001/fhir}"
+      - "FHIR_USERNAME=${FHIR_USERNAME:-interop-client}"
+      - "FHIR_PASSWORD=${FHIR_PASSWORD:-interop-password}"
+      - "CHT_URL=${CHT_URL:-https://nginx}"
+      - "CHT_USERNAME=${CHT_USERNAME:-admin}"
+      - "CHT_PASSWORD=${CHT_PASSWORD:-password}"
+
+    depends_on:
+      - configurator
+    restart: 'unless-stopped'
+    networks:
+      - cht-net
+    
+  configurator:
+    build:
+      context: ../
+      dockerfile: ./configurator/Dockerfile
+    environment:
+      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
+      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
+      - "OPENHIM_API_HOSTNAME=${OPENHIM_API_HOSTNAME:-openhim-core}"
+      - "OPENHIM_API_PORT=${OPENHIM_API_PORT:-8080}"
+      - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-openhim-password}"
+      - "OPENHIM_USERNAME=${OPENHIM_USERNAME:-root@openhim.org}"
+      - "OPENHIM_CLIENT_PASSWORD=${OPENHIM_CLIENT_PASSWORD:-interop-password}"
+      - "OPENHIM_USER_PASSWORD=${OPENHIM_USER_PASSWORD:-interop-password}"
+    networks:
+      - cht-net
+
+networks:
+  cht-net:
+    name: ${CHT_NETWORK:-cht-net}
+      
