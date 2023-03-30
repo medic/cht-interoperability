@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createServiceSchema accepts valid values 1`] = `
+{
+  "callback_url": "https://google.com/",
+  "patient_id": "PATIENT_ID",
+}
+`;
+
+exports[`createServiceSchema rejects data with invalid 'patient_id'  1`] = `[ValidationError: "patient_id" is required]`;
+
+exports[`createServiceSchema rejects data with valid 'callback_url' 1`] = `[ValidationError: "callback_url" must be a valid uri]`;

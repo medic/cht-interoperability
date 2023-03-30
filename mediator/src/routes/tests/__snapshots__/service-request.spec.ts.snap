@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`POST /service-request calls handler for valid incoming request 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      {
+        "callback_url": "https://callback.medic.org",
+        "patient_id": "PATIENT_ID",
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`POST /service-request returns a bad request error for invalid incoming request 1`] = `
+{
+  "message": ""callback_url" must be a valid uri",
+}
+`;

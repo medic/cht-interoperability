@@ -1,15 +1,15 @@
-import {Request, Response, Router} from 'express';
-import { createPatient } from '../controllers/patient';
-import {validateBodyAgainst}  from '../middlewares';
-import {createPatientSchema} from '../middlewares/schemas/patient';
+import { Router } from "express";
+import { createPatient } from "../controllers/patient";
+import { validateBodyAgainst } from "../middlewares";
+import { createPatientSchema } from "../middlewares/schemas/patient";
+import { requestHandler } from "../utils/request";
 
 const router = Router();
 
-router.post('/',
+router.post(
+  "/",
   validateBodyAgainst(createPatientSchema),
-  async function(req: Request, res: Response) {
-    const {status, patient} = await createPatient(req.body);
-    res.status(status).send(patient);
-  });
+  requestHandler((req) => createPatient(req.body))
+);
 
 export default router;
