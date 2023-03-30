@@ -505,7 +505,7 @@
     "FHIR_encounter": {
       "relevant_to": "doc.type === 'data_record' && doc.form === 'interop_follow_up'",
       "destination": {
-        "base_url": "http://localhost:5001",
+        "base_url": "http://openhim-core:5001",
         "path": "/mediator/encounter",
         "auth": {
           "type": "basic",
