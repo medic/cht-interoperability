@@ -83,6 +83,14 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
  
 ### Test the Loss to Follow-Up (LTFU) Flow on Local Intance:
 
+### Requirements:
+- Running CHT instance on local environment
+- Running OpenHIM instance on local environment
+- Postman: an API platform that will represent the actual system
+
+*Note:* You can view all the steps below on the mediator. 
+
+
 1. Login into the CHT as Community Health Worker (CHW).
 1. Navigate to the ‘People’ tab and create a ‘New Person’.
 1. The role should be ‘Patient’
