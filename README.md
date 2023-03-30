@@ -81,8 +81,42 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 5. To verify if the configuration is loaded correctly is to create a `Patient` and to access a URL like `https://*****.my.local-ip.co/#/contacts/patientUUID/report/interop_follow_up`. This should retrieve correctly the follow up form.
 6. To verify if the configuration in CouchDB, access `http://localhost:5984/_utils/#database/medic/settings`.
  
-### Test the Loss to Follow-Up (LTFU) Flow
+### Test the Loss to Follow-Up (LTFU) Flow on Local Intance:
+
+1. Login into the CHT as Community Health Worker (CHW).
+1. Navigate to the ‘People’ tab and create a ‘New Person’.
+1. The role should be ‘Patient’
+<br />*Note:* You can view this on the mediator where a patient has been created.
+1. Select the patient ID generated on CHT. Copy  the unique patient ID number on your browser URL.
+1. Fire up your postman and name your request as appropriate.
+1. Input the mediator endpoint provided: http://localhost:5001/mediator/service-request
+1. Ensure to select a POST request on the dropdown menu.
+1. On the authorization tab, select ‘Basic auth’. Input the following credentials:
+<br />`Username: Interop-client`
+<br />`Password: interop-password`
+1. On the body tab input the patient ID with a subscription resource on body as shown below.
+<br />`{`
+<br />`  "patient_id": "uuid_of_the_patient",`
+<br />`  "callback_url": "https://interop.free.beeceptor.com/callback"`
+<br />`}`
+<br />*Note:* the uuid of the patient is the patient IT number copied from your browser.
+1. Click ‘Send’ to send the patient back to the mediator as LTFU patient.
+<br />**Note:** You can view this on the mediator where a subscription has been created.
+1. Go to the CHT, login as the Community Health Worker who created the patient in step 2. 
+1. Navigate to the ‘Tasks’ tab to view the LTFU patient.
+<br />*Note:* You may need to sync if you had not logged out.
+1. Click on the patient to view the options and select appropriately (yes or no).
+1. Click on ‘Submit’ to complete the LTFU workflow.
+1. Go to the mediator: http://localhost:9000/#!/login 
+1. Navigate to the transaction logs. The following paths have been recorded;
+- Patient
+- Subscription
+- Encounter
+
+
+
 TODO
+Steps on the live instance
 
 #### Postman collection
 TODO
