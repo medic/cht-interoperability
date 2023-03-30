@@ -17,7 +17,7 @@ export const FHIR = {
 };
 
 export const CHT = {
-  url: getEnvironmentVariable(process.env.CHT_URL, "http://nginx"),
+  url: getEnvironmentVariable(process.env.CHT_URL, "https://nginx"),
   username: getEnvironmentVariable(process.env.CHT_USERNAME, "admin"),
   password: getEnvironmentVariable(process.env.CHT_PASSWORD, "password"),
 };
