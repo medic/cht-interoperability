@@ -14,8 +14,15 @@ Services are currently available at these URLs:
 
 [GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
-### Workflow Diagram
+### Workflow Sequence Diagram
 ![](./docs/sequence-diagram/diagram.png) 
+
+### FHIR Resources
+The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used to implement the flow above:
+- [Patient](https://www.hl7.org/fhir/patient.html)
+- [Encounter](https://build.fhir.org/encounter.html)
+- [Subscription](https://build.fhir.org/subscription.html)
+- [Organization](https://build.fhir.org/organization.html) - *Work in Progress*. This resource is used by the requesting system to send their callback URL information when they request for the LTFU for a patient.
 
 ## Get Started
 
@@ -82,9 +89,6 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 6. To verify if the configuration in CouchDB, access `http://localhost:5984/_utils/#database/medic/settings`.
  
 ### Test the Loss to Follow-Up (LTFU) Flow
-TODO
-
-#### Postman collection
 TODO
 
 ### Shutdown the servers
