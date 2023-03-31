@@ -61,7 +61,7 @@ You should get as a response:
 
 If everything is successful you should see this:
 
- ![](./docs/images/good-client-screen.png){: width="50%"}
+ ![](./docs/images/good-client-screen.png)
 
 ### CHT configuration with Docker
 The following steps apply when running CHT via the Docker setup provided in this repository:
@@ -120,7 +120,7 @@ The following steps assume that you were successful in running locally OpenHIM a
 1. Handle LTFU Task
    1. CHT - Navigate to the `Tasks` tab. There should be an automatically created `Task` for the Patient. If it is not the case, sync data via `Sync now` option. The `Task` should look like in the image below:
     
-        ![](./docs/images/task.png){: width="50%"}
+        ![](./docs/images/task.png)
 
    1. CHT - Select an option (Yes or No) and submit the `Tasks`.
    1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/Encounter/` and one to `/fhir/Encounter/`, as in the image below.
