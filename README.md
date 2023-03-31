@@ -14,8 +14,15 @@ Services are currently available at these URLs:
 
 [GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
-### Workflow Diagram
+### Workflow Sequence Diagram
 ![](./docs/sequence-diagram/diagram.png) 
+
+### FHIR Resources
+The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used to implement the flow above:
+- [Patient](https://www.hl7.org/fhir/patient.html)
+- [Encounter](https://build.fhir.org/encounter.html)
+- [Subscription](https://build.fhir.org/subscription.html)
+- [Organization](https://build.fhir.org/organization.html) - *Work in Progress*. This resource is used by the requesting system to send their callback URL information when they request for the LTFU for a patient.
 
 ### Test LTFU via instances
 `TODO`
@@ -119,9 +126,6 @@ The following steps assume that you were successful in running locally OpenHIM a
    1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/Encounter/` and one to `/fhir/Encounter/`, as in the image below.
     ![](./docs/images/transaction-log-encounter.png)
    1. If your callback URL test service was set up correctly, you should receive a notification from the mediator.
-
-#### Postman collection
-TODO
 
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.

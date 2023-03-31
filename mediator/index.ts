@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
+import encounterRoutes from './src/routes/encounter';
 import { registerMediatorCallback } from './src/utils/openhim';
 
 const {registerMediator} = require('openhim-mediator-utils');
@@ -21,6 +22,7 @@ app.get('*', (_: Request, res: Response) => {
 
 app.use('/patient', patientRoutes);
 app.use('/service-request', serviceRequestRoutes);
+app.use('/encounter', encounterRoutes);
 
 
 if (process.env.NODE_ENV !== "test") {

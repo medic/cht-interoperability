@@ -506,7 +506,7 @@
       "relevant_to": "doc.type === 'data_record' && doc.form === 'interop_follow_up'",
       "destination": {
         "base_url": "http://openhim-core:5001",
-        "path": "/fhir/Encounter",
+        "path": "/mediator/encounter",
         "auth": {
           "type": "basic",
           "username": "interop-client",
@@ -514,32 +514,8 @@
         }
       },
       "mapping": {
-        "resourceType": {
-          "expr": "'Encounter'"
-        },
-        "identifier": {
-          "expr": "[ { \"use\":\"official\", \"value\": doc.fields.inputs.contact._id } ]"
-        },
-        "status": {
-          "expr": "'finished'"
-        },
-        "class": {
-          "expr": "'outpatient'"
-        },
-        "subject": {
+        "patient_id": {
           "expr": "doc.fields.inputs.contact._id"
-        },
-        "period.start": {
-          "expr": "new Date().toISOString()"
-        },
-        "period.end": {
-          "expr": "new Date().toISOString()"
-        },
-        "participant.individual": {
-          "expr": "doc.contact._id"
-        },
-        "participant.type": {
-          "expr": "[ 'attender' ]"
         }
       }
     }
