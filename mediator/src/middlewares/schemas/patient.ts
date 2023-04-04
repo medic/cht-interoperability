@@ -1,4 +1,5 @@
 import joi from 'joi';
+import { VALID_GENDERS } from '../../utils/fhir';
 
 
 export const createPatientSchema = joi.object({
@@ -7,7 +8,7 @@ export const createPatientSchema = joi.object({
   name: joi.string().required(),
   _id: joi.string().required(),
   id: joi.string().optional(),
-  sex: joi.string().trim().valid('male', 'female', 'other', 'unkown').required(),
+  sex: joi.string().trim().valid(...VALID_GENDERS).required(),
   // validate expecting YYYY-MM-DD
   date_of_birth: joi
     .string()

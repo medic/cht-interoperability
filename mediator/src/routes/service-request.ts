@@ -1,16 +1,18 @@
-import {Request, Response, Router} from 'express';
-import {validateBodyAgainst} from '../middlewares';
-import {createServiceRequest} from '../controllers/service-request';
-import {createServiceSchema} from '../middlewares/schemas/service-request';
+import { validateBodyAgainst } from '../middlewares';
+import { requestHandler } from '../utils/request';
+
+const { Router } = require('express');
+const { createServiceRequest } = require('../controllers/service-request');
+const {
+  createServiceSchema,
+} = require('../middlewares/schemas/service-request');
 
 const router = Router();
 
 router.post(
   '/',
   validateBodyAgainst(createServiceSchema),
-  async function (req: Request, res: Response) {
-    const {status, data} = await createServiceRequest(req.body);
-    res.status(status).send(data);
-  });
+  requestHandler((req) => createServiceRequest(req.body))
+);
 
 export default router;

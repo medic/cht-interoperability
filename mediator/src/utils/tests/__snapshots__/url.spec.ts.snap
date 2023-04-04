@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generateBasicAuthUrl throws an error if the endpoint is undefined 1`] = `"The "url" argument must be of type string. Received undefined"`;
+
+exports[`generateBasicAuthUrl throws an error if the password is invalid or undefined 1`] = `"Invalid username and password"`;
+
+exports[`generateBasicAuthUrl throws an error if the username is invalid or undefined 1`] = `"Invalid username and password"`;

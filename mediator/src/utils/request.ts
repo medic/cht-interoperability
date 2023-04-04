@@ -1,12 +1,13 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
-type RequestHandler = () => Promise<{status: number, data: any}>;
+export type RequestHandler = (
+  // eslint-disable-next-line no-unused-vars
+  req: Request
+) => Promise<{ status: number; data: any }>;
 
 export function requestHandler(handler: RequestHandler) {
-  return  (req: Request, res: Response) => {
-    handler()
-      .then(({status, data}) => {
-        res.status(status).send(data);
-      });
-  };
+  return (req: Request, res: Response) =>
+    handler(req).then(({ status = 200, data }) => {
+      res.status(status).send(data);
+    });
 }

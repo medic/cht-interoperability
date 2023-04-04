@@ -10,18 +10,28 @@ Services are currently available at these URLs:
 
 * **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
 * **OpenHIM Mediator** - [https://interoperability.dev.medicmobile.org/mediator](https://interoperability.dev.medicmobile.org/mediator). 
-* **HAPI FHIR** - TODO
 * **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/). 
 
 [GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
-### Workflow Diagram
+### Workflow Sequence Diagram
 ![](./docs/sequence-diagram/diagram.png) 
 
-## Get Started
+### FHIR Resources
+The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used to implement the flow above:
+- [Patient](https://www.hl7.org/fhir/patient.html)
+- [Encounter](https://build.fhir.org/encounter.html)
+- [Subscription](https://build.fhir.org/subscription.html)
+- [Organization](https://build.fhir.org/organization.html) - *Work in Progress*. This resource is used by the requesting system to send their callback URL information when they request for the LTFU for a patient.
+
+### Test LTFU via instances
+`TODO`
+
+## Get Started with Local Setup
 
 ### Prerequisites
 - `docker`
+- `Postman` or similar tool for API testing. This will play the role of the `Requesting System` from the sequence diagram above. 
 
 ### Troubleshooting
 Users getting errors when running the following installation steps, please see the [Troubleshooting guide](/troubleshooting.md).
@@ -50,6 +60,7 @@ You should get as a response:
 ``` 
 
 If everything is successful you should see this:
+
  ![](./docs/images/good-client-screen.png)
 
 ### CHT configuration with Docker
@@ -58,7 +69,7 @@ The following steps apply when running CHT via the Docker setup provided in this
 1. CHT can be accessed via `http://localhost:5988`, and the credentials are `admin`/`password`.
 2. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
 3. Securely save the `interop-client` user's password to the database using the instructions [here](https://docs.communityhealthtoolkit.org/apps/reference/api/#credentials). Change the values `mykey` and `my pass` to `openhim1` and your user's password respectively. An example of the curls request is below:
-```
+```bash
 curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/api/v1/credentials/openhim1 -d 'interop-password'
 ```
 
@@ -69,7 +80,7 @@ The following steps apply when running CHT locally in development mode and when 
 1. Set up a local CHT instance using [these instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/local-setup/).
 2. Create a new user in the CHT instance with the username `interop-client` using these [instructions](https://docs.communityhealthtoolkit.org/apps/tutorials/contact-and-users-1/#4-create-the-chw-user). For the role you can select `Data entry` and `Analytics` roles. Please note that you can use any username you prefer but you would have to update the config with the new username. You can do that by editing the `cht-config/app_settings.json` file and updating the `username` value in the `outbound` object e.g. on this [line](https://github.com/medic/interoperability/blob/main/cht-config/app_settings.json#L452).
 3. Securely save the `interop-client` user's password to the database using the instructions [here](https://docs.communityhealthtoolkit.org/apps/reference/api/#credentials). Change the values `mykey` and `my pass` to `openhim1` and your user's password respectively. An example of the curls request is below:
-```
+``` bash
 curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/api/v1/credentials/openhim1 -d 'interop-password'
 ```
 
@@ -82,11 +93,39 @@ curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/a
 5. To verify if the configuration is loaded correctly is to create a `Patient` and to access a URL like `https://*****.my.local-ip.co/#/contacts/patientUUID/report/interop_follow_up`. This should retrieve correctly the follow up form.
 6. To verify if the configuration in CouchDB, access `http://localhost:5984/_utils/#database/medic/settings`.
  
-### Test the Loss to Follow-Up (LTFU) Flow
-TODO
+### Test the LTFU with the Local Setup
+The following steps assume that you were successful in running locally OpenHIM and the CHT with the LTFU configuration.
 
-#### Postman collection
-TODO
+1. Create a Patient
+   1. CHT - Create an offline user, for example a Community Health Worker (CHW), via the `App Management`. 
+   1. CHT - Login as this newly created offline user.
+   1. CHT - Navigate to the `People` tab, select a `Facility` and create a `New Person`. For the purpose of this flow, the `Person`'s role should be `Patient`.
+   1. CHT - Copy the newly created `Person`'s unique identifier from the browser's URL and keep it safely, you will needed it for the next steps.
+   1. OpenHIM Admin Console - Verify that the Patient creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/Patient/` and one to `/fhir/Patient/`, as in the image below.
+    ![](./docs/images/transaction-log-patient.png)
+1. Request the LTFU for the Patient
+   1. Postman - The LTFU is triggered by sending a `service-request` to the mediator for the newly created Patient. Create a `POST` request to `http://localhost:5001/mediator/service-request`. On the Postman's `Authorization` tab, select `Basic auth`. Input the following credentials: `interop-client` / `interop-password`. The request body should contain:
+       - The Patient unique identifier
+       - A callback URL. For the purpose of the testing, you can use an online callback free provider.
+
+        ```json
+        { 
+            "patient_id": "614c798a-cd61-48bd-8baf-9ce1a74c9ecc", 
+            "callback_url": "https://interop.free.beeceptor.com/callback" 
+        }
+        ```
+        Submit the request.
+   1. OpenHIM Admin Console - Verify that the `service-request` was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see three successful API calls, as in the image below:
+    ![](./docs/images/transaction-log-service-request.png)
+1. Handle LTFU Task
+   1. CHT - Navigate to the `Tasks` tab. There should be an automatically created `Task` for the Patient. If it is not the case, sync data via `Sync now` option. The `Task` should look like in the image below:
+    
+        ![](./docs/images/task.png)
+
+   1. CHT - Select an option (Yes or No) and submit the `Tasks`.
+   1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/Encounter/` and one to `/fhir/Encounter/`, as in the image below.
+    ![](./docs/images/transaction-log-encounter.png)
+   1. If your callback URL test service was set up correctly, you should receive a notification from the mediator.
 
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.
