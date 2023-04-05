@@ -50,7 +50,7 @@ exports[`createServiceRequest creates a service request when given valid request
       },
     ],
     [
-      "http:/admin:password@nginx/api/v2/records",
+      "https:/admin:password@nginx/api/v2/records",
       {
         "_meta": {
           "form": "interop_follow_up",
@@ -156,7 +156,7 @@ exports[`createServiceRequest returns a 500 status code if record creation on ch
       },
     ],
     [
-      "http:/admin:password@nginx/api/v2/records",
+      "https:/admin:password@nginx/api/v2/records",
       {
         "_meta": {
           "form": "interop_follow_up",
