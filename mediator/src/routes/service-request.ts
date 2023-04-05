@@ -1,17 +1,16 @@
-import { Request } from "express";
-import { validateBodyAgainst } from "../middlewares";
-import { requestHandler } from "../utils/request";
+import { validateBodyAgainst } from '../middlewares';
+import { requestHandler } from '../utils/request';
 
-const { Router } = require("express");
-const { createServiceRequest } = require("../controllers/service-request");
+const { Router } = require('express');
+const { createServiceRequest } = require('../controllers/service-request');
 const {
   createServiceSchema,
-} = require("../middlewares/schemas/service-request");
+} = require('../middlewares/schemas/service-request');
 
 const router = Router();
 
 router.post(
-  "/",
+  '/',
   validateBodyAgainst(createServiceSchema),
   requestHandler((req) => createServiceRequest(req.body))
 );

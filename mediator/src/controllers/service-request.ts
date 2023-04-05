@@ -1,29 +1,29 @@
-import axios from "axios";
-import { logger } from "../../logger";
-import { FHIR, CHT } from "../../config";
+import axios from 'axios';
+import { logger } from '../../logger';
+import { FHIR, CHT } from '../../config';
 import { generateFHIRSubscriptionResource } from '../utils/fhir';
-import https from "https";
-import { generateChtRecordsApiUrl } from "../utils/url";
+import https from 'https';
+import { generateChtRecordsApiUrl } from '../utils/url';
 
 const { url: fhirUrl, password: fhirPassword, username: fhirUsername } = FHIR;
 
 interface IServiceRequest {
   patient_id: string;
   callback_url: string;
-};
+}
 
 export async function createServiceRequest(request: IServiceRequest) {
   try {
     const {patient_id: patientId, callback_url: callbackUrl} = request;
 
-    const patientRes = await getFHIRPatientResource(patientId) 
+    const patientRes = await getFHIRPatientResource(patientId); 
 
     if (patientRes.status !== 200) {
       return { status: patientRes.status, data: patientRes.data };
     }
 
     // generate subscription resource
-    const subRes = await createFHIRSubscriptionResource(patientId, callbackUrl)
+    const subRes = await createFHIRSubscriptionResource(patientId, callbackUrl);
 
     if (subRes.status !== 201) {
       return { status: subRes.status, data: subRes.data };
@@ -34,7 +34,6 @@ export async function createServiceRequest(request: IServiceRequest) {
 
     if (recRes.data.success !== true) {
       // TODO: delete the subscription
-      await deleteFhirSubscription(subRes.data);
       return { status: 500, data: 'unable to create the follow up task' };
     }
 
@@ -58,10 +57,10 @@ export async function createServiceRequest(request: IServiceRequest) {
 async function createChtRecord(patientId: string) {
   const record = {
     _meta: {
-      form: "interop_follow_up",
+      form: 'interop_follow_up',
     },
     patient_uuid: patientId,
-  }
+  };
   
   const options = {
     httpsAgent: new https.Agent({
@@ -93,8 +92,4 @@ async function getFHIRPatientResource(patientId: string) {
     }
   };
   return await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
-}
-
-async function deleteFhirSubscription(sub: any) {
-
 }

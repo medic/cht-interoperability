@@ -1,5 +1,5 @@
-import joi from "joi";
-import { VALID_GENDERS } from "../../utils/fhir";
+import joi from 'joi';
+import { VALID_GENDERS } from '../../utils/fhir';
 
 
 export const createPatientSchema = joi.object({
@@ -15,7 +15,7 @@ export const createPatientSchema = joi.object({
     .regex(/((?:19|20)\d\d)-(0?[1-9]|1[012])-([12][0-9]|3[01]|0?[1-9])/)
     .required()
     .messages({
-      "object.regex": "Invalid date expecting YYYY-MM-DD",
-      "string.pattern.base": "Invalid date expecting YYYY-MM-DD"
+      'object.regex': 'Invalid date expecting YYYY-MM-DD',
+      'string.pattern.base': 'Invalid date expecting YYYY-MM-DD'
     })
 });

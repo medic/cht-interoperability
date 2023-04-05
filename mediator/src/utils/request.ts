@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 export type RequestHandler = (
+  // eslint-disable-next-line no-unused-vars
   req: Request
 ) => Promise<{ status: number; data: any }>;
 

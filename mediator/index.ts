@@ -25,7 +25,7 @@ app.use('/service-request', serviceRequestRoutes);
 app.use('/encounter', encounterRoutes);
 
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
   
   // TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'  
