@@ -36,7 +36,7 @@ The following steps assume that you successfully logged in into OpenHIM and the 
    1. OpenHIM Admin Console - Verify that the Patient creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/patient/` and one to `/fhir/Patient/`, as in the image below.
     ![](./docs/images/instance-patient.png)
 1. Request the LTFU for the Patient
-   1. Postman - The LTFU is triggered by sending a `service-request` to the mediator for the newly created Patient. Create a `POST` request to `https://interoperability.dev.medicmobile.org:5001/mediator/service-request`. On the Postman's `Authorization` tab, select `Basic auth`. Input the following credentials: `interop-client` / `interop-password`. The request body should contain:
+   1. Postman - The LTFU is triggered by sending a `service-request` to the mediator for the newly created Patient. Create a `POST` request to `https://interoperability.dev.medicmobile.org:5001/mediator/service-request`. On the Postman's `Authorization` tab, select `Basic auth`. Input the mediator's credentials. The request body should contain:
        - The Patient unique identifier
        - A callback URL. For the purpose of the testing, you can use an online callback free provider.
 
