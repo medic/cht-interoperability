@@ -127,7 +127,7 @@ The following steps assume that you were successful in running locally OpenHIM a
     ![](./docs/images/transaction-log-encounter.png)
    1. If your callback URL test service was set up correctly, you should receive a notification from the mediator.
 
-An API test collection that can be used with Postman or similar tools can be found under `/docs/local-test`. This collection allows testing the LTFU flow whiel running the instances locally.
+An API test collection that can be used with Postman or similar tools can be found under `/docs/local-test`. This collection allows testing the LTFU flow while running the instances locally.
 
 ### Shutdown the servers
 - To shut-down the containers run `./startup.sh down` to stop the instances.
