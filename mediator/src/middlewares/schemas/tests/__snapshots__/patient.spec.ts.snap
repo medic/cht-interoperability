@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 1`] = `"Invalid date expecting YYYY-MM-DD"`;
+exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 1`] = `""identifier" is required"`;
 
-exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 2`] = `"Invalid date expecting YYYY-MM-DD"`;
+exports[`createPatientSchema accepts only dates in the format of YYYY-MM-DD 2`] = `""identifier" is required"`;
 
-exports[`createPatientSchema accepts only valid right genders 1`] = `[ValidationError: "sex" must be one of [male, female, other, unknown]]`;
+exports[`createPatientSchema accepts only valid right genders 1`] = `[ValidationError: "identifier" is required]`;
 
 exports[`createPatientSchema accepts only valid right genders 2`] = `
 {

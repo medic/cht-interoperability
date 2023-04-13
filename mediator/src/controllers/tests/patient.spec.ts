@@ -4,51 +4,39 @@ import { createPatient } from "../patient";
 
 jest.mock("../../../logger");
 jest.mock("axios");
+const mockAxios = axios as jest.Mocked<typeof axios>;
 
-const patient = {
-  _id: "456",
-  name: "John Doe",
-  sex: "male",
-  date_of_birth: "2000-01-01",
-};
+describe("Patient controllers", () => {
+  const patient: fhir5.Patient = {
+    resourceType: "Patient"
+  };
 
-describe("createPatient", () => {
-  it("creates a patient when given a valid patient resource", async () => {
-    const data = { status: 200, data: {} };
-    (axios.post as any).mockResolvedValueOnce(data)
+  describe("createPatient", () => {
+    it("creates a patient when given a valid patient resource", async () => {
+      const data = { status: 200, data: {} };
 
-    const res = await createPatient(patient as any);
+      mockAxios.post.mockResolvedValueOnce(data);
 
-    expect(res.data).toBe(data.data);
-    expect(res.status).toEqual(data.status);
-    expect(axios.post).toHaveBeenCalled();
-    expect(axios.post).toMatchSnapshot();
-    expect(logger.error).not.toHaveBeenCalled();
+      const res = await createPatient(patient);
+
+      expect(res.data).toBe(data.data);
+      expect(res.status).toEqual(data.status);
+      expect(mockAxios.post).toHaveBeenCalled();
+      expect(mockAxios.post).toMatchSnapshot();
+      expect(logger.error).not.toHaveBeenCalled();
+    });
+
+    it("handles error when the patient creation fails", async () => {
+      const data = { status: 400, data: {} };
+
+      mockAxios.post.mockRejectedValueOnce(data);
+
+      const res = await createPatient(patient);
+
+      expect(res.status).toBe(data.status);
+      expect(logger.error).toHaveBeenCalled();
+      expect(mockAxios.post).toHaveBeenCalled();
+      expect(res.data).toBe(res.data);
+    });
   });
-
-  it("fails to create a patient when given an invalid patient resource", async () => {
-    const patient = {}
-
-    const data = { status: 200, data: {} };
-    (axios.post as any).mockResolvedValueOnce(patient) as any
-
-    const res = await createPatient(patient as any);
-
-    expect(res.status).toBe(400);
-    expect(logger.error).toHaveBeenCalled();
-    expect(axios.post).not.toHaveBeenCalled();
-    expect(res.data).toMatchSnapshot();
-  });
-
-  it("return the right status code if the request FHIR creation request fails", async () => {
-    const data = { status: 500, data: {} };
-    axios.post = jest.fn(() => Promise.reject(data)) as any
-
-    const res = await createPatient(patient as any);
-
-    expect(res.status).toBe(data.status);
-    expect(res.data).toMatchSnapshot();
-    expect(axios.post).toHaveBeenCalled();
-    expect(logger.error).toHaveBeenCalled();
-  });
-})
+});

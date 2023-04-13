@@ -4,8 +4,9 @@ import { logger } from "../../../logger";
 
 jest.mock("axios");
 jest.mock("../../../logger")
+const mockAxios = axios as jest.Mocked<typeof axios>;
 
-describe("Encounter controller", () => {
+describe("Encounter controllers", () => {
   const encounter: fhir5.Encounter = {
     resourceType: "Encounter",
     status: "planned",
@@ -15,7 +16,6 @@ describe("Encounter controller", () => {
     it("should create an encounter in the FHIR server", async () => {
       const data = { status: 201, data: { id: "123" } };
 
-      const mockAxios = axios as jest.Mocked<typeof axios>;
       mockAxios.post = jest.fn().mockResolvedValue(data);
 
       const res = await createEncounter(encounter);
@@ -30,7 +30,6 @@ describe("Encounter controller", () => {
     it("should return an error if the FHIR server returns an error", async () => {
       const data = { status: 400, data: { message: "Bad request" } };
 
-      const mockAxios = axios as jest.Mocked<typeof axios>;
       mockAxios.post = jest.fn().mockRejectedValue(data);
 
       const res = await createEncounter(encounter);

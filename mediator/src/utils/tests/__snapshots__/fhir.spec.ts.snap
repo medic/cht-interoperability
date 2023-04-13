@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`generateFHIRPatientResource throws an error if the 'date_of_birth' is 'undefined' 1`] = `"Invalid 'date_of_birth' range: received undefined"`;
-
-exports[`generateFHIRPatientResource throws an error when '_id' is an invalid id 1`] = `"Invalid '_id' epxted type of 'string' or 'number' but recieved 'undefined' with value 'undefined'"`;
-
-exports[`generateFHIRPatientResource throws an error when 'date_of_birth' is an invalid date 1`] = `"Invalid 'date_of_birth' range: received YYYY-MM-DD"`;
-
-exports[`generateFHIRPatientResource throws an error when 'name' is an invalid name 1`] = `"Invalid 'name' expected type of 'string' but recieved 'undefined'"`;
-
-exports[`generateFHIRPatientResource throws an error when 'sex' is an invalid sex 1`] = `"Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved 'INVALID_GENDER'"`;
-
-exports[`generateFHIRPatientResource throws an error when 'sex' is undefined 1`] = `"Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved 'undefined'"`;
-
 exports[`generateFHIRSubscriptionResource fails to generate subscription when given an invalid 'callbackUrl' 1`] = `"Invalid 'callbackUrl' was expecting type of 'string' but recieved 'undefined'"`;
 
 exports[`generateFHIRSubscriptionResource fails to generate subscription when given an invalid 'patientId' 1`] = `"Invalid patient id was expecting type of 'string' or 'number' but received 'undefined'"`;

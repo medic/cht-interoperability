@@ -1,31 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createPatient creates a patient when given a valid patient resource 1`] = `
+exports[`Patient controllers createPatient creates a patient when given a valid patient resource 1`] = `
 [MockFunction] {
   "calls": [
     [
       "http://openhim-core:5001/fhir/Patient",
       {
-        "birthDate": "2000-01-01T00:00:00.000Z",
-        "gender": "male",
-        "id": "456",
-        "identifier": [
-          {
-            "system": "cht",
-            "value": "456",
-          },
-        ],
-        "name": [
-          {
-            "family": [
-              "Doe",
-            ],
-            "given": [
-              "John Doe",
-            ],
-            "use": "official",
-          },
-        ],
         "resourceType": "Patient",
       },
       {
@@ -42,17 +22,5 @@ exports[`createPatient creates a patient when given a valid patient resource 1`]
       "value": Promise {},
     },
   ],
-}
-`;
-
-exports[`createPatient fails to create a patient when given an invalid patient resource 1`] = `
-{
-  "message": "Invalid 'name' expected type of 'string' but recieved 'undefined'",
-}
-`;
-
-exports[`createPatient return the right status code if the request FHIR creation request fails 1`] = `
-{
-  "message": {},
 }
 `;

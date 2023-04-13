@@ -1,6 +1,6 @@
 import { Fhir } from "fhir";
 import { FHIR } from "../../config";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const VALID_GENDERS = ["male", "female", "other", "unknown"] as const;
 
@@ -66,11 +66,10 @@ export async function getFHIROrgEndpointResource(id: string) {
   const endpointRef = organization?.endpoint && organization?.endpoint[0];
 
   if (!endpointRef) {
-    return null;
+    throw new AxiosError("Organization not found", "404");
   }
 
-  return (await axios.get(`${url}/Endpoint/?identifier=${id}`, axiosOptions))
-    .data;
+  return await axios.get(`${url}/Endpoint/?identifier=${id}`, axiosOptions);
 }
 
 export async function getFHIRPatientResource(patientId: string) {

@@ -10,12 +10,14 @@ export interface CHTEncounterDoc {
 
 export async function createEncounter(encounter: fhir5.Encounter) {
   try {
-    return await axios.post(`${fhirUrl}/Encounter`, encounter, {
+    const res = await axios.post(`${fhirUrl}/Encounter`, encounter, {
       auth: {
         username: fhirUsername,
         password: fhirPassword,
       },
     });
+
+    return { status: res.status, data: res.data }
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: error.data };
