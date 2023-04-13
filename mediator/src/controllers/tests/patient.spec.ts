@@ -1,12 +1,11 @@
 import axios from "axios";
 import { logger } from "../../../logger";
-import { IPatient } from "../../utils/fhir";
 import { createPatient } from "../patient";
 
 jest.mock("../../../logger");
 jest.mock("axios");
 
-const patient: IPatient = {
+const patient = {
   _id: "456",
   name: "John Doe",
   sex: "male",
@@ -28,7 +27,7 @@ describe("createPatient", () => {
   });
 
   it("fails to create a patient when given an invalid patient resource", async () => {
-    const patient = {} as IPatient
+    const patient = {}
 
     const data = { status: 200, data: {} };
     (axios.post as any).mockResolvedValueOnce(patient) as any

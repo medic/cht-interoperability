@@ -1,16 +1,4 @@
-import { generateBasicAuthUrl, generateChtRecordsApiUrl } from "../url";
-
-describe("generateChtRecordsApiUrl", () => {
-  it("returns an basic auth cht url and path to records", () => {
-    const endpoint = "https://cht.medic.org"
-    const username = "username"
-    const password = "password"
-
-    const api = generateChtRecordsApiUrl(endpoint, username, password);
-
-    expect(api).toBe("https:/username:password@cht.medic.org/api/v2/records")
-  })
-})
+import { generateBasicAuthUrl, } from "../url";
 
 describe("generateBasicAuthUrl", () => {
   it("adds basic auth to an endpoint", () => {

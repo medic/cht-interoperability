@@ -18,7 +18,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(fhirRes.status);
     expect(res.data).toEqual(fhirRes.data);
@@ -37,7 +37,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(fhirRes.status);
     expect(res.data).toEqual(fhirRes.data);
@@ -61,7 +61,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(500);
     expect(res.data).toMatchSnapshot();
@@ -76,7 +76,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 404, data: { message: "" } };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(patient.status);
     expect(res.data).toEqual(patient.data);
@@ -141,7 +141,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(500);
     expect(res.data).toMatchInlineSnapshot(`
@@ -169,7 +169,7 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest(request as any);
 
     expect(res.status).toBe(500);
     expect(res.data).toMatchInlineSnapshot(`
