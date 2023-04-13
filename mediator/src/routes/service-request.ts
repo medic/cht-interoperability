@@ -1,5 +1,5 @@
 import { validateBodyAgainst } from "../middlewares";
-import { validateFhirResource } from "../middlewares/schemas/fhir";
+import { validateFhirResource } from "../utils/fhir";
 import { requestHandler } from "../utils/request";
 import { Router } from "express";
 import { createServiceRequest } from "../controllers/service-request";

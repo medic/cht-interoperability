@@ -1,75 +1,85 @@
-export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
+import { Fhir } from "fhir";
+import { FHIR } from "../../config";
+import axios from "axios";
 
-export interface IPatient {
-  name: string;
-  date_of_birth: string;
-  _id: string;
-  sex: typeof VALID_GENDERS[number];
-}
+export const VALID_GENDERS = ["male", "female", "other", "unknown"] as const;
 
-export function generateFHIRPatientResource(patient: IPatient) {
-  if (!patient.name) {
-    throw new Error(`Invalid 'name' expected type of 'string' but recieved '${patient.name}'`);
-  }
-  
-  const patientLastName = patient.name.split(' ').slice(-1);
-  const birthDate = new Date(patient.date_of_birth);
+const { username, url, password } = FHIR;
+const axiosOptions = {
+  auth: {
+    username,
+    password,
+  },
+};
 
-  if (!isValidDate(birthDate)) {
-    throw new RangeError("Invalid 'date_of_birth' range: received " + patient.date_of_birth);
-  } else if (!patient._id) {
-    throw new Error(`Invalid '_id' epxted type of 'string' or 'number' but recieved '${typeof patient._id}' with value '${patient._id}'`);
-  }  else if (!patient.sex || !VALID_GENDERS.includes(patient.sex)) {
-    throw new Error(`Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved '${patient.sex}'`);
-  }
+const fhir = new Fhir();
 
-  const FHITPatientResource = {
-    resourceType: 'Patient',
-    id: patient._id,
-    identifier: [
-      {
-        system: 'cht',
-        value: patient._id
-      }
-    ],
-    name: [
-      {
-        use: 'official',
-        family: patientLastName,
-        given: [patient.name]
-      }
-    ],
-    gender: patient.sex,
-    birthDate: birthDate.toISOString()
+export function validateFhirResource(resourceType: string) {
+  return function wrapper(data: any) {
+    return fhir.validate({ ...data, resourceType });
   };
-
-  return FHITPatientResource;
 }
 
-export function isValidDate(d: Date) {
-  return d instanceof Date && !isNaN(d as any);
-}
-
-export function generateFHIRSubscriptionResource(patientId: string, callbackUrl: string) {
+export function generateFHIRSubscriptionResource(
+  patientId: string,
+  callbackUrl: string
+) {
   if (!patientId) {
-    throw new Error(`Invalid patient id was expecting type of 'string' or 'number' but received '${typeof patientId}'`)
+    throw new Error(
+      `Invalid patient id was expecting type of 'string' or 'number' but received '${typeof patientId}'`
+    );
   } else if (!callbackUrl) {
-    throw new Error(`Invalid 'callbackUrl' was expecting type of 'string' but recieved '${typeof callbackUrl}'`)
+    throw new Error(
+      `Invalid 'callbackUrl' was expecting type of 'string' but recieved '${typeof callbackUrl}'`
+    );
   }
-  
+
   const FHIRSubscriptionResource = {
-    resourceType: 'Subscription',
+    resourceType: "Subscription",
     id: patientId,
-    status: 'requested',
-    reason: 'Follow up request for patient',
+    status: "requested",
+    reason: "Follow up request for patient",
     criteria: `Encounter?identifier=${patientId}`,
     channel: {
-      type: 'rest-hook',
+      type: "rest-hook",
       endpoint: callbackUrl,
-      payload: 'application/fhir+json',
-      header: ['Content-Type: application/fhir+json']
-    }
+      payload: "application/fhir+json",
+      header: ["Content-Type: application/fhir+json"],
+    },
   };
 
   return FHIRSubscriptionResource;
+}
+
+export async function createFHIRSubscriptionResource(
+  patientId: string,
+  callbackUrl: string
+) {
+  const res = generateFHIRSubscriptionResource(patientId, callbackUrl);
+  return await axios.post(`${url}/Subscription`, res, axiosOptions);
+}
+
+export async function getFHIROrgEndpointResource(id: string) {
+  const organization = (
+    await axios.get(`${url}/Organization/?identifier=${id}`, axiosOptions)
+  ).data as fhir5.Organization;
+  const endpointRef = organization?.endpoint && organization?.endpoint[0];
+
+  if (!endpointRef) {
+    return null;
+  }
+
+  return (await axios.get(`${url}/Endpoint/?identifier=${id}`, axiosOptions))
+    .data;
+}
+
+export async function getFHIRPatientResource(patientId: string) {
+  return await axios.get(
+    `${url}/Patient/?identifier=${patientId}`,
+    axiosOptions
+  );
+}
+
+export async function deleteFhirSubscription(id?: string) {
+  return await axios.delete(`${url}/Subscription/${id}`, axiosOptions);
 }

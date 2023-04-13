@@ -7,8 +7,9 @@ import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
+import organizationRoutes from './src/routes/organization'
+import endpointRoutes from './src/routes/endpoint'
 import { registerMediatorCallback } from './src/utils/openhim';
-import encounterRoutes from './src/routes/encounter';
 
 const {registerMediator} = require('openhim-mediator-utils');
 
@@ -24,7 +25,8 @@ app.get('*', (_: Request, res: Response) => {
 app.use('/patient', patientRoutes);
 app.use('/service-request', serviceRequestRoutes);
 app.use('/encounter', encounterRoutes);
-
+app.use('/organization', organizationRoutes);
+app.use('/endpoint', endpointRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));

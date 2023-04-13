@@ -1,4 +1,4 @@
-import { createServiceSchema } from "../service-request";
+import { ServiceRequestSchema } from "../service-request";
 
 describe("createServiceSchema", () => {
   it("accepts valid values", async () => {
@@ -7,7 +7,7 @@ describe("createServiceSchema", () => {
       callback_url: "https://google.com/",
     };
 
-    expect(createServiceSchema.validateAsync(data)).resolves.toMatchSnapshot();
+    expect(ServiceRequestSchema.validateAsync(data)).resolves.toMatchSnapshot();
   });
 
   it("rejects data with valid 'callback_url'", () => {
@@ -16,7 +16,7 @@ describe("createServiceSchema", () => {
       callback_url: "INVALID_URL",
     };
 
-    expect(createServiceSchema.validateAsync(data)).rejects.toMatchSnapshot();
+    expect(ServiceRequestSchema.validateAsync(data)).rejects.toMatchSnapshot();
   });
 
   it("rejects data with invalid 'patient_id' ", () => {
@@ -25,6 +25,6 @@ describe("createServiceSchema", () => {
       callback_url: "https://google.com",
     };
 
-    expect(createServiceSchema.validateAsync(data)).rejects.toMatchSnapshot();
+    expect(ServiceRequestSchema.validateAsync(data)).rejects.toMatchSnapshot();
   });
 });

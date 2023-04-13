@@ -15,11 +15,6 @@ export async function createPatient(patient: fhir5.Patient) {
     return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
-
-    if (!error.status) {
-      return { status: 400, data: { message: error.message } };
-    }
-
     return { status: error.status, data: { message: error.data } };
   }
 }

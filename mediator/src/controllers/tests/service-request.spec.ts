@@ -94,7 +94,14 @@ describe("createServiceRequest", () => {
     const patient = { status: 200, data: {} };
     (axios.get as any).mockResolvedValueOnce(patient);
 
-    const res = await createServiceRequest(request);
+    const res = await createServiceRequest({
+      resourceType: "ServiceRequest",
+      intent: "proposal",
+      status: "draft",
+      subject: {
+        "reference": "Reference/"
+      }
+    });
 
     expect(res.status).toBe(500);
     expect(res.data).toMatchSnapshot();

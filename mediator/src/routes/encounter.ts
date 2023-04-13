@@ -2,7 +2,7 @@ import { Request, Response, Router}  from 'express';
 import { validateBodyAgainst } from '../middlewares';
 import { EncounterSchema } from '../middlewares/schemas/encounter';
 import { createEncounter } from '../controllers/encounter';
-import { validateFhirResource } from '../middlewares/schemas/fhir';
+import { validateFhirResource } from '../utils/fhir';
 
 const router = Router();
 
