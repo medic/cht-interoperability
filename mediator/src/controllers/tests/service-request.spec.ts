@@ -5,13 +5,10 @@ import {
   mockCreateChtRecord,
   mockDeleteFhirSubscription,
 } from "./utils";
-import axios from "axios";
 import { createServiceRequest } from "../service-request";
 
 jest.mock("axios");
 jest.mock("../../../logger");
-
-const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("ServiceRequest controllers", () => {
   const reference: any = "Person/ID";
