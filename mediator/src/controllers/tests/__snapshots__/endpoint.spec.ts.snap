@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Endpoint controllers createEndpoint creates a endpoint when given a valid endpoint resource 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "http://openhim-core:5001/fhir/Endpoint",
+      {
+        "address": "",
+        "connectionType": [],
+        "resourceType": "Endpoint",
+        "status": "active",
+      },
+      {
+        "auth": {
+          "password": "interop-password",
+          "username": "interop-client",
+        },
+      },
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
