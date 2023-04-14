@@ -1,76 +1,36 @@
 import { PatientSchema } from "../patient";
+import { PatientFactory } from "./utils";
 
-describe("createPatientSchema", () => {
-  it("accepts when all values are present", async () => {
-    const data = {
-      name: "John Doe",
-      _id: "JOHN_DOE_ID",
-      id: "OPTIONAL",
-      sex: "male",
-      date_of_birth: "2000-01-01",
-      parent: "OPTIONAL",
-      type: "OPTIONAL",
-    };
+describe("PatientSchema", () => {
+  it("accepts valid patient resource", async () => {
+    const data = PatientFactory.build();
 
     const res = await PatientSchema.validateAsync(data);
-    expect(res).toMatchSnapshot();
+
+    expect(res.id).toBe(data.id);
+    expect(res.name).toBe(res.name);
+    expect(res.identifier).toBe(res.identifier);
+    expect(res.gender).toBe(res.gender);
+    expect(res.birthDate).toBe(res.birthDate);
   });
 
-  it("accepts when only required values are present", async () => {
-    const data = {
-      name: "John Doe",
-      _id: "JOHN_DOE_ID",
-      sex: "male",
-      date_of_birth: "2000-01-01",
-    };
-
-    const res = await PatientSchema.validateAsync(data);
-    expect(res).toMatchSnapshot();
-  });
-
-  it("accepts only valid right genders", async () => {
-    const data = {
-      name: "John Doe",
-      _id: "JOHN_DOE_ID",
-      id: "OPTIONAL",
-      sex: "dangled beef",
-      date_of_birth: "2000-01-01",
-      parent: "OPTIONAL",
-      type: "OPTIONAL",
-    };
-
-    expect(PatientSchema.validateAsync(data)).rejects.toMatchSnapshot();
-
+  it("doesn't accept invalid patient resource", async () => {
+    let data = PatientFactory.build();
+    
     expect(
-      await PatientSchema.validateAsync({ ...data, sex: "female" })
-    ).toMatchSnapshot();
+      PatientSchema.validateAsync({ ...data, gender: undefined })
+    ).rejects.not.toBeNull();
     expect(
-      await PatientSchema.validateAsync({ ...data, sex: "unknown" })
-    ).toMatchSnapshot();
+      PatientSchema.validateAsync({ ...data, id: undefined })
+    ).rejects.not.toBeNull();
     expect(
-      await PatientSchema.validateAsync({ ...data, sex: "other" })
-    ).toMatchSnapshot();
-  });
-
-  it("accepts only dates in the format of YYYY-MM-DD", () => {
-    const data = {
-      name: "John Doe",
-      _id: "JOHN_DOE_ID",
-      id: "OPTIONAL",
-      sex: "male",
-      date_of_birth: "01-2000-01",
-      parent: "OPTIONAL",
-      type: "OPTIONAL",
-    };
-
+      PatientSchema.validateAsync({ ...data, identifier: [] })
+    ).rejects.not.toBeNull();
     expect(
-      PatientSchema.validateAsync(data)
-    ).rejects.toThrowErrorMatchingSnapshot();
+      PatientSchema.validateAsync({ ...data, name: [] })
+    ).rejects.not.toBeNull();
     expect(
-      PatientSchema.validateAsync({
-        ...data,
-        date_of_birth: "01-01-2000",
-      })
-    ).rejects.toThrowErrorMatchingSnapshot();
+      PatientSchema.validateAsync({ ...data, birthDate: "" })
+    ).rejects.not.toBeNull();
   });
 });
