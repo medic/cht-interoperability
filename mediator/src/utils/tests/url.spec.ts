@@ -36,7 +36,7 @@ describe("generateBasicAuthUrl", () => {
     const password = "password";
     const endpoint = "https://google.com";
 
-    expect(() => generateBasicAuthUrl(endpoint, invalidUsername, password)).toThrowErrorMatchingSnapshot();
+    expect(() => generateBasicAuthUrl(endpoint, invalidUsername, password)).toThrowErrorMatchingInlineSnapshot(`"Invalid username and password"`);
   })
 
   it("throws an error if the password is invalid or undefined", () => {
@@ -44,7 +44,7 @@ describe("generateBasicAuthUrl", () => {
     const invalidPassword = undefined as any;
     const endpoint = "https://google.com";
 
-    expect(() => generateBasicAuthUrl(endpoint, username, invalidPassword)).toThrowErrorMatchingSnapshot();
+    expect(() => generateBasicAuthUrl(endpoint, username, invalidPassword)).toThrowErrorMatchingInlineSnapshot(`"Invalid username and password"`);
   })
 
   it("throws an error if the endpoint is undefined", () => {
@@ -52,6 +52,6 @@ describe("generateBasicAuthUrl", () => {
     const password = "password";
     const invalidEndpoint = undefined as any;
 
-    expect(() => generateBasicAuthUrl(invalidEndpoint, username, password)).toThrowErrorMatchingSnapshot();
+    expect(() => generateBasicAuthUrl(invalidEndpoint, username, password)).toThrowErrorMatchingInlineSnapshot(`"The "url" argument must be of type string. Received undefined"`);
   })
 })

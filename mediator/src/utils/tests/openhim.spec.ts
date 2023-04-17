@@ -4,15 +4,17 @@ import { registerMediatorCallback } from "../openhim";
 jest.mock("../../../logger");
 
 describe("registerMediatorCallback", () => {
-  it("logs if there isn't any error", () => {
+  it("logs to the console when called without an error", () => {
     registerMediatorCallback();
 
     expect(logger.info).toHaveBeenCalled();
   });
 
-  it("throws an error if an error string is passed in", () => {
+  it("throws an error if an error was passed", () => {
     expect(() =>
       registerMediatorCallback("ERROR")
-    ).toThrowErrorMatchingSnapshot();
+    ).toThrowErrorMatchingInlineSnapshot(
+      `"Mediator Registration Failed: Reason ERROR"`
+    );
   });
 });

@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`generateFHIRSubscriptionResource fails to generate subscription when given an invalid 'callbackUrl' 1`] = `"Invalid 'callbackUrl' was expecting type of 'string' but recieved 'undefined'"`;
-
-exports[`generateFHIRSubscriptionResource fails to generate subscription when given an invalid 'patientId' 1`] = `"Invalid patient id was expecting type of 'string' or 'number' but received 'undefined'"`;
