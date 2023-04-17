@@ -11,7 +11,7 @@ export const EncounterSchema = joi.object({
     )
     .length(1)
     .required(),
-  status: joi.object().required(),
+  status: joi.string().required(),
   class: joi.array().length(1).required(),
   type: joi.array().length(1).required(),
   subject: joi.array().length(1).required(),

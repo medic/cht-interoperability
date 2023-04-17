@@ -22,7 +22,7 @@ describe("EncounterSchema", () => {
       EncounterSchema.validateAsync({ ...data, identifier: [] })
     ).rejects.not.toBeNull();
     expect(
-      EncounterSchema.validateAsync({ ...data, status: [] })
+      EncounterSchema.validateAsync({ ...data, status: undefined })
     ).rejects.not.toBeNull();
     expect(
       EncounterSchema.validateAsync({ ...data, class: [] })

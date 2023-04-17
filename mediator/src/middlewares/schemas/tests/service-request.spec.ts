@@ -14,13 +14,13 @@ describe("ServiceRequestSchema", () => {
     const data = ServiceRequestFactory.build();
 
     expect(
-      ServiceRequestSchema.validateAsync({ ...data, request: data.request[0] })
+      ServiceRequestSchema.validateAsync({ ...data, requester: data.requester[0] })
     ).rejects.not.toBeNull();
 
     expect(
       ServiceRequestSchema.validateAsync({
         ...data,
-        request: { ...data.request[0], type: "Wrong" },
+        request: { ...data.requester[0], type: "Wrong" },
       })
     ).rejects.not.toBeNull();
 
@@ -40,10 +40,6 @@ describe("ServiceRequestSchema", () => {
 
     expect(
       ServiceRequestSchema.validateAsync({ ...data, intent: undefined })
-    ).rejects.not.toBeNull();
-
-    expect(
-      ServiceRequestSchema.validateAsync({ ...data })
     ).rejects.not.toBeNull();
   });
 });

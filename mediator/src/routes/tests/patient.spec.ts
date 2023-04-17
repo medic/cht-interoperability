@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../..";
 import { createPatient } from "../../controllers/patient";
-import { PatientFactory } from "./utils";
+import { PatientFactory } from "../../middlewares/schemas/tests/utils";
 
 jest.mock("../../controllers/patient");
 
@@ -14,17 +14,12 @@ describe("POST /patient", () => {
 
     const data = PatientFactory.build();
 
-    console.log("Data", data);
-
     const res = await request(app).post("/patient").send(data);
-
-    console.log(res.body);
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createPatient).toHaveBeenCalledWith(data);
+    expect(createPatient).toHaveBeenCalledWith({...data, resourceType: "Patient"});
     expect(createPatient).toHaveBeenCalled();
-    expect(createPatient).toHaveBeenCalledWith(data);
   });
 
   it("doesn't accept incoming request with invalid patient resource", async () => {

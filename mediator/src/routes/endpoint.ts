@@ -6,10 +6,12 @@ import { createEndpoint } from "../controllers/endpoint";
 
 const router = Router();
 
+const resourceType = "Endpoint";
+
 router.post(
   "/",
-  validateBodyAgainst(validateFhirResource("Endpoint")),
-  requestHandler((req) => createEndpoint(req.body))
+  validateBodyAgainst(validateFhirResource(resourceType)),
+  requestHandler((req) => createEndpoint({ ...req.body, resourceType }))
 );
 
 export default router;

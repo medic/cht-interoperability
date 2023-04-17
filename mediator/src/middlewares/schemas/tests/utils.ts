@@ -21,7 +21,7 @@ export const PatientFactory = Factory.define("patient")
 
 export const EncounterFactory = Factory.define("encounter")
   .attr("identifier", identifier)
-  .attr("status", {})
+  .attr("status", "planned")
   .attr("class", [{}])
   .attr("type", [{}])
   .attr("subject", [{}])
@@ -29,7 +29,7 @@ export const EncounterFactory = Factory.define("encounter")
 
 export const EndpointFactory = Factory.define("endpoint").attr(
   "connectionType",
-  [{ coding: [{ system: VALID_SYSTEM, code: VALID_CODE }] }]
+  { system: VALID_SYSTEM, code: VALID_CODE }
 );
 
 export const OrganizationFactory = Factory.define("organization")

@@ -7,10 +7,12 @@ import { requestHandler } from "../utils/request";
 
 const router = Router();
 
+const resourceType = "Patient";
+
 router.post(
   "/",
-  validateBodyAgainst(validateFhirResource("Patient"), PatientSchema),
-  requestHandler((req) => createPatient(req.body))
+  validateBodyAgainst(validateFhirResource(resourceType), PatientSchema),
+  requestHandler((req) => createPatient({ ...req.body, resourceType }))
 );
 
 export default router;

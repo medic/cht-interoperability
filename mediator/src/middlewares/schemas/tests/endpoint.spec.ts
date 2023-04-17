@@ -12,10 +12,10 @@ describe("EndpointSchema", () => {
 
   it("rejects invalid endpoint resource", () => {
     const dataWithInvalidSystem = EndpointFactory.build();
-    dataWithInvalidSystem.connectionType[0].system = "INVALID_SYSTEM";
+    dataWithInvalidSystem.connectionType.system = "INVALID_SYSTEM";
 
     const dataWithInvalidCode = EndpointFactory.build();
-    dataWithInvalidCode.connectionType[0].system = "INVALID_CODE";
+    dataWithInvalidCode.connectionType.code = "INVALID_CODE";
 
     expect(
       EndpointSchema.validateAsync(dataWithInvalidSystem)

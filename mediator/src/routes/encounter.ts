@@ -7,10 +7,12 @@ import { requestHandler } from "../utils/request";
 
 const router = Router();
 
+const resourceType = "Encounter";
+
 router.post(
   "/",
-  validateBodyAgainst(validateFhirResource("Encounter"), EncounterSchema),
-  requestHandler((req) => createEncounter(req.body))
+  validateBodyAgainst(validateFhirResource(resourceType), EncounterSchema),
+  requestHandler((req) => createEncounter({ ...req.body, resourceType }))
 );
 
 export default router;

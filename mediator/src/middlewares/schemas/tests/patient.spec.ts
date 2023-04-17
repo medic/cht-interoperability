@@ -7,8 +7,8 @@ describe("PatientSchema", () => {
 
     const res = await PatientSchema.validateAsync(data);
 
-    expect(res.name).toBe(data.name);
-    expect(res.identifier).toBe(data.identifier);
+    expect(res.name).toStrictEqual(data.name);
+    expect(res.identifier).toStrictEqual(data.identifier);
     expect(res.gender).toBe(data.gender);
     expect(res.birthDate).toBe(data.birthDate);
   });
