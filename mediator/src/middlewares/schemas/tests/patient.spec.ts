@@ -7,21 +7,17 @@ describe("PatientSchema", () => {
 
     const res = await PatientSchema.validateAsync(data);
 
-    expect(res.id).toBe(data.id);
-    expect(res.name).toBe(res.name);
-    expect(res.identifier).toBe(res.identifier);
-    expect(res.gender).toBe(res.gender);
-    expect(res.birthDate).toBe(res.birthDate);
+    expect(res.name).toBe(data.name);
+    expect(res.identifier).toBe(data.identifier);
+    expect(res.gender).toBe(data.gender);
+    expect(res.birthDate).toBe(data.birthDate);
   });
 
   it("doesn't accept invalid patient resource", async () => {
     let data = PatientFactory.build();
-    
+
     expect(
       PatientSchema.validateAsync({ ...data, gender: undefined })
-    ).rejects.not.toBeNull();
-    expect(
-      PatientSchema.validateAsync({ ...data, id: undefined })
     ).rejects.not.toBeNull();
     expect(
       PatientSchema.validateAsync({ ...data, identifier: [] })

@@ -1,30 +1,49 @@
 import { ServiceRequestSchema } from "../service-request";
+import { ServiceRequestFactory } from "./utils";
 
-describe("createServiceSchema", () => {
+describe("ServiceRequestSchema", () => {
   it("accepts valid values", async () => {
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "https://google.com/",
-    };
+    const data = ServiceRequestFactory.build();
 
-    expect(ServiceRequestSchema.validateAsync(data)).resolves.toMatchSnapshot();
+    const res = await ServiceRequestSchema.validateAsync(data);
+
+    expect(res).toStrictEqual(data);
   });
 
-  it("rejects data with valid 'callback_url'", () => {
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "INVALID_URL",
-    };
+  it("rejects invalid service request resource", () => {
+    const data = ServiceRequestFactory.build();
 
-    expect(ServiceRequestSchema.validateAsync(data)).rejects.toMatchSnapshot();
-  });
+    expect(
+      ServiceRequestSchema.validateAsync({ ...data, request: data.request[0] })
+    ).rejects.not.toBeNull();
 
-  it("rejects data with invalid 'patient_id' ", () => {
-    const data = {
-      patient_id: undefined,
-      callback_url: "https://google.com",
-    };
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        request: { ...data.request[0], type: "Wrong" },
+      })
+    ).rejects.not.toBeNull();
 
-    expect(ServiceRequestSchema.validateAsync(data)).rejects.toMatchSnapshot();
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        subject: { type: "Wrong", id: data.subject.id },
+      })
+    ).rejects.not.toBeNull();
+
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        subject: { id: data.subject.id, type: undefined },
+      })
+    ).rejects.not.toBeNull();
+
+    expect(
+      ServiceRequestSchema.validateAsync({ ...data, intent: undefined })
+    ).rejects.not.toBeNull();
+
+    expect(
+      ServiceRequestSchema.validateAsync({ ...data })
+    ).rejects.not.toBeNull();
   });
 });

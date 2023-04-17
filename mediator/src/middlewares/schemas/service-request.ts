@@ -1,5 +1,10 @@
 import joi from "joi";
 
+const RequesterSchema = joi.object({
+  type: "Organization",
+  identifier: joi.string().required(),
+});
+
 export const ServiceRequestSchema = joi.object({
   intent: joi.string().required(),
   subject: joi
@@ -8,8 +13,5 @@ export const ServiceRequestSchema = joi.object({
       identifier: joi.string().required(),
     })
     .required(),
-  requester: joi.object({
-    type: "Organization",
-    identifier: joi.string().required(),
-  }),
+  requester: joi.array().items(RequesterSchema).length(1).required(),
 });

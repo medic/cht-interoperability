@@ -1,7 +1,6 @@
 import joi from "joi";
 
 export const PatientSchema = joi.object({
-  id: joi.string().required(),
   identifier: joi
     .array()
     .items(
