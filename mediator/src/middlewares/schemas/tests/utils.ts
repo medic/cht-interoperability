@@ -11,7 +11,7 @@ const identifier = [
 
 export const HumanNameFactory = Factory.define("humanName")
   .attr("family", "Doe")
-  .attr("given", "John");
+  .attr("given", ["John"]);
 
 export const PatientFactory = Factory.define("patient")
   .attr("identifier", identifier)

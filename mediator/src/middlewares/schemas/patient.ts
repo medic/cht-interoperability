@@ -16,7 +16,7 @@ export const PatientSchema = joi.object({
     .items(
       joi.object({
         family: joi.string().required(),
-        given: joi.string().required(),
+        given: joi.array().length(1).required(),
       })
     )
     .min(1)
