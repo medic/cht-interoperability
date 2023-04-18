@@ -18,6 +18,7 @@ else
 
   init      starts the docker containers and configures OpenHIM
   up        starts the docker containers
+  up-dev    starts the docker containers with updated files.
   down      stops the docker containers
   destroy   shutdown the docker containers and deletes volumes
   "

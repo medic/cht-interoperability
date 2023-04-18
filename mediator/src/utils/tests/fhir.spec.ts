@@ -69,10 +69,10 @@ toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of
   });
 
   describe("getFHIROrganizationResource", () => {
-    it("retrieves the fhir organization resource when given valid orgId", async () => {
+    it("retrieves the fhir organization endpoint resource when given valid orgId", async () => {
       const id = "orgId";
       const mockRes = { status: 200, data: {} };
-      const mockOrg = { endpoint: [{ identifier: { value: "value" } }] };
+      const mockOrg = { endpoint: [{ reference: "Endpoint/value" } ] };
 
       mockAxios.get.mockResolvedValueOnce({ ...mockRes, data: mockOrg });
       mockAxios.get.mockResolvedValueOnce(mockRes);
@@ -83,7 +83,7 @@ toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of
       expect(res.data).toBe(mockRes.data);
       expect(mockAxios.get.mock.calls[0][0]).toContain(id);
       expect(mockAxios.get.mock.calls[1][0]).toContain(
-        mockOrg.endpoint[0].identifier.value
+        mockOrg.endpoint[0].reference.replace("Endpoint/", "")
       );
       expect(mockAxios.get).toHaveBeenCalledTimes(2);
     });

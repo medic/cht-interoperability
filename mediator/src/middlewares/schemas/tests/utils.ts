@@ -27,22 +27,19 @@ export const EncounterFactory = Factory.define("encounter")
   .attr("subject", [{}])
   .attr("participant", [{}]);
 
-export const EndpointFactory = Factory.define("endpoint").attr(
-  "connectionType",
-  { system: VALID_SYSTEM, code: VALID_CODE }
-);
+export const EndpointFactory = Factory.define("endpoint")
+  .attr("connectionType", { system: VALID_SYSTEM, code: VALID_CODE })
+  .attr("identifier", [{}]);
 
 export const OrganizationFactory = Factory.define("organization")
   .attr("name", ["athena"])
-  .attr("endpoint", [{ type: "Endpoint", identifier: randomUUID() }]);
+  .attr("endpoint", [{ reference: "Endpoint/" + randomUUID() }]);
 
 const SubjectFactory = Factory.define("subject")
-  .attr("type", "Patient")
-  .attr("identifier", () => randomUUID());
+  .attr("reference", () => "Patient/" + randomUUID());
 
 const RequesterFactory = Factory.define("subject")
-  .attr("type", "Organization")
-  .attr("identifier", () => randomUUID());
+  .attr("reference", () => "Organization/" + randomUUID());
 
 export const ServiceRequestFactory = Factory.define("serviceRequest")
   .attr("intent", "order")

@@ -454,15 +454,19 @@
         }
       },
       "mapping": {
-        "sex": "doc.sex",
-        "name": {
-          "expr": "doc.name",
+        "resourceType": {
+          "expr": "'Patient'"
+        },
+        "identifier": {
+          "expr": "[{ \"use\": \"official\", \"value\": doc._id }]",
           "optional": false
         },
-        "_id": {
-          "expr": "doc._id"
+        "name": {
+          "expr": "[ { \"use\":\"official\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
+          "optional": false
         },
-        "date_of_birth": "doc.date_of_birth"
+        "gender": "doc.sex",
+        "birthDate": "doc.date_of_birth"
       }
     },
     "FHIR_practitioner": {
@@ -514,8 +518,23 @@
         }
       },
       "mapping": {
-        "patient_id": {
-          "expr": "doc.fields.inputs.contact._id"
+        "resourceType": "'Encounter'",
+        "identifier": {
+          "expr": "[{ \"use\": \"official\", \"value\": doc._id }]",
+          "optional": false
+        },
+        "status": {
+          "expr": "'finished'"
+        },
+        "class": {
+          "expr": "'outpatient'"
+        },
+        "type": {
+          "expr": "[{ \"text\": \"Community health worker visit\" }]"
+        },
+        "subject": "doc.fields.inputs.contact._id",
+        "participant": {
+          "expr": "[ { \"type\": [ { \"text\": \"Community health worker\" } ] } ]"
         }
       }
     }

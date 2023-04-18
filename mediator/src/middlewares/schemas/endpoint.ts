@@ -11,4 +11,5 @@ const CodingSchema = joi.object({
 
 export const EndpointSchema = joi.object({
   connectionType: CodingSchema.required(),
+  identifier: joi.array().length(1).required(),
 });

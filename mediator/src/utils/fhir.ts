@@ -64,6 +64,7 @@ export async function getFHIROrgEndpointResource(id: string) {
     await axios.get(`${url}/Organization/?identifier=${id}`, axiosOptions)
   ).data;
 
+
   const endpoints = organization.endpoint;
 
   if (!endpoints) {
@@ -80,7 +81,7 @@ export async function getFHIROrgEndpointResource(id: string) {
     throw error;
   }
 
-  const endpointId = endpointRef.identifier.value;
+  const endpointId = endpointRef.reference.replace("Endpoint/", "");
 
   return await axios.get(
     `${url}/Endpoint/?identifier=${endpointId}`,

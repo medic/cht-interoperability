@@ -2,7 +2,7 @@ import { ServiceRequestSchema } from "../service-request";
 import { ServiceRequestFactory } from "./utils";
 
 describe("ServiceRequestSchema", () => {
-  it("accepts valid values", async () => {
+  it("accepts valid service request values", async () => {
     const data = ServiceRequestFactory.build();
 
     const res = await ServiceRequestSchema.validateAsync(data);
