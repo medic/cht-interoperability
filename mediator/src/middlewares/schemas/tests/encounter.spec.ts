@@ -25,7 +25,7 @@ describe("EncounterSchema", () => {
       EncounterSchema.validateAsync({ ...data, status: undefined })
     ).rejects.not.toBeNull();
     expect(
-      EncounterSchema.validateAsync({ ...data, class: [] })
+      EncounterSchema.validateAsync({ ...data, class: undefined })
     ).rejects.not.toBeNull();
     expect(
       EncounterSchema.validateAsync({ ...data, type: [] })

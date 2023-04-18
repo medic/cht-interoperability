@@ -4,7 +4,7 @@ import { VALID_CODE, VALID_SYSTEM } from "../endpoint";
 
 const identifier = [
   {
-    system: "cht",
+    system: "official",
     value: randomUUID(),
   },
 ];

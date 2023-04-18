@@ -5,7 +5,7 @@ export const PatientSchema = joi.object({
     .array()
     .items(
       joi.object({
-        system: joi.string().valid("cht").required(),
+        system: joi.string().valid("official").required(),
         value: joi.string().uuid().required(),
       })
     )
