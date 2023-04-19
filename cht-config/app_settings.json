@@ -458,7 +458,7 @@
           "expr": "'Patient'"
         },
         "identifier": {
-          "expr": "[{ \"use\": \"official\", \"value\": doc._id }]",
+          "expr": "[{ \"system\": \"cht\", \"use\": \"official\", \"value\": doc._id }]",
           "optional": false
         },
         "name": {
@@ -486,7 +486,7 @@
         },
         "gender": "doc.sex",
         "name": {
-          "expr": "[ { \"use\":\"official\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
+          "expr": "[ { \"system\":\"cht\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
           "optional": false
         },
         "identifier.use": {
@@ -497,7 +497,7 @@
         },
         "birthDate": "doc.date_of_birth",
         "telecom": {
-          "expr": "[{ \"system\":\"phone\", \"value\": doc.phone, \"use\":\"mobile\" } ]",
+          "expr": "[{ \"system\":\"phone\",  \"use\": \"official\", \"value\": doc.phone, \"use\":\"mobile\" } ]",
           "optional": true
         },
         "active": {
@@ -520,7 +520,7 @@
       "mapping": {
         "resourceType": "'Encounter'",
         "identifier": {
-          "expr": "[{ \"use\": \"official\", \"value\": doc._id }]",
+          "expr": "[{ \"system\": \"cht\",  \"use\": \"official\", \"value\": doc._id }]",
           "optional": false
         },
         "status": {

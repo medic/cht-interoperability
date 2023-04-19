@@ -4,7 +4,7 @@ import { VALID_CODE, VALID_SYSTEM } from "../endpoint";
 
 const identifier = [
   {
-    system: "official",
+    system: "cht",
     value: randomUUID(),
   },
 ];
@@ -24,7 +24,7 @@ export const EncounterFactory = Factory.define("encounter")
   .attr("status", "planned")
   .attr("class", [{}])
   .attr("type", [{}])
-  .attr("subject", [{}])
+  .attr("subject", {})
   .attr("participant", [{}]);
 
 export const EndpointFactory = Factory.define("endpoint")

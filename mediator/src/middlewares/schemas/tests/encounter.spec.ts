@@ -31,7 +31,7 @@ describe("EncounterSchema", () => {
       EncounterSchema.validateAsync({ ...data, type: [] })
     ).rejects.not.toBeNull();
     expect(
-      EncounterSchema.validateAsync({ ...data, subject: [] })
+      EncounterSchema.validateAsync({ ...data, subject: undefined })
     ).rejects.not.toBeNull();
     expect(
       EncounterSchema.validateAsync({ ...data, participant: [] })

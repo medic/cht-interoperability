@@ -9,7 +9,6 @@ import {
 
 export async function createServiceRequest(request: fhir5.ServiceRequest) {
   try {
-    console.log("Service Request", request);
     const patientId = (request.subject as any).reference.replace("Patient/", "");
     // checking if patient exists - axios throws error for non 200
     await getFHIRPatientResource(patientId);
