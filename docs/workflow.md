@@ -29,7 +29,7 @@ The following steps assume that you successfully logged in into OpenHIM and the 
         <img src="./images/task.png" width="500">
 
    1. CHT - Select an option (Yes or No) and submit the `Tasks`.
-   1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/encounter/` and one to `/fhir/Encounter/`, as in the image below.
+   1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. `You should see two successful API calls, one to `/mediator/encounter/` and one to `/fhir/Encounter/`, as in the image below.
     ![](./images/instance-encounter.png)
    1. If your callback URL test service was set up correctly, you should receive a notification from the mediator.
 
@@ -39,16 +39,316 @@ The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used 
 - [Patient](https://www.hl7.org/fhir/patient.html)
 - [Encounter](https://build.fhir.org/encounter.html)
 - [Subscription](https://build.fhir.org/subscription.html)
-- [Organization](https://build.fhir.org/organization.html) - *Work in Progress*. This resource is used by the requesting system to send their callback URL information when they request for the LTFU for a patient.
+- [Organization](https://build.fhir.org/organization.html)
+- [Endpoint](https://build.fhir.org/endpoint.html)
 
 ### Service Request Resource
 
-#### Endpoints
+#### POST ${OPENHIM_ENDPOINT}/mediator/service-request
 
-##### POST https://interoperability.dev.medicmobile.org:5001/mediator/service-request
+```http
+POST ${OPENHIM_ENDPOINT}/mediator/service-request
+
+{
+    "intent": "order",
+    "subject": {
+        "reference": "Patient/28e1f81b-88ee-4edd-887a-7922c6175926"
+    },
+    "requester": 
+        {
+            "reference": "Organization/003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ,
+    "status": "active"
+}
+```
+
+```json
+{
+    "resourceType": "Subscription",
+    "id": "4",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2023-04-19T04:41:17.656+00:00",
+        "tag": [
+            {
+                "system": "http://hapifhir.io/fhir/StructureDefinition/subscription-matching-strategy",
+                "code": "IN_MEMORY",
+                "display": "In-memory"
+            }
+        ]
+    },
+    "status": "requested",
+    "reason": "Follow up request for patient",
+    "criteria": "Encounter?identifier=003b24b5-2396-4d95-bcbc-5a4c63f43ff0",
+    "channel": {
+        "type": "rest-hook",
+        "endpoint": "https://callback.com",
+        "payload": "application/fhir+json",
+        "header": [
+            "Content-Type: application/fhir+json"
+        ]
+    }
+}
+```
+
+
+
+### Endpoint Resource
+
+#### POST ${OPENHIM_ENDPOINT}/mediator/endpoint
+
+```http
+POST ${OPENHIM_ENDPOINT}/mediator/endpoint
+
+{
+    "id": "ENDPOINT_ID",
+    "identifier": [
+        {
+            "system": "official",
+            "value": "ENDPOINT_ID"
+        }
+    ],
+    "connectionType": {
+        "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+        "code": "hl7-fhir-rest"
+    },
+    "payloadType": [
+        {
+            "text": "application/json"
+        }
+    ],
+    "address": "https://callback.com",
+    "status": "active"
+}
+```
+
+```json
+{
+    "resourceType": "Endpoint",
+    "id": "1",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2023-04-19T04:40:44.401+00:00"
+    },
+    "identifier": [
+        {
+            "system": "official",
+            "value": "ENDPOINT_ID"
+        }
+    ],
+    "status": "active",
+    "connectionType": {
+        "system": "http://terminology.hl7.org/CodeSystem/endpoint-connection-type",
+        "code": "hl7-fhir-rest"
+    },
+    "payloadType": [
+        {
+            "text": "application/json"
+        }
+    ],
+    "address": "https://callback.com"
+}
+```
 
 ### Patient Resource
 
+#### POST ${OPENHIM_ENDPOINT}/mediator/patient
+
+```http
+POST ${OPENHIM_ENDPOINT}/mediator/patient
+
+{
+    "identifier": [
+        {
+            "system": "official",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "name": [
+        {
+            "family": "Doe",
+            "given": [
+                "John"
+            ]
+        }
+    ],
+    "gender": "male",
+    "birthDate": "2000-01-01"
+}
+```
+
+```json
+{
+    "resourceType": "Patient",
+    "id": "3",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2023-04-19T04:41:01.217+00:00"
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">John <b>DOE </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Identifier</td><td>003b24b5-2396-4d95-bcbc-5a4c63f43ff0</td></tr><tr><td>Date of birth</td><td><span>01 January 2000</span></td></tr></tbody></table></div>"
+    },
+    "identifier": [
+        {
+            "system": "official",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "name": [
+        {
+            "family": "Doe",
+            "given": [
+                "John"
+            ]
+        }
+    ],
+    "gender": "male",
+    "birthDate": "2000-01-01"
+}
+```
+
 ### Encounter Resource
 
+#### POST ${OPENHIM_ENDPOINT}/mediator/encounter
+
+```http
+POST ${OPENHIM_ENDPOINT}/mediator/encounter
+
+{
+    "resourceType": "Encounter",
+    "identifier": [
+        {
+            "system": "cht",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "status": "finished",
+    "class": "outpatient",
+    "type": [
+        {
+            "text": "Community health worker visit"
+        }
+    ],
+    "subject": {
+        "reference": "Patient/3"
+    },
+    "participant": [
+        {
+            "type": [
+                {
+                    "text": "Community health worker"
+                }
+            ]
+        }
+    ]
+}
+```
+
+```json
+{
+    "resourceType": "Encounter",
+    "id": "5",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2023-04-19T05:00:18.031+00:00"
+    },
+    "identifier": [
+        {
+            "system": "cht",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "status": "finished",
+    "type": [
+        {
+            "text": "Community health worker visit"
+        }
+    ],
+    "subject": {
+        "reference": "Patient/3"
+    },
+    "participant": [
+        {
+            "type": [
+                {
+                    "text": "Community health worker"
+                }
+            ]
+        }
+    ]
+}
+```
+
 ### Organisation Resource
+
+#### POST ${OPENHIM_ENDPOINT}/mediator/encounter
+
+```http
+POST ${OPENHIM_ENDPOINT}/mediator/encounter
+
+{
+    "resourceType": "Encounter",
+    "identifier": [
+        {
+            "system": "cht",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "status": "finished",
+    "class": "outpatient",
+    "type": [
+        {
+            "text": "Community health worker visit"
+        }
+    ],
+    "subject": {
+        "reference": "Patient/3"
+    },
+    "participant": [
+        {
+            "type": [
+                {
+                    "text": "Community health worker"
+                }
+            ]
+        }
+    ]
+}
+```
+
+```json
+{
+    "resourceType": "Encounter",
+    "id": "5",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2023-04-19T05:00:18.031+00:00"
+    },
+    "identifier": [
+        {
+            "system": "cht",
+            "value": "003b24b5-2396-4d95-bcbc-5a4c63f43ff0"
+        }
+    ],
+    "status": "finished",
+    "type": [
+        {
+            "text": "Community health worker visit"
+        }
+    ],
+    "subject": {
+        "reference": "Patient/3"
+    },
+    "participant": [
+        {
+            "type": [
+                {
+                    "text": "Community health worker"
+                }
+            ]
+        }
+    ]
+}
+```
