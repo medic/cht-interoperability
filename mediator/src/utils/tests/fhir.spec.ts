@@ -36,14 +36,18 @@ describe("FHIR Utils", () => {
 
     it("doesn't generate subscription when given an invalid 'patientId'", () => {
       expect(() =>
-generateFHIRSubscriptionResource((undefined as any), callbackUrl)).
-toThrowErrorMatchingInlineSnapshot(`"Invalid patient id was expecting type of 'string' or 'number' but received 'undefined'"`);
+        generateFHIRSubscriptionResource(undefined as any, callbackUrl)
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"Invalid patient id was expecting type of 'string' or 'number' but received 'undefined'"`
+      );
     });
 
     it("doesn't generate subscription when given an invalid 'callbackUrl'", () => {
       expect(() =>
-generateFHIRSubscriptionResource(patientId, (undefined as any))).
-toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of 'string' but recieved 'undefined'"`);
+        generateFHIRSubscriptionResource(patientId, undefined as any)
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"Invalid 'callbackUrl' was expecting type of 'string' but recieved 'undefined'"`
+      );
     });
   });
 
@@ -69,22 +73,34 @@ toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of
   });
 
   describe("getFHIROrganizationResource", () => {
+    const mockOrg = {
+      entry: [
+        {
+          resource: {
+            endpoint: [{ reference: "Endpoint/value" }],
+          },
+        },
+      ],
+    };
+
     it("retrieves the fhir organization endpoint resource when given valid orgId", async () => {
       const id = "orgId";
       const mockRes = { status: 200, data: {} };
-      const mockOrg = { endpoint: [{ reference: "Endpoint/value" } ] };
 
       mockAxios.get.mockResolvedValueOnce({ ...mockRes, data: mockOrg });
       mockAxios.get.mockResolvedValueOnce(mockRes);
 
       const res = await getFHIROrgEndpointResource(id);
 
+      const endpointId =
+        mockOrg.entry[0].resource.endpoint[0].reference.replace(
+          "Endpoint/",
+          ""
+        );
       expect(res.status).toBe(mockRes.status);
       expect(res.data).toBe(mockRes.data);
       expect(mockAxios.get.mock.calls[0][0]).toContain(id);
-      expect(mockAxios.get.mock.calls[1][0]).toContain(
-        mockOrg.endpoint[0].reference.replace("Endpoint/", "")
-      );
+      expect(mockAxios.get.mock.calls[1][0]).toContain(endpointId);
       expect(mockAxios.get).toHaveBeenCalledTimes(2);
     });
 
@@ -92,7 +108,12 @@ toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of
       const id = "orgId";
       const mockRes = { status: 200, data: {} };
 
-      mockAxios.get.mockResolvedValueOnce({ ...mockRes, data: {} });
+      mockAxios.get.mockResolvedValueOnce({
+        ...mockRes,
+        data: {
+          entry: [{ resource: {} }],
+        },
+      });
 
       expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
         `[Error: Organization has no endpoint attached]`
@@ -100,7 +121,20 @@ toThrowErrorMatchingInlineSnapshot(`"Invalid 'callbackUrl' was expecting type of
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
-        data: { endpoint: [] },
+        data: {
+          entry: [{ resource: { endpoint: [] } }],
+        },
+      });
+
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
+        `[Error: Organization has no endpoint attached]`
+      );
+
+      mockAxios.get.mockResolvedValueOnce({
+        ...mockRes,
+        data: {
+          entry: [],
+        },
       });
 
       expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(

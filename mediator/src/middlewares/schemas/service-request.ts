@@ -11,5 +11,5 @@ export const ServiceRequestSchema = joi.object({
       reference: joi.string().regex(/Patient\/\S+/),
     })
     .required(),
-  requester: joi.array().items(RequesterSchema).length(1).required(),
+  requester: RequesterSchema.required(),
 });

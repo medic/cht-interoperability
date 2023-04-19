@@ -14,27 +14,27 @@ describe("ServiceRequestSchema", () => {
     const data = ServiceRequestFactory.build();
 
     expect(
-      ServiceRequestSchema.validateAsync({ ...data, requester: data.requester[0] })
+      ServiceRequestSchema.validateAsync({ ...data, requester: undefined })
     ).rejects.not.toBeNull();
 
     expect(
       ServiceRequestSchema.validateAsync({
         ...data,
-        request: { ...data.requester[0], type: "Wrong" },
+        requester: { reference: "Wrong/ID" },
       })
     ).rejects.not.toBeNull();
 
     expect(
       ServiceRequestSchema.validateAsync({
         ...data,
-        subject: { type: "Wrong", id: data.subject.id },
+        subject: { reference: "Wrong/ID" },
       })
     ).rejects.not.toBeNull();
 
     expect(
       ServiceRequestSchema.validateAsync({
         ...data,
-        subject: { id: data.subject.id, type: undefined },
+        subject: undefined,
       })
     ).rejects.not.toBeNull();
 

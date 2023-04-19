@@ -6,9 +6,11 @@ const { url: fhirUrl, username, password } = FHIR;
 
 export async function createEndpoint(endpoint: fhir5.Endpoint) {
   try {
-    return await axios.post(`${fhirUrl}/Endpoint`, endpoint, {
+    const res = await axios.post(`${fhirUrl}/Endpoint`, endpoint, {
       auth: { username, password },
     });
+
+    return { data: res.data, status: res.status }
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: { message: error.data } };

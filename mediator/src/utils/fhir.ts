@@ -60,11 +60,19 @@ export async function createFHIRSubscriptionResource(
 }
 
 export async function getFHIROrgEndpointResource(id: string) {
-  const organization = (
-    await axios.get(`${url}/Organization/?identifier=${id}`, axiosOptions)
-  ).data;
+  const res = await axios.get(
+    `${url}/Organization/?identifier=${id}`,
+    axiosOptions
+  );
 
+  const entry = res.data.entry[0];
+  if (!entry) {
+    const error: any = new Error("Organization has no endpoint attached");
+    error.status = 400;
+    throw error;
+  }
 
+  const organization = entry.resource;
   const endpoints = organization.endpoint;
 
   if (!endpoints) {
@@ -73,7 +81,7 @@ export async function getFHIROrgEndpointResource(id: string) {
     throw error;
   }
 
-  const endpointRef = organization.endpoint[0];
+  const endpointRef = endpoints[0];
 
   if (!endpointRef) {
     const error: any = new Error("Organization has no endpoint attached");
@@ -83,10 +91,7 @@ export async function getFHIROrgEndpointResource(id: string) {
 
   const endpointId = endpointRef.reference.replace("Endpoint/", "");
 
-  return await axios.get(
-    `${url}/Endpoint/?identifier=${endpointId}`,
-    axiosOptions
-  );
+  return await axios.get(`${url}/Endpoint/${endpointId}`, axiosOptions);
 }
 
 export async function getFHIRPatientResource(patientId: string) {

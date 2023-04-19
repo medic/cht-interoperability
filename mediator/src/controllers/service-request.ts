@@ -9,11 +9,12 @@ import {
 
 export async function createServiceRequest(request: fhir5.ServiceRequest) {
   try {
-    const patientId = (request.subject as any).reference;
+    console.log("Service Request", request);
+    const patientId = (request.subject as any).reference.replace("Patient/", "");
     // checking if patient exists - axios throws error for non 200
     await getFHIRPatientResource(patientId);
 
-    const orgId = (request.requester as any).reference;
+    const orgId = (request.requester as any).reference.replace("Organization/", "");
     const endpointRes = await getFHIROrgEndpointResource(orgId);
 
     // Generate subscription resource

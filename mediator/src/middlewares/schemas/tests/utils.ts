@@ -44,4 +44,4 @@ const RequesterFactory = Factory.define("subject")
 export const ServiceRequestFactory = Factory.define("serviceRequest")
   .attr("intent", "order")
   .attr("subject", SubjectFactory.build())
-  .attr("requester", [RequesterFactory.build()]);
+  .attr("requester", RequesterFactory.build());

@@ -6,9 +6,11 @@ const { url: fhirUrl, username, password } = FHIR;
 
 export async function createOrganization(organization: fhir5.Organization) {
   try {
-    return await axios.post(`${fhirUrl}/Organization`, organization, {
+    const res = await axios.post(`${fhirUrl}/Organization`, organization, {
       auth: { username, password },
     });
+
+    return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: { message: error.data } };
