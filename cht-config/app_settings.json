@@ -518,7 +518,9 @@
         }
       },
       "mapping": {
-        "resourceType": "'Encounter'",
+        "resourceType": {
+          "expr":  "'Encounter'"
+        },
         "identifier": {
           "expr": "[{ \"system\": \"cht\",  \"use\": \"official\", \"value\": doc._id }]",
           "optional": false
