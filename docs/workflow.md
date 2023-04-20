@@ -243,7 +243,7 @@ POST ${OPENHIM_ENDPOINT}/patient
 }
 ```
 
-### Encounter Resource
+### `Encounter` Resource
 
 The FHIR Encounter resource is used to represent a clinical interaction between a patient and a healthcare provider. It contains information about the patient's visit, such as the location, reason for the visit, and any relevant procedures or diagnoses.
 
