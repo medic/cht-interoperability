@@ -4,3 +4,4 @@ node_modules/
 mediator/dist
 mediator/coverage
 srv/
+.idea
