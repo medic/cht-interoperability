@@ -56,7 +56,7 @@ The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used 
 - [Organization](https://build.fhir.org/organization.html)
 - [Endpoint](https://build.fhir.org/endpoint.html)
 
-### Test LTFU
+### Test LTFU Workflow
 
 The [workflow guide](./docs/workflow.md) explains the steps involved in CHT LTFU workflow using both local and medic instances. It is expected that you have already completed the setup procedures outlined in this document.
 
