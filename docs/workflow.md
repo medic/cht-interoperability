@@ -77,7 +77,7 @@ The FHIR `ServiceRequest` resource represents a request for a healthcare service
 #### `POST ${MEDIATOR_ENDPOINT}/service-request`
 
 This endpoint triggers the creation of a `record` on `CHT` and a `Subscription` resource on FHIR. The endpoint associated with the `Organization` resource in the requester is used as the callback URL for the `Subscription` which gets called when FHIR receives an `Encounter` resource with matching `Patient` identifier. The callback endpoint receives a FHIR `Subscription` response as its payload whenever the request is fulfilled. To learn more about FHIR
-subscriptions, you can visit the official documentation [here](https://build.fhir.org/subscription.html)
+subscriptions, you can visit the official documentation [here](https://build.fhir.org/subscription.html).
 
 ```http
 POST ${OPENHIM_ENDPOINT}/service-request
