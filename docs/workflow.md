@@ -30,7 +30,7 @@ The following steps assume that you successfully logged in into OpenHIM and the 
 
     1. It is important to note that you only need to create an **Organization** once, which you can use for future requests. So, after creating the **Organization**, you can save the `organization.identifier[0].value` value and use it for all future `ServiceRequest` requests.
 
-1.  Create a Patient
+1.  Create a **Patient**
 
     1. CHT - Log in to the CHT platform using the credentials for the `chw` user.
     1. CHT - Navigate to the `People` tab in the CHT dashboard. From there, select a Facility where you want to create a new `Person`. Click on the `New Person` button and fill in the required details for the Person. Make sure to select `Patient` as the `Person`'s role for this flow.
