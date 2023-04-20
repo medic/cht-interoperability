@@ -128,7 +128,7 @@ In the FHIR specification, the `Endpoint` resource describes the network address
 
 #### `POST ${OPENHIM_ENDPOINT}/endpoint`
 
-In the LTFU workflow, the endpoint plays a crucial role in creating a `ServiceRequest`. It is obtained from the organization attached to the `ServiceRequest` as the requester. The endpoint represents the destination where the FHIR server sends notifications about matching encounter resources. Essentially, when the FHIR server receives a matching encounter resource, it sends a notification to the endpoint. The endpoint is used as a callback URL for the FHIR server to notify the requester about the status of the `ServiceRequest`. Therefore, it is important to ensure that the endpoint is accurate and valid for successful communication between the FHIR server and the requesting system.
+In the LTFU workflow, the `Endpoint` is crucial in creating a `ServiceRequest`. It is obtained from the Organization attached to the `ServiceRequest` as the requester. The `Endpoint` represents the destination where the FHIR server sends notifications about matching encounter resources. When the FHIR server receives a matching encounter resource, it sends a notification to the endpoint. The endpoint is used as a callback URL for the FHIR server to notify the requester about the status of the `ServiceRequest`. Therefore, ensuring that the endpoint is accurate and valid for successful communication between the FHIR server and the requesting system is important.
 
 ```http
 POST ${OPENHIM_ENDPOINT}/endpoint
