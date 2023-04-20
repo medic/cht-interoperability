@@ -70,7 +70,7 @@ The payload samples provided in the documentation contain placeholder values tha
 
 **Note:** The payload only contains the required fields or a subset of the possible options. To view all the available fields, please refer to the appropriate FHIR resource specifications.
 
-### Service Request Resource
+### `ServiceRequest` Resource
 
 The FHIR ServiceRequest resource represents a request for a healthcare service to be performed, such as a diagnostic test or a treatment. It contains information about the requested service, including the type of service, the patient for whom the service is requested, the date/time the service is requested, and the healthcare provider or organization making the request. In the case of the LTFU workflow, we are using this resource to request a chw follow on cht.
 
