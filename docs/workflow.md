@@ -1,6 +1,6 @@
 # Workflow
 
-This document outlines the procedures for handling loss to follow up in addition to documenting the various endpoints available on the mediator. It provides a comprehensive guide on how to navigate the LTFU workflow and how to utilize the endpoints to facilitate the necessary actions.
+This document outlines the steps for testing the Loss To Follow-Up (LTFU) workflow, in addition to documenting the various endpoints available on the mediator. It provides a comprehensive guide on navigating the LTFU workflow and utilizing the endpoints to facilitate the necessary actions.
 
 ## Environments
 
