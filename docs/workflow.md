@@ -6,7 +6,7 @@ This document outlines the steps for testing the Loss To Follow-Up (LTFU) workfl
 
 The document provided includes placeholders for URLs. To properly utilize the document, it is important to replace these placeholders with the appropriate endpoints for your specific environment. Below are the endpoints provided for each available environment. It is important to note that if your setup differs from the documentation provided, you may need to use different endpoints. By ensuring that the correct endpoints are used, you can be confident in the successful implementation and utilization of the LTFU workflow.
 
-### Docker
+### Docker - Local Setup
 
 - **MEDIATOR_ENDPOINT** - http://localhost:5001/mediator
 - **OpenHIM Admin Console** - http://localhost:9000/
