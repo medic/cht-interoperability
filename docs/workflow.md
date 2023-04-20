@@ -183,7 +183,7 @@ POST ${OPENHIM_ENDPOINT}/endpoint
 }
 ```
 
-### Patient Resource
+### `Patient` Resource
 
 The Patient resource in FHIR represents an individual receiving or awaiting healthcare services. It includes information such as patient demographics, clinical observations, and medical history. It is a foundational resource in healthcare and can be used to track patient progress, manage care plans, and facilitate communication between healthcare providers.
 
