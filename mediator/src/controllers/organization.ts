@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 
 const { url: fhirUrl, username, password } = FHIR;
 
-export async function createOrganization(organization: fhir5.Organization) {
+export async function createOrganization(organization: fhir4.Organization) {
   try {
     const res = await axios.post(`${fhirUrl}/Organization`, organization, {
       auth: { username, password },

@@ -1,15 +1,14 @@
 import axios from "axios";
 import { logger } from "../../../logger";
 import { createOrganization } from "../organization";
+import { OrganizationFactory } from "../../middlewares/schemas/tests/utils";
 
 jest.mock("../../../logger");
 jest.mock("axios");
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("Organization controllers", () => {
-  const organization: fhir5.Organization = {
-    resourceType: "Organization",
-  };
+  const organization: fhir4.Organization = OrganizationFactory.build();
 
   describe("createOrganization", () => {
     it("creates a organization when given a valid organization resource", async () => {
@@ -22,7 +21,8 @@ describe("Organization controllers", () => {
       expect(res.data).toBe(data.data);
       expect(res.status).toEqual(data.status);
       expect(mockAxios.post).toHaveBeenCalled();
-      expect(mockAxios.post).toMatchSnapshot();
+      expect(mockAxios.post.mock.calls[0][0]).toContain("/fhir/Organization");
+      expect(mockAxios.post.mock.calls[0][1]).toStrictEqual(organization);
       expect(logger.error).not.toHaveBeenCalled();
     });
 

@@ -7,7 +7,7 @@ import {
   deleteFhirSubscription,
 } from "../utils/fhir";
 
-export async function createServiceRequest(request: fhir5.ServiceRequest) {
+export async function createServiceRequest(request: fhir4.ServiceRequest) {
   try {
     const patientId = (request.subject as any).reference.replace("Patient/", "");
     // checking if patient exists - axios throws error for non 200

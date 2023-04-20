@@ -1,18 +1,14 @@
 import axios from "axios";
 import { logger } from "../../../logger";
 import { createEndpoint } from "../endpoint";
+import { EndpointFactory } from "../../middlewares/schemas/tests/utils";
 
 jest.mock("../../../logger");
 jest.mock("axios");
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("Endpoint controllers", () => {
-  const endpoint: fhir5.Endpoint = {
-    resourceType: "Endpoint",
-    address: "",
-    connectionType: [],
-    status: "active",
-  };
+  const endpoint: fhir4.Endpoint = EndpointFactory.build();
 
   describe("createEndpoint", () => {
     it("creates a endpoint when given a valid endpoint resource", async () => {
@@ -25,7 +21,8 @@ describe("Endpoint controllers", () => {
       expect(res.data).toBe(data.data);
       expect(res.status).toEqual(data.status);
       expect(mockAxios.post).toHaveBeenCalled();
-      expect(mockAxios.post).toMatchSnapshot();
+      expect(mockAxios.post.mock.calls[0][0]).toContain("/fhir/Endpoint");
+      expect(mockAxios.post.mock.calls[0][1]).toStrictEqual(endpoint);
       expect(logger.error).not.toHaveBeenCalled();
     });
 

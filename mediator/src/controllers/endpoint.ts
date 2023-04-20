@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 
 const { url: fhirUrl, username, password } = FHIR;
 
-export async function createEndpoint(endpoint: fhir5.Endpoint) {
+export async function createEndpoint(endpoint: fhir4.Endpoint) {
   try {
     const res = await axios.post(`${fhirUrl}/Endpoint`, endpoint, {
       auth: { username, password },

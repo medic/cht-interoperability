@@ -6,19 +6,14 @@ import {
   mockDeleteFhirSubscription,
 } from "./utils";
 import { createServiceRequest } from "../service-request";
+import { ServiceRequestFactory } from "../../middlewares/schemas/tests/utils";
 
 jest.mock("axios");
 jest.mock("../../../logger");
 
 describe("ServiceRequest controllers", () => {
   const reference: any = "Person/ID";
-  const request: fhir5.ServiceRequest = {
-    resourceType: "ServiceRequest",
-    intent: "proposal",
-    status: "draft",
-    subject: { reference },
-    requester: { reference },
-  };
+  const request: fhir4.ServiceRequest = ServiceRequestFactory.build();
 
   describe("createServiceRequest", () => {
     it("creates a new subscriptions resource on fhir and cht record", async () => {

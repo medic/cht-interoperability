@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 
 const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 
-export async function createPatient(patient: fhir5.Patient) {
+export async function createPatient(patient: fhir4.Patient) {
   try {
     const res = await axios.post(`${fhirUrl}/Patient`, patient, {
       auth: {

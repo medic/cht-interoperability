@@ -8,7 +8,7 @@ export interface CHTEncounterDoc {
   patient_id: string;
 }
 
-export async function createEncounter(encounter: fhir5.Encounter) {
+export async function createEncounter(encounter: fhir4.Encounter) {
   try {
     const res = await axios.post(`${fhirUrl}/Encounter`, encounter, {
       auth: {

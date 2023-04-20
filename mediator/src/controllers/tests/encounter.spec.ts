@@ -1,16 +1,14 @@
 import axios from "axios";
 import { createEncounter } from "../encounter";
 import { logger } from "../../../logger";
+import { EncounterFactory } from "../../middlewares/schemas/tests/utils";
 
 jest.mock("axios");
 jest.mock("../../../logger")
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe("Encounter controllers", () => {
-  const encounter: fhir5.Encounter = {
-    resourceType: "Encounter",
-    status: "planned",
-  };
+  const encounter: fhir4.Encounter = EncounterFactory.build();
 
   describe("createEncounter", () => {
     it("should create an encounter in the FHIR server", async () => {
