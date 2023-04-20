@@ -72,7 +72,7 @@ The payload samples provided in the documentation contain placeholder values tha
 
 ### `ServiceRequest` Resource
 
-The FHIR ServiceRequest resource represents a request for a healthcare service to be performed, such as a diagnostic test or a treatment. It contains information about the requested service, including the type of service, the patient for whom the service is requested, the date/time the service is requested, and the healthcare provider or organization making the request. In the case of the LTFU workflow, we are using this resource to request a chw follow on cht.
+The FHIR `ServiceRequest` resource represents a request for a healthcare service to be performed, such as a diagnostic test or a treatment. It contains information about the requested service, including the type of service, the patient for whom the service is requested, the date/time the service is requested, and the healthcare provider or organization making the request. In the context of the LTFU workflow, we are using this resource to request a CHW follow-up in the CHT.
 
 #### `POST ${MEDIATOR_ENDPOINT}/service-request`
 
