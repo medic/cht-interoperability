@@ -7,7 +7,6 @@ on:
 
 jobs:
   docker:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Build timestamp
@@ -32,6 +31,7 @@ jobs:
       - name: Build and push openhim-mediator
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}:mediator"
+          context: ./mediator
+          file: ./mediator/Dockerfile
           push: true
           tags: medicmobile/openhim-mediator:${{ env.BUILD_TIMESTAMP }}
