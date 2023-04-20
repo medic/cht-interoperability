@@ -65,10 +65,16 @@ export async function getFHIROrgEndpointResource(id: string) {
     axiosOptions
   );
 
+  if (!res.data.entry) {
+    const error: any = new Error("Organization not found")
+    error.status = 404
+    throw error
+  }
+
   const entry = res.data.entry[0];
   if (!entry) {
-    const error: any = new Error("Organization has no endpoint attached");
-    error.status = 400;
+    const error: any = new Error("Organization not found");
+    error.status = 404;
     throw error;
   }
 

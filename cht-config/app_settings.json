@@ -534,7 +534,9 @@
         "type": {
           "expr": "[{ \"text\": \"Community health worker visit\" }]"
         },
-        "subject": "doc.fields.inputs.contact._id",
+        "subject.reference": {
+          "expr": "\"Patient/?identifier=\" + doc.fields.inputs.contact._id"
+        },
         "participant": {
           "expr": "[ { \"type\": [ { \"text\": \"Community health worker\" } ] } ]"
         }

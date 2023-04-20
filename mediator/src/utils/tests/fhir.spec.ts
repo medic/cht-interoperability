@@ -115,9 +115,7 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
-        `[Error: Organization has no endpoint attached]`
-      );
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization has no endpoint attached]`);
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
@@ -126,9 +124,7 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
-        `[Error: Organization has no endpoint attached]`
-      );
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization has no endpoint attached]`);
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
@@ -137,9 +133,14 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
-        `[Error: Organization has no endpoint attached]`
-      );
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization not found]`);
+
+      mockAxios.get.mockResolvedValueOnce({
+        ...mockRes,
+        data: {},
+      });
+
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization not found]`);
     });
   });
 
