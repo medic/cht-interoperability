@@ -132,7 +132,7 @@ POST ${OPENHIM_ENDPOINT}/service-request
 
 ### `Endpoint` Resource
 
-In the FHIR specification, the `Endpoint` resource describes the network address of a system or service where messages or payloads can be exchanged. It defines the communication characteristics for sending and receiving messages, such as the transport protocol, the payload format, and the messaging endpoint's address. The Endpoint resource can specify where to send data for specific purposes, such as notifications, alerts, or reports. It can be used in various contexts, such as clinical care, public health, or research, where different systems or services need to exchange data seamlessly.
+The FHIR `Endpoint` resource describes the network address of a system or service where messages or payloads can be exchanged. It defines the communication characteristics for sending and receiving messages, such as the **transport protocol**, the **payload format**, and the **messaging endpoint's address**. The `Endpoint` resource can specify where to send data for specific purposes, such as notifications, alerts, or reports. It can be used in various contexts, such as clinical care, public health, or research, where different systems or services need to exchange data seamlessly.
 
 #### `POST ${OPENHIM_ENDPOINT}/endpoint`
 
