@@ -328,7 +328,7 @@ The FHIR `Organization` resource represents a group of people or entities with a
 The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created.
 
 ```http
-POST ${OPENHIM_ENDPOINT}/encounter
+POST ${OPENHIM_ENDPOINT}/organization
 
 {
     "identifier": [
