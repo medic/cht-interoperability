@@ -268,7 +268,8 @@ The FHIR Encounter resource is used to represent a clinical interaction between 
 
 The `Encounter` resource is an essential part of the LTFU workflow, which is automatically created by the CHT system after a CHW completes the workflow. It triggers FHIR to send a `Subscription` response to the requesting system when there is a match with the `Encounter` resource. This allows for efficient monitoring and follow-up care of patients in the LTFU workflow.
 
-Request
+##### Request
+
 
 ```http
 POST ${OPENHIM_ENDPOINT}/encounter
