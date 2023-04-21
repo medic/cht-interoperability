@@ -263,7 +263,7 @@ POST ${OPENHIM_ENDPOINT}/patient
 
 ### `Encounter` Resource
 
-The FHIR Encounter resource is used to represent a clinical interaction between a patient and a healthcare provider. It contains information about the patient's visit, such as the location, reason for the visit, and any relevant procedures or diagnoses.
+The FHIR `Encounter` resource represents a clinical interaction between a patient and a healthcare provider. It contains information about the **patient's visit**, such as the **location**, the **reason for the visit**, and any relevant **procedures** or **diagnoses**.
 
 #### `POST ${OPENHIM_ENDPOINT}/encounter`
 
@@ -305,7 +305,8 @@ POST ${OPENHIM_ENDPOINT}/encounter
 }
 ```
 
-Response
+##### Response
+
 
 ```json
 {
@@ -344,13 +345,14 @@ Response
 
 ### `Organisation` Resource
 
-The FHIR `Organization` resource represents a group of people or entities with a common purpose or focus. It contains the organization's name, type, and contact details. This resource is often used in healthcare settings to represent healthcare providers, hospitals, clinics, and other organizations involved in patient care. In the LTFU workflow, it represents the **Requesting System**, and it points to its callback URL.
+The FHIR `Organization` resource represents a group of people or entities with a common purpose or focus. It contains the organization's **name**, **type**, and **contact details**. This resource is often used in healthcare settings to represent healthcare providers, hospitals, clinics, and other organizations involved in patient care. In the LTFU workflow, it represents the **Requesting System**, and it points to its `callback URL`.
 
 #### `POST ${OPENHIM_ENDPOINT}/organization`
 
-The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created. The `${ORGANIZATION_IDENTIFIER}` is intended to be randomly assigned by the requesting system. It is important to take note of this identifier, as it will be used in future `ServiceRequest`s to identify the requesting system."
+The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created. The `${ORGANIZATION_IDENTIFIER}` is intended to be randomly assigned by the requesting system. It is important to take note of this identifier, as it will be used in future `ServiceRequest`'s to identify the requesting system.
 
-Request
+##### Request
+
 
 ```http
 POST ${OPENHIM_ENDPOINT}/organization
@@ -373,7 +375,8 @@ POST ${OPENHIM_ENDPOINT}/organization
 }
 ```
 
-Response
+##### Response
+
 
 ```json
 {
