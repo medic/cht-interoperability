@@ -28,7 +28,7 @@ The following steps assume that you successfully logged in into OpenHIM and the 
 
     1. HTTP Request - Create an `Organization` Resource in the Mediator using as `endpoint.reference` the example value replacing `${ENDPOINT_ID}` with the actual `id` of the `Endpoint` you created in the previous step. Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created `Organization`. You can view the API documentation for creating an `Organization` [here](#organisation-resource).
 
-    1. It is important to note that you only need to create an **Organization** once, which you can use for future requests. So, after creating the **Organization**, you can save the `organization.identifier[0].value` value and use it for all future `ServiceRequest` requests.
+    1. It is important to note that you only need to create an `Organization` once, which you can use for future requests. So, after creating the `Organization`, you can save the `organization.identifier[0].value` value and use it for all future `ServiceRequest` requests.
 
 1.  Create a **Patient**
 
