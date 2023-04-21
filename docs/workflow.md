@@ -229,7 +229,8 @@ POST ${OPENHIM_ENDPOINT}/patient
 }
 ```
 
-Response
+##### Response
+
 
 ```json
 {
