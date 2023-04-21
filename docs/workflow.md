@@ -8,7 +8,7 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 ### Docker - Local Setup
 
-- **Mediator** - http://localhost:5001/mediator
+- **Mediator (`${OPENHIM_ENDPOINT}`)** - http://localhost:5001/mediator
 - **OpenHIM Admin Console** - http://localhost:9000/
 - **CHT with LTFU configuration** - https://localhost:80/
 
