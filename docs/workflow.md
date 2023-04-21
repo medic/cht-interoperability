@@ -221,8 +221,8 @@ POST ${OPENHIM_ENDPOINT}/patient
 }
 ```
 
-
 Response
+
 ```json
 {
   "resourceType": "Patient",
@@ -338,7 +338,7 @@ The FHIR `Organization` resource represents a group of people or entities with a
 
 #### `POST ${OPENHIM_ENDPOINT}/organization`
 
-The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created.
+The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created. The `${ORGANIZATION_IDENTIFIER}` is intended to be randomly assigned by the requesting system. It is important to take note of this identifier, as it will be used in future `ServiceRequest`s to identify the requesting system."
 
 Request
 
