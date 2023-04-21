@@ -68,7 +68,7 @@ The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used 
 - [Organization](https://build.fhir.org/organization.html)
 - [Endpoint](https://build.fhir.org/endpoint.html)
 
-The payload samples provided in the documentation contain placeholder values that you must replace with the actual content. To do so, replace the entire '${}' placeholder with the appropriate value. Be aware that some placeholder keys have the format '_\_IDENTIFIER' and refer to the value found in the 'Resource.identifier[0].value' field. These keys are different from the '_\_ID' placeholders used in the request, which refer to the 'Resource.id' field. It is important to make this distinction as using the wrong value may cause unexpected behavior in the system. Therefore, always ensure that you use the right value in the right context to avoid errors.
+The payload samples in the documentation contain placeholder values you must replace with the actual content. To do so, replace the entire `${}` placeholder with the appropriate value. Be aware that some placeholder keys have the format `_\_IDENTIFIER` and refer to the value in the `Resource.identifier[0].value` field. These keys differ from the `_\_ID` placeholders used in the request, which refer to the `Resource.id` field. It is important to make this distinction, as using the wrong value may cause unexpected behavior in the system. Therefore, always ensure you use the right value in the right context to avoid errors.
 
 **Note:** The payload only contains the required fields or a subset of the possible options. To view all the available fields, please refer to the appropriate FHIR resource specifications.
 
