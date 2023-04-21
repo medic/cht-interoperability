@@ -14,7 +14,7 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 ### Live Test Instance
 
-- **Mediator (`${OPENHIM_ENDPOINT}`)** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator).
+- **Mediator (`${OPENHIM_ENDPOINT}`)** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator)
 - **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
 - **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/).
 
