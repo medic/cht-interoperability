@@ -22,7 +22,7 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 The following steps assume that you successfully logged in into OpenHIM and the CHT instances.
 
-1.  Create an **Organization**
+1.  Create an **Endpoint** and an **Organization**
 
     1. HTTP Request - Use Postman to create an `Endpoint` Resource in the Mediator. You can view the API documentation for creating an `Endpoint` [here](#endpoint-resource). Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created endpoint.
 
