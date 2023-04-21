@@ -205,7 +205,8 @@ The FHIR `Patient` resource represents an individual receiving or awaiting healt
 
 This endpoint creates a `Patient` in the LFTU workflow. Patients are created by CHT automatically whenever a new Patient is added to the system.
 
-Request
+##### Request
+
 ```http
 POST ${OPENHIM_ENDPOINT}/patient
 
