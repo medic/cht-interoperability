@@ -166,7 +166,8 @@ POST ${OPENHIM_ENDPOINT}/endpoint
 }
 ```
 
-Response
+##### Response
+
 
 ```json
 {
