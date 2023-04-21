@@ -10,7 +10,7 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 - **Mediator (`${OPENHIM_ENDPOINT}`)** - http://localhost:5001/mediator
 - **OpenHIM Admin Console** - http://localhost:9000/
-- **CHT with LTFU configuration** - https://localhost:/
+- **CHT with LTFU configuration** - https://localhost:5988/
 
 ### Live Test Instance
 
@@ -79,6 +79,7 @@ The FHIR `ServiceRequest` resource represents a request for a healthcare service
 This endpoint triggers the creation of a `record` on `CHT` and a `Subscription` resource on FHIR. The endpoint associated with the `Organization` resource in the requester is used as the callback URL for the `Subscription` which gets called when FHIR receives an `Encounter` resource with matching `Patient` identifier. The callback endpoint receives a FHIR `Subscription` response as its payload whenever the request is fulfilled. To learn more about FHIR
 subscriptions, you can visit the official documentation [here](https://build.fhir.org/subscription.html).
 
+Request
 ```http
 POST ${OPENHIM_ENDPOINT}/service-request
 
@@ -95,6 +96,7 @@ POST ${OPENHIM_ENDPOINT}/service-request
 }
 ```
 
+Response
 ```json
 {
   "resourceType": "Subscription",
@@ -130,6 +132,8 @@ In the FHIR specification, the `Endpoint` resource describes the network address
 
 In the LTFU workflow, the `Endpoint` is crucial in creating a `ServiceRequest`. It is obtained from the Organization attached to the `ServiceRequest` as the requester. The `Endpoint` represents the destination where the FHIR server sends notifications about matching encounter resources. When the FHIR server receives a matching encounter resource, it sends a notification to the endpoint. The endpoint is used as a callback URL for the FHIR server to notify the requester about the status of the `ServiceRequest`. Therefore, ensuring that the endpoint is accurate and valid for successful communication between the FHIR server and the requesting system is important.
 
+Request
+
 ```http
 POST ${OPENHIM_ENDPOINT}/endpoint
 
@@ -154,6 +158,8 @@ POST ${OPENHIM_ENDPOINT}/endpoint
     "status": "active"
 }
 ```
+
+Response
 
 ```json
 {
@@ -191,6 +197,7 @@ The `Patient` resource in FHIR represents an individual receiving or awaiting he
 
 This endpoint is responsible for creating a patient in the LFTU workflow. Patients are created by CHT automatically whenever a new Patient is added to the the system.
 
+Request
 ```http
 POST ${OPENHIM_ENDPOINT}/patient
 
@@ -214,6 +221,8 @@ POST ${OPENHIM_ENDPOINT}/patient
 }
 ```
 
+
+Response
 ```json
 {
   "resourceType": "Patient",
@@ -251,6 +260,8 @@ The FHIR Encounter resource is used to represent a clinical interaction between 
 
 The `Encounter` resource is an essential part of the LTFU workflow, which is automatically created by the CHT system after a CHW completes the workflow. It triggers FHIR to send a `Subscription` response to the requesting system when there is a match with the `Encounter` resource. This allows for efficient monitoring and follow-up care of patients in the LTFU workflow.
 
+Request
+
 ```http
 POST ${OPENHIM_ENDPOINT}/encounter
 
@@ -283,6 +294,8 @@ POST ${OPENHIM_ENDPOINT}/encounter
     ]
 }
 ```
+
+Response
 
 ```json
 {
@@ -327,6 +340,8 @@ The FHIR `Organization` resource represents a group of people or entities with a
 
 The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created.
 
+Request
+
 ```http
 POST ${OPENHIM_ENDPOINT}/organization
 
@@ -347,6 +362,8 @@ POST ${OPENHIM_ENDPOINT}/organization
     ]
 }
 ```
+
+Response
 
 ```json
 {
