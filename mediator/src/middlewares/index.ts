@@ -15,7 +15,7 @@ export function validateBodyAgainst(...validators: any) {
 }
 
 async function handleValidation(validator: any, body: any) {
-  // checking if it's joi or fhir validor
+  // Check if it's joi or fhir validator
   if (!validator.validateAsync) {
     const result = validator(body);
 
