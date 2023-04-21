@@ -101,7 +101,8 @@ POST ${OPENHIM_ENDPOINT}/service-request
 }
 ```
 
-Response
+##### Response
+
 ```json
 {
   "resourceType": "Subscription",
