@@ -1,8 +1,8 @@
-import { EncounterSchema } from "../encounter";
-import { EncounterFactory } from "./utils";
+import { EncounterSchema } from '../encounter';
+import { EncounterFactory } from './utils';
 
-describe("EncounterSchema", () => {
-  it("accepss valid encounter resource", async () => {
+describe('EncounterSchema', () => {
+  it('accepss valid encounter resource', async () => {
     const data = EncounterFactory.build();
 
     const res = await EncounterSchema.validateAsync(data);
@@ -15,7 +15,7 @@ describe("EncounterSchema", () => {
     expect(res.participant).toBe(data.participant);
   });
 
-  it("doesn't accept invalid encounter resource", async () => {
+  it('doesn\'t accept invalid encounter resource', async () => {
     const data = EncounterFactory.build();
 
     expect(

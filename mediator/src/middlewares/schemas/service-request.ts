@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from 'joi';
 
 const RequesterSchema = joi.object({
   reference: joi.string().regex(/Organization\/\S+/),

@@ -7,8 +7,8 @@ import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
-import organizationRoutes from './src/routes/organization'
-import endpointRoutes from './src/routes/endpoint'
+import organizationRoutes from './src/routes/organization';
+import endpointRoutes from './src/routes/endpoint';
 import { registerMediatorCallback } from './src/utils/openhim';
 
 const {registerMediator} = require('openhim-mediator-utils');

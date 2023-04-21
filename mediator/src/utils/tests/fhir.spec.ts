@@ -4,37 +4,37 @@ import {
   generateFHIRSubscriptionResource,
   getFHIROrgEndpointResource,
   getFHIRPatientResource,
-} from "../fhir";
-import axios from "axios";
+} from '../fhir';
+import axios from 'axios';
 
-jest.mock("axios");
+jest.mock('axios');
 
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
-describe("FHIR Utils", () => {
-  describe("generateFHIRSubscriptionResource", () => {
-    const patientId = "PATIENT_ID";
-    const callbackUrl = "CALLBACK_URL";
+describe('FHIR Utils', () => {
+  describe('generateFHIRSubscriptionResource', () => {
+    const patientId = 'PATIENT_ID';
+    const callbackUrl = 'CALLBACK_URL';
 
-    it("generates a subscription resource when passed valid 'patientId' and 'callbackUrl'", () => {
+    it('generates a subscription resource when passed valid \'patientId\' and \'callbackUrl\'', () => {
       const resource = generateFHIRSubscriptionResource(patientId, callbackUrl);
 
       expect(resource).toEqual({
-        resourceType: "Subscription",
+        resourceType: 'Subscription',
         id: patientId,
-        status: "requested",
-        reason: "Follow up request for patient",
+        status: 'requested',
+        reason: 'Follow up request for patient',
         criteria: `Encounter?identifier=${patientId}`,
         channel: {
-          type: "rest-hook",
+          type: 'rest-hook',
           endpoint: callbackUrl,
-          payload: "application/fhir+json",
-          header: ["Content-Type: application/fhir+json"],
+          payload: 'application/fhir+json',
+          header: ['Content-Type: application/fhir+json'],
         },
       });
     });
 
-    it("doesn't generate subscription when given an invalid 'patientId'", () => {
+    it('doesn\'t generate subscription when given an invalid \'patientId\'', () => {
       expect(() =>
         generateFHIRSubscriptionResource(undefined as any, callbackUrl)
       ).toThrowErrorMatchingInlineSnapshot(
@@ -42,7 +42,7 @@ describe("FHIR Utils", () => {
       );
     });
 
-    it("doesn't generate subscription when given an invalid 'callbackUrl'", () => {
+    it('doesn\'t generate subscription when given an invalid \'callbackUrl\'', () => {
       expect(() =>
         generateFHIRSubscriptionResource(patientId, undefined as any)
       ).toThrowErrorMatchingInlineSnapshot(
@@ -51,10 +51,10 @@ describe("FHIR Utils", () => {
     });
   });
 
-  describe("createFHIRSubscriptionResource", () => {
-    it("generates a fhir resource with the 'callbackUrl' and 'patientId'", async () => {
-      const patientId = "patientId";
-      const callbackUrl = "callbackUrl";
+  describe('createFHIRSubscriptionResource', () => {
+    it('generates a fhir resource with the \'callbackUrl\' and \'patientId\'', async () => {
+      const patientId = 'patientId';
+      const callbackUrl = 'callbackUrl';
       const mockRes = { status: 200, data: {} };
 
       mockAxios.post.mockResolvedValueOnce(mockRes);
@@ -72,19 +72,19 @@ describe("FHIR Utils", () => {
     });
   });
 
-  describe("getFHIROrganizationResource", () => {
+  describe('getFHIROrganizationResource', () => {
     const mockOrg = {
       entry: [
         {
           resource: {
-            endpoint: [{ reference: "Endpoint/value" }],
+            endpoint: [{ reference: 'Endpoint/value' }],
           },
         },
       ],
     };
 
-    it("retrieves the fhir organization endpoint resource when given valid orgId", async () => {
-      const id = "orgId";
+    it('retrieves the fhir organization endpoint resource when given valid orgId', async () => {
+      const id = 'orgId';
       const mockRes = { status: 200, data: {} };
 
       mockAxios.get.mockResolvedValueOnce({ ...mockRes, data: mockOrg });
@@ -94,8 +94,8 @@ describe("FHIR Utils", () => {
 
       const endpointId =
         mockOrg.entry[0].resource.endpoint[0].reference.replace(
-          "Endpoint/",
-          ""
+          'Endpoint/',
+          ''
         );
       expect(res.status).toBe(mockRes.status);
       expect(res.data).toBe(mockRes.data);
@@ -104,8 +104,8 @@ describe("FHIR Utils", () => {
       expect(mockAxios.get).toHaveBeenCalledTimes(2);
     });
 
-    it("doesn't retrieve the fhir organization with not found", async () => {
-      const id = "orgId";
+    it('doesn\'t retrieve the fhir organization with not found', async () => {
+      const id = 'orgId';
       const mockRes = { status: 200, data: {} };
 
       mockAxios.get.mockResolvedValueOnce({
@@ -115,7 +115,9 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization has no endpoint attached]`);
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
+        `[Error: Organization has no endpoint attached]`
+      );
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
@@ -124,7 +126,9 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization has no endpoint attached]`);
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
+        `[Error: Organization has no endpoint attached]`
+      );
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
@@ -133,20 +137,24 @@ describe("FHIR Utils", () => {
         },
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization not found]`);
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
+        `[Error: Organization not found]`
+      );
 
       mockAxios.get.mockResolvedValueOnce({
         ...mockRes,
         data: {},
       });
 
-      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(`[Error: Organization not found]`);
+      expect(getFHIROrgEndpointResource(id)).rejects.toMatchInlineSnapshot(
+        `[Error: Organization not found]`
+      );
     });
   });
 
-  describe("getFHIRPatientResource", () => {
-    it("retreives a fhir patient resource", async () => {
-      const patientId = "patientId";
+  describe('getFHIRPatientResource', () => {
+    it('retreives a fhir patient resource', async () => {
+      const patientId = 'patientId';
       mockAxios.get.mockResolvedValue({ status: 200, data: {} });
 
       const res = await getFHIRPatientResource(patientId);
@@ -156,9 +164,9 @@ describe("FHIR Utils", () => {
     });
   });
 
-  describe("deleteFhirSubscription", () => {
-    it("retreives a fhir subscription resource", async () => {
-      const subId = "subId";
+  describe('deleteFhirSubscription', () => {
+    it('retreives a fhir subscription resource', async () => {
+      const subId = 'subId';
       mockAxios.delete.mockResolvedValue({ status: 200, data: {} });
 
       const res = await deleteFhirSubscription(subId);

@@ -1,19 +1,19 @@
-import { logger } from "../../logger";
-import { createChtRecord } from "../utils/cht";
+import { logger } from '../../logger';
+import { createChtRecord } from '../utils/cht';
 import {
   getFHIRPatientResource,
   getFHIROrgEndpointResource,
   createFHIRSubscriptionResource,
   deleteFhirSubscription,
-} from "../utils/fhir";
+} from '../utils/fhir';
 
 export async function createServiceRequest(request: fhir4.ServiceRequest) {
   try {
-    const patientId = (request.subject as any).reference.replace("Patient/", "");
+    const patientId = (request.subject as any).reference.replace('Patient/', '');
     // checking if patient exists - axios throws error for non 200
     await getFHIRPatientResource(patientId);
 
-    const orgId = (request.requester as any).reference.replace("Organization/", "");
+    const orgId = (request.requester as any).reference.replace('Organization/', '');
     const endpointRes = await getFHIROrgEndpointResource(orgId);
 
     // Generate subscription resource
@@ -26,7 +26,7 @@ export async function createServiceRequest(request: fhir4.ServiceRequest) {
       await deleteFhirSubscription(subRes.data.id);
       return {
         status: 500,
-        data: { message: "Unable to create the follow up task" },
+        data: { message: 'Unable to create the follow up task' },
       };
     }
 

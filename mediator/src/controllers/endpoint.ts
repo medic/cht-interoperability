@@ -1,6 +1,6 @@
-import axios from "axios";
-import { FHIR } from "../../config";
-import { logger } from "../../logger";
+import axios from 'axios';
+import { FHIR } from '../../config';
+import { logger } from '../../logger';
 
 const { url: fhirUrl, username, password } = FHIR;
 
@@ -10,7 +10,7 @@ export async function createEndpoint(endpoint: fhir4.Endpoint) {
       auth: { username, password },
     });
 
-    return { data: res.data, status: res.status }
+    return { data: res.data, status: res.status };
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: { message: error.data } };

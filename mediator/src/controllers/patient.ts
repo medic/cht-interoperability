@@ -1,6 +1,6 @@
-import axios from "axios";
-import { FHIR } from "../../config";
-import { logger } from "../../logger";
+import axios from 'axios';
+import { FHIR } from '../../config';
+import { logger } from '../../logger';
 
 const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 

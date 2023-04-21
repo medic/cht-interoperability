@@ -1,6 +1,6 @@
-import axios from "axios";
-import { FHIR } from "../../config";
-import { logger } from "../../logger";
+import axios from 'axios';
+import { FHIR } from '../../config';
+import { logger } from '../../logger';
 
 const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 
@@ -13,7 +13,7 @@ export async function createEncounter(encounter: fhir4.Encounter) {
       },
     });
 
-    return { status: res.status, data: res.data }
+    return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: error.data };

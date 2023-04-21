@@ -1,8 +1,8 @@
-import { PatientSchema } from "../patient";
-import { PatientFactory } from "./utils";
+import { PatientSchema } from '../patient';
+import { PatientFactory } from './utils';
 
-describe("PatientSchema", () => {
-  it("accepts valid patient resource", async () => {
+describe('PatientSchema', () => {
+  it('accepts valid patient resource', async () => {
     const data = PatientFactory.build();
 
     const res = await PatientSchema.validateAsync(data);
@@ -13,8 +13,8 @@ describe("PatientSchema", () => {
     expect(res.birthDate).toBe(data.birthDate);
   });
 
-  it("doesn't accept invalid patient resource", async () => {
-    let data = PatientFactory.build();
+  it('doesn\'t accept invalid patient resource', async () => {
+    const data = PatientFactory.build();
 
     expect(
       PatientSchema.validateAsync({ ...data, gender: undefined })
@@ -26,7 +26,7 @@ describe("PatientSchema", () => {
       PatientSchema.validateAsync({ ...data, name: [] })
     ).rejects.not.toBeNull();
     expect(
-      PatientSchema.validateAsync({ ...data, birthDate: "" })
+      PatientSchema.validateAsync({ ...data, birthDate: '' })
     ).rejects.not.toBeNull();
   });
 });

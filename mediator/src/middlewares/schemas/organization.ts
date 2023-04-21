@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from 'joi';
 
 const EndpointReferenceSchema = joi.object({
   reference: joi.string().regex(/Endpoint\/\S+/).required(),

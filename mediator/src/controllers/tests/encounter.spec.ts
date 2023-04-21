@@ -1,18 +1,18 @@
-import axios from "axios";
-import { createEncounter } from "../encounter";
-import { logger } from "../../../logger";
-import { EncounterFactory } from "../../middlewares/schemas/tests/utils";
+import axios from 'axios';
+import { createEncounter } from '../encounter';
+import { logger } from '../../../logger';
+import { EncounterFactory } from '../../middlewares/schemas/tests/utils';
 
-jest.mock("axios");
-jest.mock("../../../logger")
+jest.mock('axios');
+jest.mock('../../../logger');
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
-describe("Encounter controllers", () => {
+describe('Encounter controllers', () => {
   const encounter: fhir4.Encounter = EncounterFactory.build();
 
-  describe("createEncounter", () => {
-    it("should create an encounter in the FHIR server", async () => {
-      const data = { status: 201, data: { id: "123" } };
+  describe('createEncounter', () => {
+    it('should create an encounter in the FHIR server', async () => {
+      const data = { status: 201, data: { id: '123' } };
 
       mockAxios.post = jest.fn().mockResolvedValue(data);
 
@@ -25,8 +25,8 @@ describe("Encounter controllers", () => {
       expect(logger.error).not.toBeCalled();
     });
 
-    it("should return an error if the FHIR server returns an error", async () => {
-      const data = { status: 400, data: { message: "Bad request" } };
+    it('should return an error if the FHIR server returns an error', async () => {
+      const data = { status: 400, data: { message: 'Bad request' } };
 
       mockAxios.post = jest.fn().mockRejectedValue(data);
 

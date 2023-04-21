@@ -1,8 +1,8 @@
-import { OrganizationSchema } from "../organization";
-import { OrganizationFactory, PatientFactory } from "./utils";
+import { OrganizationSchema } from '../organization';
+import { OrganizationFactory, PatientFactory } from './utils';
 
-describe("OrganizationSchema", () => {
-  it("accepts valid organization resource", async () => {
+describe('OrganizationSchema', () => {
+  it('accepts valid organization resource', async () => {
     const data = OrganizationFactory.build();
 
     const res = await OrganizationSchema.validateAsync(data);
@@ -11,7 +11,7 @@ describe("OrganizationSchema", () => {
     expect(res.endpoint).toStrictEqual(data.endpoint);
   });
 
-  it("rejects invalid organization resource", () => {
+  it('rejects invalid organization resource', () => {
     const data = PatientFactory.build();
 
     expect(
@@ -25,7 +25,7 @@ describe("OrganizationSchema", () => {
     expect(
       OrganizationSchema.validateAsync({
         ...data,
-        endpoint: [{ type: "Endpoint", identifier: undefined }],
+        endpoint: [{ type: 'Endpoint', identifier: undefined }],
       })
     ).rejects.not.toBeNull();
   });

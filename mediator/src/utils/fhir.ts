@@ -1,8 +1,8 @@
-import { Fhir } from "fhir";
-import { FHIR } from "../../config";
-import axios, { AxiosError } from "axios";
+import { Fhir } from 'fhir';
+import { FHIR } from '../../config';
+import axios from 'axios';
 
-export const VALID_GENDERS = ["male", "female", "other", "unknown"] as const;
+export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
 const { username, url, password } = FHIR;
 const axiosOptions = {
@@ -35,16 +35,16 @@ export function generateFHIRSubscriptionResource(
   }
 
   const FHIRSubscriptionResource = {
-    resourceType: "Subscription",
+    resourceType: 'Subscription',
     id: patientId,
-    status: "requested",
-    reason: "Follow up request for patient",
+    status: 'requested',
+    reason: 'Follow up request for patient',
     criteria: `Encounter?identifier=${patientId}`,
     channel: {
-      type: "rest-hook",
+      type: 'rest-hook',
       endpoint: callbackUrl,
-      payload: "application/fhir+json",
-      header: ["Content-Type: application/fhir+json"],
+      payload: 'application/fhir+json',
+      header: ['Content-Type: application/fhir+json'],
     },
   };
 
@@ -66,14 +66,14 @@ export async function getFHIROrgEndpointResource(id: string) {
   );
 
   if (!res.data.entry) {
-    const error: any = new Error("Organization not found")
-    error.status = 404
-    throw error
+    const error: any = new Error('Organization not found');
+    error.status = 404;
+    throw error;
   }
 
   const entry = res.data.entry[0];
   if (!entry) {
-    const error: any = new Error("Organization not found");
+    const error: any = new Error('Organization not found');
     error.status = 404;
     throw error;
   }
@@ -82,7 +82,7 @@ export async function getFHIROrgEndpointResource(id: string) {
   const endpoints = organization.endpoint;
 
   if (!endpoints) {
-    const error: any = new Error("Organization has no endpoint attached");
+    const error: any = new Error('Organization has no endpoint attached');
     error.status = 400;
     throw error;
   }
@@ -90,12 +90,12 @@ export async function getFHIROrgEndpointResource(id: string) {
   const endpointRef = endpoints[0];
 
   if (!endpointRef) {
-    const error: any = new Error("Organization has no endpoint attached");
+    const error: any = new Error('Organization has no endpoint attached');
     error.status = 400;
     throw error;
   }
 
-  const endpointId = endpointRef.reference.replace("Endpoint/", "");
+  const endpointId = endpointRef.reference.replace('Endpoint/', '');
 
   return await axios.get(`${url}/Endpoint/${endpointId}`, axiosOptions);
 }

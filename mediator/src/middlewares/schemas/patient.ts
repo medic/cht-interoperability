@@ -1,11 +1,11 @@
-import joi from "joi";
+import joi from 'joi';
 
 export const PatientSchema = joi.object({
   identifier: joi
     .array()
     .items(
       joi.object({
-        system: joi.string().valid("cht").required(),
+        system: joi.string().valid('cht').required(),
         value: joi.string().uuid().required(),
       })
     )

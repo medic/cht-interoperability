@@ -1,18 +1,18 @@
-import { logger } from "../../../logger";
-import { registerMediatorCallback } from "../openhim";
+import { logger } from '../../../logger';
+import { registerMediatorCallback } from '../openhim';
 
-jest.mock("../../../logger");
+jest.mock('../../../logger');
 
-describe("registerMediatorCallback", () => {
-  it("logs to the console when called without an error", () => {
+describe('registerMediatorCallback', () => {
+  it('logs to the console when called without an error', () => {
     registerMediatorCallback();
 
     expect(logger.info).toHaveBeenCalled();
   });
 
-  it("throws an error if an error was passed", () => {
+  it('throws an error if an error was passed', () => {
     expect(() =>
-      registerMediatorCallback("ERROR")
+      registerMediatorCallback('ERROR')
     ).toThrowErrorMatchingInlineSnapshot(
       `"Mediator Registration Failed: Reason ERROR"`
     );

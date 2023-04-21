@@ -1,13 +1,13 @@
-import { createChtRecord } from "../../utils/cht";
+import { createChtRecord } from '../../utils/cht';
 import {
   getFHIROrgEndpointResource,
   getFHIRPatientResource,
   deleteFhirSubscription,
   createFHIRSubscriptionResource,
-} from "../../utils/fhir";
+} from '../../utils/fhir';
 
-jest.mock("../../utils/fhir");
-jest.mock("../../utils/cht");
+jest.mock('../../utils/fhir');
+jest.mock('../../utils/cht');
 
 export const mockGetFHIROrgEndpointResource =
   getFHIROrgEndpointResource as jest.MockedFn<

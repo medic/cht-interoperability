@@ -4,25 +4,24 @@ import {
   mockCreateFHIRSubscriptionResource,
   mockCreateChtRecord,
   mockDeleteFhirSubscription,
-} from "./utils";
-import { createServiceRequest } from "../service-request";
-import { ServiceRequestFactory } from "../../middlewares/schemas/tests/utils";
+} from './utils';
+import { createServiceRequest } from '../service-request';
+import { ServiceRequestFactory } from '../../middlewares/schemas/tests/utils';
 
-jest.mock("axios");
-jest.mock("../../../logger");
+jest.mock('axios');
+jest.mock('../../../logger');
 
-describe("ServiceRequest controllers", () => {
-  const reference: any = "Person/ID";
+describe('ServiceRequest controllers', () => {
   const request: fhir4.ServiceRequest = ServiceRequestFactory.build();
 
-  describe("createServiceRequest", () => {
-    it("creates a new subscriptions resource on fhir and cht record", async () => {
+  describe('createServiceRequest', () => {
+    it('creates a new subscriptions resource on fhir and cht record', async () => {
       const recordRes = { status: 201, data: { success: true } };
-      const patientRes = { status: 201, data: { resourceType: "Patient" } };
-      const endpointRes = { status: 201, data: { resourceType: "Endpoint" } };
+      const patientRes = { status: 201, data: { resourceType: 'Patient' } };
+      const endpointRes = { status: 201, data: { resourceType: 'Endpoint' } };
       const subscriptionRes = {
         status: 201,
-        data: { resourceType: "Subscription" },
+        data: { resourceType: 'Subscription' },
       };
 
       mockGetFHIRPatientResource.mockResolvedValueOnce(patientRes as any);
@@ -39,8 +38,8 @@ describe("ServiceRequest controllers", () => {
       expect(res.data).toBe(subscriptionRes.data);
     });
 
-    it("returns default status and data when not provided in error", async () => {
-      const patientRes = { message: "message" };
+    it('returns default status and data when not provided in error', async () => {
+      const patientRes = { message: 'message' };
 
       mockGetFHIRPatientResource.mockRejectedValueOnce(patientRes);
 
@@ -51,8 +50,8 @@ describe("ServiceRequest controllers", () => {
     });
 
 
-    it("returns status and data of any axios error", async () => {
-      const patientRes = { status: 200, data: { resourceType: "Patient" } };
+    it('returns status and data of any axios error', async () => {
+      const patientRes = { status: 200, data: { resourceType: 'Patient' } };
 
       mockGetFHIRPatientResource.mockRejectedValueOnce(patientRes);
 
@@ -62,13 +61,13 @@ describe("ServiceRequest controllers", () => {
       expect(res.data).toBe(patientRes.data);
     });
 
-    it("deletes fhir subscription resource if cht record creation fails", async () => {
+    it('deletes fhir subscription resource if cht record creation fails', async () => {
       const recordRes = { status: 200, data: { success: false } };
-      const patientRes = { status: 200, data: { resourceType: "Patient" } };
-      const endpointRes = { status: 200, data: { resourceType: "Endpoint" } };
+      const patientRes = { status: 200, data: { resourceType: 'Patient' } };
+      const endpointRes = { status: 200, data: { resourceType: 'Endpoint' } };
       const subscriptionRes = {
         status: 201,
-        data: { resourceType: "Subscription" },
+        data: { resourceType: 'Subscription' },
       };
 
       mockGetFHIRPatientResource.mockResolvedValueOnce(patientRes as any);
