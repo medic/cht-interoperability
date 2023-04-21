@@ -24,7 +24,7 @@ The following steps assume that you successfully logged in into OpenHIM and the 
 
 1.  Create an **Organization**
 
-    1. HTTP Request - First, make a request to create an **Endpoint** Resource in the mediator using Postman. You can view the API documentation for creating an endpoint [here](#endpoint-resource). Once you send the request, the mediator will return a JSON response containing the `id` of the newly created endpoint.
+    1. HTTP Request - Use Postman to create an `Endpoint` Resource in the Mediator. You can view the API documentation for creating an `Endpoint` [here](#endpoint-resource). Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created endpoint.
 
     1. HTTP Request - Create an `Organization` Resource in the Mediator using as `endpoint.reference` the example value replacing `${ENDPOINT_ID}` with the actual `id` of the `Endpoint` you created in the previous step. Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created `Organization`. You can view the API documentation for creating an `Organization` [here](#organisation-resource).
 
