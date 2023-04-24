@@ -344,7 +344,7 @@ POST ${OPENHIM_ENDPOINT}/encounter
 }
 ```
 
-### `Organisation` Resource
+### `Organization` Resource
 
 The FHIR `Organization` resource represents a group of people or entities with a common purpose or focus. It contains the organization's **name**, **type**, and **contact details**. This resource is often used in healthcare settings to represent healthcare providers, hospitals, clinics, and other organizations involved in patient care. In the LTFU workflow, it represents the **Requesting System**, and it points to its `callback URL`.
 
