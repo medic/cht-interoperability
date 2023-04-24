@@ -12,7 +12,7 @@ describe('OrganizationSchema', () => {
   });
 
   it('rejects invalid organization resource', () => {
-    const data = PatientFactory.build();
+    const data = OrganizationFactory.build();
 
     expect(
       OrganizationSchema.validateAsync({ ...data, name: [] })
