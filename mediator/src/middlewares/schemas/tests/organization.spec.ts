@@ -1,5 +1,5 @@
 import { OrganizationSchema } from '../organization';
-import { OrganizationFactory, PatientFactory } from './utils';
+import { OrganizationFactory } from './utils';
 
 describe('OrganizationSchema', () => {
   it('accepts valid organization resource', async () => {
