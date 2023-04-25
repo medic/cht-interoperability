@@ -10,7 +10,7 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 - **Mediator (`${MEDIATOR_ENDPOINT}`)** - http://localhost:5001/mediator
 - **OpenHIM Admin Console** - http://localhost:9000/
-- **CHT with LTFU configuration** - https://localhost:5988/
+- **CHT with LTFU configuration** - http://localhost:5988/
 
 ### Live Test Instance
 
