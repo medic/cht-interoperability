@@ -8,13 +8,13 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 
 ### Docker - Local Setup
 
-- **Mediator (`${OPENHIM_ENDPOINT}`)** - http://localhost:5001/mediator
+- **Mediator (`${MEDIATOR_ENDPOINT}`)** - http://localhost:5001/mediator
 - **OpenHIM Admin Console** - http://localhost:9000/
 - **CHT with LTFU configuration** - https://localhost:5988/
 
 ### Live Test Instance
 
-- **Mediator (`${OPENHIM_ENDPOINT}`)** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator)
+- **Mediator (`${MEDIATOR_ENDPOINT}`)** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator)
 - **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org)
 - **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/)
 
@@ -89,7 +89,7 @@ subscriptions, you can visit the official documentation [here](https://build.fhi
 ##### Request
 
 ```http
-POST ${OPENHIM_ENDPOINT}/service-request
+POST ${MEDIATOR_ENDPOINT}/service-request
 
 {
     "intent": "order",
@@ -137,15 +137,19 @@ POST ${OPENHIM_ENDPOINT}/service-request
 
 The FHIR `Endpoint` resource describes the network address of a system or service where messages or payloads can be exchanged. It defines the communication characteristics for sending and receiving messages, such as the **transport protocol**, the **payload format**, and the **messaging endpoint's address**. The `Endpoint` resource can specify where to send data for specific purposes, such as notifications, alerts, or reports. It can be used in various contexts, such as clinical care, public health, or research, where different systems or services need to exchange data seamlessly.
 
-#### `POST ${OPENHIM_ENDPOINT}/endpoint`
+#### `POST ${MEDIATOR_ENDPOINT}/endpoint`
 
 In the LTFU workflow, the `Endpoint` is crucial in creating a `ServiceRequest`. It is obtained from the `Organization` attached to the `ServiceRequest` as the requester. The `Endpoint` represents the destination where the FHIR server sends notifications about matching `Encounter` resources. When the FHIR server receives a matching `Encounter` resource, it sends a notification to the endpoint. The endpoint is used as a **callback URL** for the FHIR server to notify the requester about the status of the `ServiceRequest`. Therefore, ensuring that the endpoint is accurate and valid for successful communication between the FHIR server and the requesting system is important.
+
+**ENDPOINT_ID:** _(Optional)_ A preferred `id` for the endpoint. By default, the mediator will generate an `id` for the endpoint.
+**ENDPOINT_IDENTIFIER:** An identifier for the endpoint that can be used when querying the FHIR database in the future.
+**ORG_CALLBACK_URL:** A callback URL that the mediator can use to contact the requesting system (organization) in the future when a `ServiceRequest` has been fulfilled.
 
 ##### Request
 
 
 ```http
-POST ${OPENHIM_ENDPOINT}/endpoint
+POST ${MEDIATOR_ENDPOINT}/endpoint
 
 {
     "id": "${ENDPOINT_ID}",
@@ -204,14 +208,14 @@ POST ${OPENHIM_ENDPOINT}/endpoint
 
 The FHIR `Patient` resource represents an individual receiving or awaiting healthcare services. It includes **patient demographics**, **clinical observations**, and **medical history**. It is a foundational resource in healthcare and can be used to track patient progress, manage care plans, and facilitate communication between healthcare providers.
 
-#### `POST ${OPENHIM_ENDPOINT}/patient`
+#### `POST ${MEDIATOR_ENDPOINT}/patient`
 
 This endpoint creates a `Patient` in the LFTU workflow. Patients are created by CHT automatically whenever a new Patient is added to the system.
 
 ##### Request
 
 ```http
-POST ${OPENHIM_ENDPOINT}/patient
+POST ${MEDIATOR_ENDPOINT}/patient
 
 {
     "identifier": [
@@ -269,7 +273,7 @@ POST ${OPENHIM_ENDPOINT}/patient
 
 The FHIR `Encounter` resource represents a clinical interaction between a patient and a healthcare provider. It contains information about the **patient's visit**, such as the **location**, the **reason for the visit**, and any relevant **procedures** or **diagnoses**.
 
-#### `POST ${OPENHIM_ENDPOINT}/encounter`
+#### `POST ${MEDIATOR_ENDPOINT}/encounter`
 
 The `Encounter` resource is an essential part of the LTFU workflow, which is automatically created by the CHT system after a CHW completes the workflow. It triggers FHIR to send a `Subscription` response to the requesting system when there is a match with the `Encounter` resource. This allows for efficient monitoring and follow-up care of patients in the LTFU workflow.
 
@@ -277,7 +281,7 @@ The `Encounter` resource is an essential part of the LTFU workflow, which is aut
 
 
 ```http
-POST ${OPENHIM_ENDPOINT}/encounter
+POST ${MEDIATOR_ENDPOINT}/encounter
 
 {
     "resourceType": "Encounter",
@@ -351,7 +355,7 @@ POST ${OPENHIM_ENDPOINT}/encounter
 
 The FHIR `Organization` resource represents a group of people or entities with a common purpose or focus. It contains the organization's **name**, **type**, and **contact details**. This resource is often used in healthcare settings to represent healthcare providers, hospitals, clinics, and other organizations involved in patient care. In the LTFU workflow, it represents the **Requesting System**, and it points to its `callback URL`.
 
-#### `POST ${OPENHIM_ENDPOINT}/organization`
+#### `POST ${MEDIATOR_ENDPOINT}/organization`
 
 The `Organization` resource in the LTFU workflow represents the Requesting System. Before creating an `Organization`, an `Endpoint` must be created. The `${ORGANIZATION_IDENTIFIER}` is intended to be randomly assigned by the requesting system. It is important to take note of this identifier, as it will be used in future `ServiceRequest`'s to identify the requesting system.
 
@@ -359,7 +363,7 @@ The `Organization` resource in the LTFU workflow represents the Requesting Syste
 
 
 ```http
-POST ${OPENHIM_ENDPOINT}/organization
+POST ${MEDIATOR_ENDPOINT}/organization
 
 {
     "identifier": [
