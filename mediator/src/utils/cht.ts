@@ -4,7 +4,6 @@ import { generateBasicAuthUrl } from './url';
 import https from 'https';
 import path from 'path';
 
-
 export async function createChtRecord(patientId: string) {
   const record = {
     _meta: {
