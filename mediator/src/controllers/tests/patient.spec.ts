@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../../logger';
 import { createPatient } from '../patient';
-import { PatientFactory } from '../../middlewares/schemas/tests/utils';
+import { PatientFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('../../../logger');
 jest.mock('axios');

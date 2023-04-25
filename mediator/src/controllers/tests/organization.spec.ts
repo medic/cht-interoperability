@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../../logger';
 import { createOrganization } from '../organization';
-import { OrganizationFactory } from '../../middlewares/schemas/tests/utils';
+import { OrganizationFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('../../../logger');
 jest.mock('axios');

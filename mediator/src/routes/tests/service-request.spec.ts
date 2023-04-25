@@ -1,7 +1,7 @@
 import { createServiceRequest } from '../../controllers/service-request';
 import request from 'supertest';
 import app from '../../..';
-import { ServiceRequestFactory } from '../../middlewares/schemas/tests/utils';
+import { ServiceRequestFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('../../controllers/service-request');
 

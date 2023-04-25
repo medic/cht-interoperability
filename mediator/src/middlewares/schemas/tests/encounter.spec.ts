@@ -1,5 +1,5 @@
 import { EncounterSchema } from '../encounter';
-import { EncounterFactory } from './utils';
+import { EncounterFactory } from './fhir-resource-factories';
 
 describe('EncounterSchema', () => {
   it('accepss valid encounter resource', async () => {

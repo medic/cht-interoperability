@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../..';
-import { OrganizationFactory } from '../../middlewares/schemas/tests/utils';
+import { OrganizationFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import { createOrganization } from '../../controllers/organization';
 
 jest.mock('../../controllers/organization');

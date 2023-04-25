@@ -6,7 +6,7 @@ import {
   mockDeleteFhirSubscription,
 } from './utils';
 import { createServiceRequest } from '../service-request';
-import { ServiceRequestFactory } from '../../middlewares/schemas/tests/utils';
+import { ServiceRequestFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('axios');
 jest.mock('../../../logger');

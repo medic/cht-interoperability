@@ -1,5 +1,5 @@
 import { OrganizationSchema } from '../organization';
-import { OrganizationFactory } from './utils';
+import { OrganizationFactory } from './fhir-resource-factories';
 
 describe('OrganizationSchema', () => {
   it('accepts valid organization resource', async () => {

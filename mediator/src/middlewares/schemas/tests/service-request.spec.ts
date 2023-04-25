@@ -1,5 +1,5 @@
 import { ServiceRequestSchema } from '../service-request';
-import { ServiceRequestFactory } from './utils';
+import { ServiceRequestFactory } from './fhir-resource-factories';
 
 describe('ServiceRequestSchema', () => {
   it('accepts valid service request values', async () => {

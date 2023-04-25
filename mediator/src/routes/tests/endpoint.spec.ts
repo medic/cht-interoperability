@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../..';
-import { EndpointFactory as EndpointFactoryBase } from '../../middlewares/schemas/tests/utils';
+import { EndpointFactory as EndpointFactoryBase } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import { createEndpoint } from '../../controllers/endpoint';
 
 jest.mock('../../controllers/endpoint');

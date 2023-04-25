@@ -1,5 +1,5 @@
 import { PatientSchema } from '../patient';
-import { PatientFactory } from './utils';
+import { PatientFactory } from './fhir-resource-factories';
 
 describe('PatientSchema', () => {
   it('accepts valid patient resource', async () => {

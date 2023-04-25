@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../..';
-import { EncounterFactory } from '../../middlewares/schemas/tests/utils';
+import { EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import { createEncounter } from '../../controllers/encounter';
 
 jest.mock('../../controllers/encounter');

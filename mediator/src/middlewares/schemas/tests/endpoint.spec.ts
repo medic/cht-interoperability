@@ -1,5 +1,5 @@
 import { EndpointSchema } from '../endpoint';
-import { EndpointFactory } from './utils';
+import { EndpointFactory } from './fhir-resource-factories';
 
 describe('EndpointSchema', () => {
   it('accepts valid endpoint resource', async () => {

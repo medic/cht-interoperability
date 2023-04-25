@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { logger } from '../../../logger';
 import { createEndpoint } from '../endpoint';
-import { EndpointFactory } from '../../middlewares/schemas/tests/utils';
+import { EndpointFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('../../../logger');
 jest.mock('axios');

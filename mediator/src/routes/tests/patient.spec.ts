@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../..';
 import { createPatient } from '../../controllers/patient';
-import { PatientFactory } from '../../middlewares/schemas/tests/utils';
+import { PatientFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('../../controllers/patient');
 

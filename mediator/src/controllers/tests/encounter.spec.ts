@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createEncounter } from '../encounter';
 import { logger } from '../../../logger';
-import { EncounterFactory } from '../../middlewares/schemas/tests/utils';
+import { EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
 jest.mock('axios');
 jest.mock('../../../logger');
