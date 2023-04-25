@@ -124,6 +124,7 @@ The following steps apply when running CHT locally in development mode and when 
 ```bash
 curl -X PUT -H "Content-Type: text/plain" http://admin:password@localhost:5988/api/v1/credentials/openhim1 -d 'interop-password'
 ```
+4. After updating the mediator code or cht configuration, you need to run `./startup.sh up-dev` to upload the changes to docker compose.
 
 #### CHT Configuration
 
