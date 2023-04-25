@@ -24,9 +24,9 @@ The following steps assume that you successfully logged in into OpenHIM and the 
 
 1.  Create an **Endpoint** and an **Organization**
 
-    1. HTTP Request - Use Postman to create an `Endpoint` Resource in the Mediator. You can view the API documentation for creating an `Endpoint` [here](#endpoint-resource). Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created endpoint.
+    1. **HTTP Request** - Use Postman to create an `Endpoint` Resource in the Mediator. You can view the API documentation for creating an `Endpoint` [here](#endpoint-resource). Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created endpoint.
 
-    1. HTTP Request - Create an `Organization` Resource in the Mediator using as `endpoint.reference` the example value replacing `${ENDPOINT_ID}` with the actual `id` of the `Endpoint` you created in the previous step. Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created `Organization`. You can view the API documentation for creating an `Organization` [here](#organization-resource).
+    1. **HTTP Request** - Create an `Organization` Resource in the Mediator using as `endpoint.reference` the example value replacing `${ENDPOINT_ID}` with the actual `id` of the `Endpoint` you created in the previous step. Once you send the request, the Mediator will return a JSON response containing the `id` of the newly created `Organization`. You can view the API documentation for creating an `Organization` [here](#organization-resource).
 
 
 > It is important to note that you only need to create an `Organization` once, which you can use for future requests. So, after creating the `Organization`, you can save the `organization.identifier[0].value` value and use it for all future `ServiceRequest` requests.
@@ -34,28 +34,28 @@ The following steps assume that you successfully logged in into OpenHIM and the 
 
 1.  Create a **Patient**
 
-    1. CHT - Log in to the CHT platform using the credentials for the `chw` user.
-    1. CHT - Navigate to the `People` tab in the CHT dashboard. From there, select a Facility where you want to create a new `Person`. Click on the `New Person` button and fill in the required details for the Person. Make sure to select `Patient` as the `Person`'s role for this flow.
-    1. CHT - Once you have created the new `Person`, you need to retrieve their unique identifier from the browser's URL. You can do this by copying the alphanumeric string that appears after `person/` in the URL. Keep this identifier safe as you will need it for the next steps.
-    1. OpenHIM Admin Console - To verify that the `Patient` creation was successful, navigate to the `Transaction Log` in the OpenHIM Admin Console. You should see two successful API calls recorded in the log, one to `/mediator/patient/` and one to `/fhir/Patient/`.
-       ![](./images/instance-patient.png)
+    1. **CHT** - Log in to the CHT platform using the credentials for the `chw` user.
+    1. **CHT** - Navigate to the `People` tab in the CHT dashboard. From there, select a Facility where you want to create a new `Person`. Click on the `New Person` button and fill in the required details for the Person. Make sure to select `Patient` as the `Person`'s role for this flow.
+    1. **CHT** - Once you have created the new `Person`, you need to retrieve their unique identifier from the browser's URL. You can do this by copying the alphanumeric string that appears after `person/` in the URL. Keep this identifier safe as you will need it for the next steps.
+    1. **OpenHIM Admin Console** - To verify that the `Patient` creation was successful, navigate to the `Transaction Log` in the OpenHIM Admin Console. You should see two successful API calls recorded in the log, one to `/mediator/patient/` and one to `/fhir/Patient/`.
+       ![](/docs/images/instance-patient.png)
 
 1.  Request the LTFU for the Patient
 
-    1. HTTP Request - To trigger the LTFU process for the newly created patient, you need to create a `ServiceRequest`. You can refer to the API documentation available [here](#servicerequest-resource) to learn how to create a `ServiceRequest`. Replace the `requester.reference` and the `subject.reference` with the `Organization` and `Patient` identifiers respectively. Once the `ServiceRequest` is received by the mediator, it will initiate the LTFU workflow for the patient, which includes reminders for follow-up appointments and check-ins. 
+    1. **HTTP Request** - To trigger the LTFU process for the newly created patient, you need to create a `ServiceRequest`. You can refer to the API documentation available [here](#servicerequest-resource) to learn how to create a `ServiceRequest`. Replace the `requester.reference` and the `subject.reference` with the `Organization` and `Patient` identifiers respectively. Once the `ServiceRequest` is received by the mediator, it will initiate the LTFU workflow for the patient, which includes reminders for follow-up appointments and check-ins. 
 
-    1. HTTP Request - Verify that the `ServiceRequest` was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see three successful API calls, as in the image below:
-       ![](./images/instance-service-request.png)
+    1. **HTTP Request** - Verify that the `ServiceRequest` was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see three successful API calls, as in the image below:
+       ![](/docs/images/instance-service-request.png)
 
 1.  Handle LTFU Task
 
-    1. CHT - Navigate to the `Tasks` tab. There should be an automatically created `Task` for the Patient. If it is not the case, sync data via `Sync now` option. The `Task` should look like in the image below:
+    1. **CHT** - Navigate to the `Tasks` tab. There should be an automatically created `Task` for the Patient. If it is not the case, sync data via `Sync now` option. The `Task` should look like in the image below:
 
-     <img src="./images/task.png" width="500">
+        <img src="docs/images/task.png" width="500">
 
-    1. CHT - Select an option (Yes or No) and submit the `Tasks`.
-    1. OpenHIM Admin Console - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/encounter/` and one to `/fhir/Encounter/`, as in the image below.
-       ![](./images/instance-encounter.png)
+    1. **CHT** - Select an option (Yes or No) and submit the `Tasks`.
+    1. **OpenHIM Admin Console** - Verify that the Encounter creation was successful in both OpenHIM Mediator & FHIR Resource. Navigate to the `Transaction Log` in the Admin Console. You should see two successful API calls, one to `/mediator/encounter/` and one to `/fhir/Encounter/`, as in the image below.
+       ![](/docs/images/instance-encounter.png)
     1. If your callback URL test service was set up correctly, you should receive a notification from the mediator.
 
 
@@ -141,9 +141,9 @@ The FHIR `Endpoint` resource describes the network address of a system or servic
 
 In the LTFU workflow, the `Endpoint` is crucial in creating a `ServiceRequest`. It is obtained from the `Organization` attached to the `ServiceRequest` as the requester. The `Endpoint` represents the destination where the FHIR server sends notifications about matching `Encounter` resources. When the FHIR server receives a matching `Encounter` resource, it sends a notification to the endpoint. The endpoint is used as a **callback URL** for the FHIR server to notify the requester about the status of the `ServiceRequest`. Therefore, ensuring that the endpoint is accurate and valid for successful communication between the FHIR server and the requesting system is important.
 
-**ENDPOINT_ID:** _(Optional)_ A preferred `id` for the endpoint. By default, the mediator will generate an `id` for the endpoint.
-**ENDPOINT_IDENTIFIER:** An identifier for the endpoint that can be used when querying the FHIR database in the future.
-**ORG_CALLBACK_URL:** A callback URL that the mediator can use to contact the requesting system (organization) in the future when a `ServiceRequest` has been fulfilled.
+- **ENDPOINT_ID:** _(Optional)_ A preferred `id` for the `Endpoint`. By default, the mediator will generate an `id` for the `Endpoint`.
+- **ENDPOINT_IDENTIFIER:** An identifier for the `Endpoint` that can be used when querying the FHIR database in the future.
+- **ORG_CALLBACK_URL:** A callback URL that the mediator can use to contact the requesting system (`Organization`) in the future when a `ServiceRequest` has been fulfilled.
 
 ##### Request
 

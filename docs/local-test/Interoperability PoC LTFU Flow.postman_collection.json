@@ -1,571 +1,898 @@
 {
-  "info": {
-    "_postman_id": "8b09c5d2-ec9f-4e15-ac33-3bb45e05cb5f",
-    "name": "Interoperability PoC LTFU Flow",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "7615796"
-  },
-  "item": [
-    {
-      "name": "Mediator Status",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", () => {",
-              "  pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "pm.test(\"Mediator response is success\", () => {",
-              "    const responseJson = pm.response.json();",
-              "    pm.expect(responseJson.status).to.eql('success');",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{OPENHIM_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{OPENHIM_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": ""
-        },
-        "url": {
-          "raw": "http://localhost:5001/mediator/",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5001",
-          "path": ["mediator", ""]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "CHT Create Place",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "let response = pm.response.json();",
-              "",
-              "pm.collectionVariables.set(\"place\", response.id);",
-              "",
-              "pm.test(\"Status code is 200\", () => {",
-              "  pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "pm.test(\"Place creation is successful\", () => {",
-              "    const responseJson = pm.response.json();",
-              "    pm.expect(responseJson.ok).to.eql(true);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{CHT_ADMIN_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{CHT_ADMIN_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Host",
-            "value": "localhost:5988",
-            "type": "text",
-            "disabled": true
-          },
-          {
-            "key": "X-OpenRosa-Version",
-            "value": "1.0",
-            "type": "text",
-            "disabled": true
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"CHP Branch Two\",\n  \"type\": \"district_hospital\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5988/api/v1/places",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5988",
-          "path": ["api", "v1", "places"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "CHT Create CHW User",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "let response = pm.response.json();",
-              "let req = JSON.parse(request.data);",
-              "",
-              "pm.collectionVariables.set(\"chwUsername\", req.username);",
-              "pm.collectionVariables.set(\"chwPassword\", req.password);",
-              "",
-              "pm.collectionVariables.set(\"contactId\", response.contact.id);",
-              "",
-              "pm.test(\"Status code is 200\", () => {",
-              "  pm.expect(pm.response.code).to.eql(200);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{CHT_ADMIN_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{CHT_ADMIN_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Host",
-            "value": "localhost:5988",
-            "type": "text",
-            "disabled": true
-          },
-          {
-            "key": "X-OpenRosa-Version",
-            "value": "1.0",
-            "type": "text",
-            "disabled": true
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"password\": \"Dakar1234\",\n    \"username\": \"maria\",\n    \"type\": \"chw\",\n    \"place\": {\n        \"name\": \"CHP Branch One\",\n        \"type\": \"district_hospital\",\n        \"parent\": \"{{place}}\"\n    },\n    \"contact\": {\n        \"name\": \"Maria Blob\",\n        \"phone\": \"+2868917046\"\n    }\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5988/api/v2/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5988",
-          "path": ["api", "v2", "users"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "CHT Create Patient",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "let response = pm.response.json();",
-              "",
-              "pm.collectionVariables.set(\"patient\", response.id);",
-              "",
-              "pm.test(\"Status code is 200\", () => {",
-              "  pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "pm.test(\"Patient creation is successful\", () => {",
-              "    const responseJson = pm.response.json();",
-              "    pm.expect(responseJson.ok).to.eql(true);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{chwPassword}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{chwUsername}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"John Test\",\n  \"phone\": \"+2548277217095\",\n  \"date_of_birth\":\"1980-06-06\",\n  \"sex\":\"male\",\n  \"type\": \"person\",\n  \"role\": \"patient\",\n  \"contact_type\": \"patient\",\n  \"place\": \"{{place}}\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5988/api/v1/people",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5988",
-          "path": ["api", "v1", "people"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "FHIR Retrieve Patient ID",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", () => {",
-              "  pm.expect(pm.response.code).to.eql(200);",
-              "});",
-              "",
-              "pm.test(\"Patient creation is successful in FHIR DB\", () => {",
-              "    const responseJson = pm.response.json();",
-              "    pm.expect(responseJson.total).to.eql(1);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{OPENHIM_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{OPENHIM_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5001/fhir/Patient/?identifier={{patient}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5001",
-          "path": ["fhir", "Patient", ""],
-          "query": [
-            {
-              "key": "identifier",
-              "value": "{{patient}}"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Mediator Send Service request",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "let response = pm.response.json();",
-              "",
-              "pm.collectionVariables.set(\"encounterUrl\", response.criteria);",
-              "",
-              "pm.test(\"Status code is 201\", () => {",
-              "  pm.expect(pm.response.code).to.eql(201);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{OPENHIM_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{OPENHIM_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{ \n    \"patient_id\": \"{{patient}}\", \n    \"callback_url\": \"https://interop.free.beeceptor.com/callback\" \n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5001/mediator/service-request",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5001",
-          "path": ["mediator", "service-request"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "CHT Submit Form",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [""],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 201\", () => {",
-              "  pm.expect(pm.response.code).to.eql(201);",
-              "});",
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{chwPassword}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{chwUsername}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"docs\": [\n        {\n            \"form\": \"interop_follow_up\",\n            \"type\": \"data_record\",\n            \"contact\": {\n                \"_id\": \"{{contactId}}\",\n                \"parent\": {\n                    \"_id\": \"{{place}}\" \n                }\n            },\n            \"from\": \"\",\n            \"hidden_fields\": [\n                \"meta\"\n            ],\n            \"fields\": {\n                \"inputs\": {\n                    \"meta\": {\n                        \"location\": {\n                            \"lat\": \"\",\n                            \"long\": \"\",\n                            \"error\": \"\",\n                            \"message\": \"\"\n                        },\n                        \"deprecatedID\": \"\"\n                    },\n                    \"source\": \"task\",\n                    \"is_covid_vaccine_referral\": \"\",\n                    \"contact\": {\n                        \"_id\": \"{{patient}}\",\n                        \"name\": \"John Test\",\n                        \"date_of_birth\": \"1980-06-06\",\n                        \"sex\": \"male\",\n                        \"parent\": {\n                            \"parent\": {\n                                \"contact\": {\n                                    \"name\": \"\",\n                                    \"phone\": \"\"\n                                }\n                            }\n                        }\n                    }\n                },\n                \"vaccination_details\": {\n                    \"interop_follow_up\": \"yes\"\n                },\n                \"meta\": {\n                    \"instanceID\": \"uuid:0fbe39f1-8aa5-477a-89ea-863831766766\"\n                }\n            },\n            \"_id\": \"{{$guid}}\",\n            \"_rev\": \"1-{{$guid}}\"\n        }\n    ],\n    \"new_edits\": false\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5988/medic/_bulk_docs",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5988",
-          "path": ["medic", "_bulk_docs"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "FHIR Retrieve Encounter",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Encounter creation is successful in FHIR DB\", () => {",
-              "    const responseJson = pm.response.json();",
-              "    pm.expect(responseJson.total).to.eql(1);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "basic",
-          "basic": [
-            {
-              "key": "password",
-              "value": "{{OPENHIM_PASSWORD}}",
-              "type": "string"
-            },
-            {
-              "key": "username",
-              "value": "{{OPENHIM_USER}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"resourceType\": \"Encounter\",\n  \"identifier\": [\n    {\n      \"use\": \"official\",\n      \"value\": \"96eb2845-15dd-4b80-9cf2-a853e4443e1c\"\n    }\n  ],\n  \"status\": \"finished\",\n  \"class\": \"outpatient\",\n  \"type\": [\n    {\n      \"text\": \"Community health worker visit\"\n    }\n  ],\n  \"subject\": \"96eb2845-15dd-4b80-9cf2-a853e4443e1c\",\n  \"participant\": [\n    {\n      \"type\": [\n        {\n          \"text\": \"Community health worker\"\n        }\n      ]\n    }\n  ]\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:5001/fhir/{{encounterUrl}}",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5001",
-          "path": ["fhir", "{{encounterUrl}}"]
-        }
-      },
-      "response": []
-    }
-  ],
-  "variable": [
-    {
-      "key": "place",
-      "value": ""
-    },
-    {
-      "key": "userId",
-      "value": ""
-    },
-    {
-      "key": "chwUsername",
-      "value": ""
-    },
-    {
-      "key": "chwPassword",
-      "value": ""
-    },
-    {
-      "key": "contactId",
-      "value": ""
-    },
-    {
-      "key": "patient",
-      "value": ""
-    },
-    {
-      "key": "encounterUrl",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "8b09c5d2-ec9f-4e15-ac33-3bb45e05cb5f",
+		"name": "Interoperability PoC LTFU Flow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7615796"
+	},
+	"item": [
+		{
+			"name": "Mediator Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Mediator response is success\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.eql('success');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/mediator/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mediator Create Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"endpointId\", response.id);",
+							"",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "interop-password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "interop-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identifier\": [\n        {\n            \"system\": \"official\",\n            \"value\": \"{{ENDPOINT_IDENTIFIER}}\"\n        }\n    ],\n    \"connectionType\": {\n        \"system\": \"http://terminology.hl7.org/CodeSystem/endpoint-connection-type\",\n        \"code\": \"hl7-fhir-rest\"\n    },\n    \"payloadType\": [\n        {\n            \"text\": \"application/json\"\n        }\n    ],\n    \"address\": \"{{CALLBACK_URL}}\",\n    \"status\": \"active\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/mediator/endpoint",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						"endpoint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FHIR Retrieve Endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Endpoint creation is successful in FHIR DB\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"  pm.expect(response.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "interop-password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "interop-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/fhir/Endpoint/?identifier={{ENDPOINT_IDENTIFIER}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Endpoint",
+						""
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "{{ENDPOINT_IDENTIFIER}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Organization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "interop-password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "interop-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identifier\": [\n        {\n            \"system\": \"official\",\n            \"value\": \"{{ORGANIZATION_IDENTIFIER}}\"\n        }\n    ],\n    \"name\": [\n        \"Athena\"\n    ],\n    \"endpoint\": [\n        {\n            \"reference\": \"Endpoint/{{endpointId}}\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/mediator/organization",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						"organization"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FHIR Retrieve Organization",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Organization creation is successful in FHIR DB\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"  pm.expect(response.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "interop-password",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "interop-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/fhir/Organization/?identifier={{ORGANIZATION_IDENTIFIER}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Organization",
+						""
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "{{ORGANIZATION_IDENTIFIER}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Create Place",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"place\", response.id);",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Place creation is successful\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.ok).to.eql(true);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{CHT_ADMIN_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{CHT_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Host",
+						"value": "localhost:5988",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-OpenRosa-Version",
+						"value": "1.0",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"CHP Branch Two\",\n  \"type\": \"district_hospital\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/api/v1/places",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"api",
+						"v1",
+						"places"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Create CHW User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"let req = JSON.parse(request.data);",
+							"",
+							"pm.collectionVariables.set(\"chwUsername\", req.username);",
+							"pm.collectionVariables.set(\"chwPassword\", req.password);",
+							"",
+							"pm.collectionVariables.set(\"contactId\", response.contact.id);",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{CHT_ADMIN_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{CHT_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Host",
+						"value": "localhost:5988",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "X-OpenRosa-Version",
+						"value": "1.0",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"password\": \"Dakar1234\",\n    \"username\": \"geo\",\n    \"type\": \"chw\",\n    \"place\": {\n        \"name\": \"CHP Branch One\",\n        \"type\": \"district_hospital\",\n        \"parent\": \"{{place}}\"\n    },\n    \"contact\": {\n        \"name\": \"Maria Blob\",\n        \"phone\": \"+2868917046\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/api/v2/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"api",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Create Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"patient\", response.id);",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Patient creation is successful\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.ok).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{chwPassword}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{chwUsername}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Test\",\n  \"phone\": \"+2548277217095\",\n  \"date_of_birth\":\"1980-06-06\",\n  \"sex\":\"male\",\n  \"type\": \"person\",\n  \"role\": \"patient\",\n  \"contact_type\": \"patient\",\n  \"place\": \"{{place}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/api/v1/people",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"api",
+						"v1",
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FHIR Retrieve Patient ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Patient creation is successful in FHIR DB\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/fhir/Patient/?identifier={{patient}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Patient",
+						""
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "{{patient}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mediator Send Service request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"encounterUrl\", response.criteria);",
+							"",
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"intent\": \"order\",\n    \"subject\": {\n        \"reference\": \"Patient/{{patient}}\"\n    },\n    \"requester\": {\n        \"reference\": \"Organization/{{ORGANIZATION_IDENTIFIER}}\"\n    }\n    ,\n    \"status\": \"active\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/mediator/service-request",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						"service-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Submit Form",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{chwPassword}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{chwUsername}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"docs\": [\n        {\n            \"form\": \"interop_follow_up\",\n            \"type\": \"data_record\",\n            \"contact\": {\n                \"_id\": \"{{contactId}}\",\n                \"parent\": {\n                    \"_id\": \"{{place}}\" \n                }\n            },\n            \"from\": \"\",\n            \"hidden_fields\": [\n                \"meta\"\n            ],\n            \"fields\": {\n                \"inputs\": {\n                    \"meta\": {\n                        \"location\": {\n                            \"lat\": \"\",\n                            \"long\": \"\",\n                            \"error\": \"\",\n                            \"message\": \"\"\n                        },\n                        \"deprecatedID\": \"\"\n                    },\n                    \"source\": \"task\",\n                    \"is_covid_vaccine_referral\": \"\",\n                    \"contact\": {\n                        \"_id\": \"{{patient}}\",\n                        \"name\": \"John Test\",\n                        \"date_of_birth\": \"1980-06-06\",\n                        \"sex\": \"male\",\n                        \"parent\": {\n                            \"parent\": {\n                                \"contact\": {\n                                    \"name\": \"\",\n                                    \"phone\": \"\"\n                                }\n                            }\n                        }\n                    }\n                },\n                \"vaccination_details\": {\n                    \"interop_follow_up\": \"yes\"\n                },\n                \"meta\": {\n                    \"instanceID\": \"uuid:0fbe39f1-8aa5-477a-89ea-863831766766\"\n                }\n            },\n            \"_id\": \"{{$guid}}\",\n            \"_rev\": \"1-{{$guid}}\"\n        }\n    ],\n    \"new_edits\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/medic/_bulk_docs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"medic",
+						"_bulk_docs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FHIR Retrieve Encounter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Encounter creation is successful in FHIR DB\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"resourceType\": \"Encounter\",\n  \"identifier\": [\n    {\n      \"use\": \"official\",\n      \"value\": \"96eb2845-15dd-4b80-9cf2-a853e4443e1c\"\n    }\n  ],\n  \"status\": \"finished\",\n  \"class\": \"outpatient\",\n  \"type\": [\n    {\n      \"text\": \"Community health worker visit\"\n    }\n  ],\n  \"subject\": \"96eb2845-15dd-4b80-9cf2-a853e4443e1c\",\n  \"participant\": [\n    {\n      \"type\": [\n        {\n          \"text\": \"Community health worker\"\n        }\n      ]\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/fhir/{{encounterUrl}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"{{encounterUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "place",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "chwUsername",
+			"value": ""
+		},
+		{
+			"key": "chwPassword",
+			"value": ""
+		},
+		{
+			"key": "contactId",
+			"value": ""
+		},
+		{
+			"key": "patient",
+			"value": ""
+		},
+		{
+			"key": "encounterUrl",
+			"value": ""
+		},
+		{
+			"key": "endpointId",
+			"value": ""
+		},
+		{
+			"key": "organizationId",
+			"value": ""
+		}
+	]
 }

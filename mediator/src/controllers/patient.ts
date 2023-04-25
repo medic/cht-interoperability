@@ -2,7 +2,6 @@ import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
 
-
 export async function createPatient(patient: fhir4.Patient) {
   try {
     const res = await axios.post(`${FHIR.url}/Patient`, patient, {
