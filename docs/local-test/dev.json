@@ -1,51 +1,51 @@
 {
-	"id": "2e553c09-22c1-4ca2-a1b2-1ecd6d711bf4",
-	"name": "dev",
-	"values": [
-		{
-			"key": "OPENHIM_USER",
-			"value": "interop-client",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "OPENHIM_PASSWORD",
-			"value": "interop-password",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "CHT_ADMIN_USER",
-			"value": "admin",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "CHT_ADMIN_PASSWORD",
-			"value": "password",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "CALLBACK_URL",
-			"value": "https://interop.free.beeceptor.com/callback",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "ORGANIZATION_IDENTIFIER",
-			"value": "test-org",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "ENDPOINT_IDENTIFIER",
-			"value": "test-endpoint",
-			"type": "default",
-			"enabled": true
-		}
-	],
-	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2023-04-25T11:48:41.589Z",
-	"_postman_exported_using": "Postman/10.13.4"
+  "id": "2e553c09-22c1-4ca2-a1b2-1ecd6d711bf4",
+  "name": "dev",
+  "values": [
+    {
+      "key": "OPENHIM_USER",
+      "value": "interop-client",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "OPENHIM_PASSWORD",
+      "value": "interop-password",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "CHT_ADMIN_USER",
+      "value": "admin",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "CHT_ADMIN_PASSWORD",
+      "value": "password",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "CALLBACK_URL",
+      "value": "https://interop.free.beeceptor.com/callback",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ORGANIZATION_IDENTIFIER",
+      "value": "test-org",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ENDPOINT_IDENTIFIER",
+      "value": "test-endpoint",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2023-04-25T11:48:41.589Z",
+  "_postman_exported_using": "Postman/10.13.4"
 }
