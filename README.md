@@ -58,7 +58,7 @@ The following [FHIR Resources](https://www.hl7.org/fhir/resource.html) are used 
 
 ### Test LTFU Workflow
 
-The [workflow guide](./docs/workflow.md) explains the steps for testing the LTFU workflow using the local setup and the Medic instances. For the local setup, you are expected to have already completed the setup procedures outlined in this document in the section below.
+The [workflow guide](./workflow.md) explains the steps for testing the LTFU workflow using the local setup and the Medic instances. For the local setup, you are expected to have already completed the setup procedures outlined in this document in the section below.
 
 ## Get Started with Local Setup
 
