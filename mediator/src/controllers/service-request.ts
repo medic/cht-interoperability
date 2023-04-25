@@ -16,7 +16,7 @@ export async function createServiceRequest(request: fhir4.ServiceRequest) {
     const orgId = (request.requester as any).reference.replace('Organization/', '');
     const endpointRes = await getFHIROrgEndpointResource(orgId);
 
-    // Generate subscription resource
+    // This creates a subscription for the organization in FHIR to respond to an encounter in the future.
     const url = endpointRes.data.address;
     const subRes = await createFHIRSubscriptionResource(patientId, url);
     

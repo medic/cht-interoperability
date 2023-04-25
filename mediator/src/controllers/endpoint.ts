@@ -2,12 +2,10 @@ import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
 
-const { url: fhirUrl, username, password } = FHIR;
-
 export async function createEndpoint(endpoint: fhir4.Endpoint) {
   try {
-    const res = await axios.post(`${fhirUrl}/Endpoint`, endpoint, {
-      auth: { username, password },
+    const res = await axios.post(`${FHIR.url}/Endpoint`, endpoint, {
+      auth: { username: FHIR.username, password: FHIR.password },
     });
 
     return { data: res.data, status: res.status };

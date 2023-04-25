@@ -6,7 +6,7 @@ import { createEncounter } from '../../controllers/encounter';
 jest.mock('../../controllers/encounter');
 
 describe('POST /encounter', () => {
-  it('accepst incoming request with valid encounter resource', async () => {
+  it('accepts incoming request with valid encounter resource', async () => {
     (createEncounter as any).mockResolvedValueOnce({
       data: {},
       status: 201,

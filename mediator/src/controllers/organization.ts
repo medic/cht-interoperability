@@ -2,12 +2,10 @@ import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
 
-const { url: fhirUrl, username, password } = FHIR;
-
 export async function createOrganization(organization: fhir4.Organization) {
   try {
-    const res = await axios.post(`${fhirUrl}/Organization`, organization, {
-      auth: { username, password },
+    const res = await axios.post(`${FHIR.url}/Organization`, organization, {
+      auth: { username: FHIR.username, password: FHIR.password },
     });
 
     return { status: res.status, data: res.data };

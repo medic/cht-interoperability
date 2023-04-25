@@ -4,11 +4,10 @@ import axios from 'axios';
 
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
-const { username, url, password } = FHIR;
 const axiosOptions = {
   auth: {
-    username,
-    password,
+    username: FHIR.username,
+    password: FHIR.password,
   },
 };
 
@@ -56,12 +55,12 @@ export async function createFHIRSubscriptionResource(
   callbackUrl: string
 ) {
   const res = generateFHIRSubscriptionResource(patientId, callbackUrl);
-  return await axios.post(`${url}/Subscription`, res, axiosOptions);
+  return await axios.post(`${FHIR.url}/Subscription`, res, axiosOptions);
 }
 
 export async function getFHIROrgEndpointResource(id: string) {
   const res = await axios.get(
-    `${url}/Organization/?identifier=${id}`,
+    `${FHIR.url}/Organization/?identifier=${id}`,
     axiosOptions
   );
 
@@ -97,16 +96,16 @@ export async function getFHIROrgEndpointResource(id: string) {
 
   const endpointId = endpointRef.reference.replace('Endpoint/', '');
 
-  return await axios.get(`${url}/Endpoint/${endpointId}`, axiosOptions);
+  return await axios.get(`${FHIR.url}/Endpoint/${endpointId}`, axiosOptions);
 }
 
 export async function getFHIRPatientResource(patientId: string) {
   return await axios.get(
-    `${url}/Patient/?identifier=${patientId}`,
+    `${FHIR.url}/Patient/?identifier=${patientId}`,
     axiosOptions
   );
 }
 
 export async function deleteFhirSubscription(id?: string) {
-  return await axios.delete(`${url}/Subscription/${id}`, axiosOptions);
+  return await axios.delete(`${FHIR.url}/Subscription/${id}`, axiosOptions);
 }

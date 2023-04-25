@@ -2,14 +2,13 @@ import axios from 'axios';
 import { FHIR } from '../../config';
 import { logger } from '../../logger';
 
-const { url: fhirUrl, username: fhirUsername, password: fhirPassword } = FHIR;
 
 export async function createPatient(patient: fhir4.Patient) {
   try {
-    const res = await axios.post(`${fhirUrl}/Patient`, patient, {
+    const res = await axios.post(`${FHIR.url}/Patient`, patient, {
       auth: {
-        username: fhirUsername,
-        password: fhirPassword,
+        username: FHIR.username,
+        password: FHIR.password,
       },
     });
     return { status: res.status, data: res.data };

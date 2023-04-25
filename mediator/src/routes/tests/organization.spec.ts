@@ -6,7 +6,7 @@ import { createOrganization } from '../../controllers/organization';
 jest.mock('../../controllers/organization');
 
 describe('POST /organization', () => {
-  it('accepst incoming request with valid organization resource', async () => {
+  it('accepts incoming request with valid organization resource', async () => {
     (createOrganization as any).mockResolvedValueOnce({
       data: {},
       status: 201,

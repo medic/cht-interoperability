@@ -6,7 +6,7 @@ import { ServiceRequestFactory } from '../../middlewares/schemas/tests/utils';
 jest.mock('../../controllers/service-request');
 
 describe('POST /service-request', () => {
-  it('accepst incoming request with valid service request resource', async () => {
+  it('accepts incoming request with valid service request resource', async () => {
     (createServiceRequest as any).mockResolvedValueOnce({
       data: {},
       status: 201,

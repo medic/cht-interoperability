@@ -4,7 +4,6 @@ import { generateBasicAuthUrl } from './url';
 import https from 'https';
 import path from 'path';
 
-const { username, password, url } = CHT;
 
 export async function createChtRecord(patientId: string) {
   const record = {
@@ -19,7 +18,7 @@ export async function createChtRecord(patientId: string) {
     }),
   };
 
-  const chtApiUrl = generateChtRecordsApiUrl(url, username, password);
+  const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
 
   return await axios.post(chtApiUrl, record, options);
 }

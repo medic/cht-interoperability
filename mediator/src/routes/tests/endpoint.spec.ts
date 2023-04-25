@@ -10,7 +10,7 @@ const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('payloadType', [{ text: 'application/json' }]);
 
 describe('POST /endpoint', () => {
-  it('accepst incoming request with valid endpoint resource', async () => {
+  it('accepts incoming request with valid endpoint resource', async () => {
     (createEndpoint as any).mockResolvedValueOnce({
       data: {},
       status: 201,
