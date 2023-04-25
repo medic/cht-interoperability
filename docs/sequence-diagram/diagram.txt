@@ -1,5 +1,9 @@
 title Loss To Follow up Flow Chart
 
+Requesting System->OpenHIM Mediator: Create Endpoint
+OpenHIM Mediator->Requesting System: Endpoint Resource
+Requesting System->OpenHIM Mediator: Create Organization
+OpenHIM Mediator->Requesting System: Organization Resource
 CHW->CHT: Create Patient
 CHT->OpenHIM Mediator: Create Patient
 OpenHIM Mediator->FHIR Resource: Create Patient
