@@ -1,6 +1,7 @@
 import { Fhir } from 'fhir';
 import { FHIR } from '../../config';
 import axios from 'axios';
+import { logger } from '../../logger';
 
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
@@ -108,4 +109,20 @@ export async function getFHIRPatientResource(patientId: string) {
 
 export async function deleteFhirSubscription(id?: string) {
   return await axios.delete(`${FHIR.url}/Subscription/${id}`, axiosOptions);
+}
+
+export async function createFhirResource(doc: fhir4.Resource) {
+  try {
+    const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, {
+      auth: {
+        username: FHIR.username,
+        password: FHIR.password,
+      },
+    });
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }

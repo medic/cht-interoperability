@@ -1,5 +1,8 @@
+import { logger } from '../../../logger';
+import { EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import {
   createFHIRSubscriptionResource,
+  createFhirResource,
   deleteFhirSubscription,
   generateFHIRSubscriptionResource,
   getFHIROrgEndpointResource,
@@ -8,6 +11,7 @@ import {
 import axios from 'axios';
 
 jest.mock('axios');
+jest.mock('../../../logger');
 
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
@@ -174,6 +178,41 @@ describe('FHIR Utils', () => {
       expect(mockAxios.delete.mock.calls[0][0]).toContain(subId);
       expect(res.data).toStrictEqual({});
       expect(res.status).toBe(200);
+    });
+  });
+
+  describe('createFhirResource', () => {
+    const encounter: fhir4.Resource = EncounterFactory.build();
+    const resourceType = 'Encounter';
+
+    it('should make a call to the appropraite fhir endpoint', async () => {
+      const data = { status: 201, data: { id: '123' } };
+
+      mockAxios.post = jest.fn().mockResolvedValue(data);
+
+      const res = await createFhirResource({...encounter, resourceType});
+
+      expect(mockAxios.post).toHaveBeenCalled();
+      expect(mockAxios.post.mock.calls[0][0]).toContain(resourceType);
+      expect(mockAxios.post.mock.calls[0][1]).toEqual({...encounter, resourceType});
+      expect(res.status).toEqual(data.status);
+      expect(res.data).toEqual(data.data);
+      expect(logger.error).not.toBeCalled();
+    });
+
+    it('should return an error if the FHIR server returns an error', async () => {
+      const data = { status: 400, data: { message: 'Bad request' } };
+
+      mockAxios.post = jest.fn().mockRejectedValue(data);
+
+      const res = await createFhirResource({...encounter, resourceType});
+
+      expect(mockAxios.post).toHaveBeenCalled();
+      expect(mockAxios.post.mock.calls[0][0]).toContain(resourceType);
+      expect(mockAxios.post.mock.calls[0][1]).toEqual({...encounter, resourceType});
+      expect(res.status).toEqual(400);
+      expect(res.data).toEqual(data.data);
+      expect(logger.error).toBeCalledTimes(1);
     });
   });
 });

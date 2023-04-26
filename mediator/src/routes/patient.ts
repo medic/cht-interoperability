@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { createPatient } from '../controllers/patient';
 import { validateBodyAgainst } from '../middlewares';
-import { validateFhirResource } from '../utils/fhir';
+import { createFhirResource, validateFhirResource } from '../utils/fhir';
 import { PatientSchema } from '../middlewares/schemas/patient';
 import { requestHandler } from '../utils/request';
 
@@ -12,7 +11,7 @@ const resourceType = 'Patient';
 router.post(
   '/',
   validateBodyAgainst(validateFhirResource(resourceType), PatientSchema),
-  requestHandler((req) => createPatient({ ...req.body, resourceType }))
+  requestHandler((req) => createFhirResource({ ...req.body, resourceType }))
 );
 
 export default router;

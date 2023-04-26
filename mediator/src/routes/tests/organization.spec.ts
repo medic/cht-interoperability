@@ -1,13 +1,11 @@
 import request from 'supertest';
 import app from '../../..';
 import { OrganizationFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
-import { createOrganization } from '../../controllers/organization';
-
-jest.mock('../../controllers/organization');
+import * as fhir from '../../utils/fhir';
 
 describe('POST /organization', () => {
   it('accepts incoming request with valid organization resource', async () => {
-    (createOrganization as any).mockResolvedValueOnce({
+    jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
       data: {},
       status: 201,
     });
@@ -18,11 +16,11 @@ describe('POST /organization', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createOrganization).toHaveBeenCalledWith({
+    expect(fhir.createFhirResource).toHaveBeenCalledWith({
       ...data,
       resourceType: 'Organization',
     });
-    expect(createOrganization).toHaveBeenCalled();
+    expect(fhir.createFhirResource).toHaveBeenCalled();
   });
 
   it('doesn\'t accept incoming request with invalid organization resource', async () => {
@@ -32,6 +30,6 @@ describe('POST /organization', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.message).toMatchInlineSnapshot(`""name" is required"`);
-    expect(createOrganization).not.toHaveBeenCalled();
+    expect(fhir.createFhirResource).not.toHaveBeenCalled();
   });
 });

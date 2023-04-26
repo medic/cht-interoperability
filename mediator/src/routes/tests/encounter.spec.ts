@@ -1,13 +1,11 @@
 import request from 'supertest';
 import app from '../../..';
 import { EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
-import { createEncounter } from '../../controllers/encounter';
-
-jest.mock('../../controllers/encounter');
+import * as fhir from '../../utils/fhir';
 
 describe('POST /encounter', () => {
   it('accepts incoming request with valid encounter resource', async () => {
-    (createEncounter as any).mockResolvedValueOnce({
+    jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
       data: {},
       status: 201,
     });
@@ -18,11 +16,11 @@ describe('POST /encounter', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createEncounter).toHaveBeenCalledWith({
+    expect(fhir.createFhirResource).toHaveBeenCalledWith({
       ...data,
       resourceType: 'Encounter',
     });
-    expect(createEncounter).toHaveBeenCalled();
+    expect(fhir.createFhirResource).toHaveBeenCalled();
   });
 
   it('doesn\'t accept incoming request with invalid encounter resource', async () => {
@@ -32,6 +30,6 @@ describe('POST /encounter', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.message).toMatchInlineSnapshot(`""Encounter.status" Code "wrong_status" not found in value set"`);
-    expect(createEncounter).not.toHaveBeenCalled();
+    expect(fhir.createFhirResource).not.toHaveBeenCalled();
   });
 });

@@ -1,13 +1,11 @@
 import request from 'supertest';
 import app from '../../..';
-import { createPatient } from '../../controllers/patient';
 import { PatientFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
-
-jest.mock('../../controllers/patient');
+import * as fhir from '../../utils/fhir';
 
 describe('POST /patient', () => {
   it('accepts incoming request with valid patient resource', async () => {
-    (createPatient as any).mockResolvedValueOnce({
+    jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
       data: {},
       status: 201,
     });
@@ -18,11 +16,11 @@ describe('POST /patient', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createPatient).toHaveBeenCalledWith({
+    expect(fhir.createFhirResource).toHaveBeenCalledWith({
       ...data,
       resourceType: 'Patient',
     });
-    expect(createPatient).toHaveBeenCalled();
+    expect(fhir.createFhirResource).toHaveBeenCalled();
   });
 
   it('doesn\'t accept incoming request with invalid patient resource', async () => {
@@ -35,6 +33,6 @@ describe('POST /patient', () => {
     expect(res.body.message).toMatchInlineSnapshot(
       `""Patient.birthDate" Invalid date format for value "INVALID_BIRTH_DATE""`
     );
-    expect(createPatient).not.toHaveBeenCalled();
+    expect(fhir.createFhirResource).not.toHaveBeenCalled();
   });
 });

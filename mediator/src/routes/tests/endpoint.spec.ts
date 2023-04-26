@@ -1,9 +1,7 @@
 import request from 'supertest';
 import app from '../../..';
 import { EndpointFactory as EndpointFactoryBase } from '../../middlewares/schemas/tests/fhir-resource-factories';
-import { createEndpoint } from '../../controllers/endpoint';
-
-jest.mock('../../controllers/endpoint');
+import * as fhir from '../../utils/fhir';
 
 const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('address', 'https://callback.com')
@@ -11,7 +9,7 @@ const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
 
 describe('POST /endpoint', () => {
   it('accepts incoming request with valid endpoint resource', async () => {
-    (createEndpoint as any).mockResolvedValueOnce({
+    jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
       data: {},
       status: 201,
     });
@@ -22,11 +20,11 @@ describe('POST /endpoint', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createEndpoint).toHaveBeenCalledWith({
+    expect(fhir.createFhirResource).toHaveBeenCalledWith({
       ...data,
       resourceType: 'Endpoint',
     });
-    expect(createEndpoint).toHaveBeenCalled();
+    expect(fhir.createFhirResource).toHaveBeenCalled();
   });
 
   it('doesn\'t accept incoming request with invalid endpoint resource', async () => {
@@ -38,6 +36,6 @@ describe('POST /endpoint', () => {
     expect(res.body.message).toMatchInlineSnapshot(
       `""Endpoint.status" Code "wrong_status" not found in value set"`
     );
-    expect(createEndpoint).not.toHaveBeenCalled();
+    expect(fhir.createFhirResource).not.toHaveBeenCalled();
   });
 });
