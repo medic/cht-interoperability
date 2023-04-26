@@ -271,7 +271,7 @@ POST ${MEDIATOR_ENDPOINT}/patient
 
 ### `Encounter` Resource
 
-The FHIR `Encounter` resource represents a clinical interaction between a patient and a healthcare provider. It contains information about the **patient's visit**, such as the **location**, the **reason for the visit**, and any relevant **procedures** or **diagnoses**.
+The FHIR `Encounter` resource represents a clinical interaction between a patient and a healthcare provider. It contains information about the **patient's visit**, such as the **location**, the **reason for the visit**, and any relevant **procedures** or **diagnoses**. 
 
 #### `POST ${MEDIATOR_ENDPOINT}/encounter`
 
@@ -279,6 +279,9 @@ The `Encounter` resource is an essential part of the LTFU workflow, which is aut
 
 
 **ENCOUNTER_IDENTIFIER:** An identifier for the encounter that can be used when querying the FHIR database in the future. Ideally, it should point to a document on the source system (CHT) that represents this encounter.
+
+> NOTE: The `ENCOUNTER_IDENTIFIER` should be the same as the `PATIENT_IDENTIFIER`. If they don't match, the FHIR Subscription won't be resolved properly. Updating an existing `Encounter` will also trigger pending `Subscription`s that matches the encounter document, which is one of the downsides of using this method. You can learn more about it by visiting [Official FHIR Subscription Resource Scope](https://fhir-ru.github.io/subscription.html#scope)
+
 
 ##### Request
 

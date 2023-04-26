@@ -522,7 +522,7 @@
           "expr":  "'Encounter'"
         },
         "identifier": {
-          "expr": "[{ \"system\": \"cht\",  \"use\": \"official\", \"value\": doc._id }]",
+          "expr": "[{ \"system\": \"cht\",  \"use\": \"official\", \"value\": doc.fields.inputs.contact._id }]",
           "optional": false
         },
         "status": {
