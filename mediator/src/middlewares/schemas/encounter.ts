@@ -14,6 +14,6 @@ export const EncounterSchema = joi.object({
   status: joi.string().required(),
   class: joi.required(),
   type: joi.array().length(1).required(),
-  subject: joi.object().required(),
+  subject: joi.required(),
   participant: joi.array().length(1).required(),
 });
