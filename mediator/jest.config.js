@@ -8,4 +8,7 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
   ],
+  testPathIgnorePatterns: [
+    '<rootDir>/dist/',
+  ],
 };
