@@ -1,4 +1,4 @@
-title Loss To Follow up Flow Chart
+title Loss To Follow Up Sequence Diagram
 
 participant Requesting System
 participant OpenHIM Mediator
