@@ -1,30 +1,45 @@
-import { createServiceSchema } from "../service-request";
+import { ServiceRequestSchema } from '../service-request';
+import { ServiceRequestFactory } from './fhir-resource-factories';
 
-describe("createServiceSchema", () => {
-  it("accepts valid values", async () => {
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "https://google.com/",
-    };
+describe('ServiceRequestSchema', () => {
+  it('accepts valid service request values', async () => {
+    const data = ServiceRequestFactory.build();
 
-    expect(createServiceSchema.validateAsync(data)).resolves.toMatchSnapshot();
+    const res = await ServiceRequestSchema.validateAsync(data);
+
+    expect(res).toStrictEqual(data);
   });
 
-  it("rejects data with valid 'callback_url'", () => {
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "INVALID_URL",
-    };
+  it('rejects invalid service request resource', () => {
+    const data = ServiceRequestFactory.build();
 
-    expect(createServiceSchema.validateAsync(data)).rejects.toMatchSnapshot();
-  });
+    expect(
+      ServiceRequestSchema.validateAsync({ ...data, requester: undefined })
+    ).rejects.not.toBeNull();
 
-  it("rejects data with invalid 'patient_id' ", () => {
-    const data = {
-      patient_id: undefined,
-      callback_url: "https://google.com",
-    };
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        requester: { reference: 'Wrong/ID' },
+      })
+    ).rejects.not.toBeNull();
 
-    expect(createServiceSchema.validateAsync(data)).rejects.toMatchSnapshot();
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        subject: { reference: 'Wrong/ID' },
+      })
+    ).rejects.not.toBeNull();
+
+    expect(
+      ServiceRequestSchema.validateAsync({
+        ...data,
+        subject: undefined,
+      })
+    ).rejects.not.toBeNull();
+
+    expect(
+      ServiceRequestSchema.validateAsync({ ...data, intent: undefined })
+    ).rejects.not.toBeNull();
   });
 });

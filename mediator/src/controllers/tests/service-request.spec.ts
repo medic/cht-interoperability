@@ -1,120 +1,89 @@
-import axios from "axios";
-import { logger } from "../../../logger";
-import { createServiceRequest } from "../service-request";
+import {
+  mockGetFHIRPatientResource,
+  mockGetFHIROrgEndpointResource,
+  mockCreateFHIRSubscriptionResource,
+  mockCreateChtRecord,
+  mockDeleteFhirSubscription,
+} from './utils';
+import { createServiceRequest } from '../service-request';
+import { ServiceRequestFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
-jest.mock("axios");
-jest.mock("../../../logger");
+jest.mock('axios');
+jest.mock('../../../logger');
 
-describe("createServiceRequest", () => {
-  it("creates a service request when given valid request document", async () => {
-    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
+describe('ServiceRequest controllers', () => {
+  const request: fhir4.ServiceRequest = ServiceRequestFactory.build();
 
-    const fhirRes = { status: 201, data: { id: "SUBSCRIPTION_ID" } };
-    const chtRes = { status: 200, data: { success: true } };
-    (axios.post as any)
-      .mockResolvedValueOnce(fhirRes)
-      .mockResolvedValue(chtRes);
+  describe('createServiceRequest', () => {
+    it('creates a new subscriptions resource on fhir and cht record', async () => {
+      const recordRes = { status: 201, data: { success: true } };
+      const patientRes = { status: 201, data: { resourceType: 'Patient' } };
+      const endpointRes = { status: 201, data: { resourceType: 'Endpoint' } };
+      const subscriptionRes = {
+        status: 201,
+        data: { resourceType: 'Subscription' },
+      };
 
-    const patient = { status: 200, data: {} };
-    (axios.get as any).mockResolvedValueOnce(patient);
+      mockGetFHIRPatientResource.mockResolvedValueOnce(patientRes as any);
+      mockGetFHIROrgEndpointResource.mockResolvedValueOnce(endpointRes as any);
+      mockCreateFHIRSubscriptionResource.mockResolvedValueOnce(
+        subscriptionRes as any
+      );
+      mockCreateChtRecord.mockResolvedValueOnce(recordRes as any);
+      mockDeleteFhirSubscription.mockResolvedValueOnce({} as any);
 
-    const res = await createServiceRequest(request);
+      const res = await createServiceRequest(request);
 
-    expect(res.status).toBe(fhirRes.status);
-    expect(res.data).toEqual(fhirRes.data);
-    expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toMatchSnapshot();
-    expect(axios.post).toMatchSnapshot();
-  });
+      expect(res.status).toBe(subscriptionRes.status);
+      expect(res.data).toBe(subscriptionRes.data);
+    });
 
-  it("returns the status code of the failed susbscription creation request", async () => {
-    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
+    it('returns default status and data when not provided in error', async () => {
+      const patientRes = { message: 'message' };
 
-    const fhirRes = { status: 400, data: { id: "SUBSCRIPTION_ID" } };
-    (axios.post as any).mockResolvedValueOnce(fhirRes);
+      mockGetFHIRPatientResource.mockRejectedValueOnce(patientRes);
 
-    const patient = { status: 200, data: {} };
-    (axios.get as any).mockResolvedValueOnce(patient);
+      const res = await createServiceRequest(request);
 
-    const res = await createServiceRequest(request);
+      expect(res.status).toBe(500);
+      expect(res.data.message).toBe(patientRes.message);
+    });
 
-    expect(res.status).toBe(fhirRes.status);
-    expect(res.data).toEqual(fhirRes.data);
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toMatchSnapshot();
-    expect(axios.post).toMatchSnapshot();
-  });
 
-  it("returns a 500 status code if record creation on cht fails", async () => {
-    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
+    it('returns status and data of any axios error', async () => {
+      const patientRes = { status: 200, data: { resourceType: 'Patient' } };
 
-    const fhirRes = { status: 201, data: { id: "SUBSCRIPTION_ID" } };
-    const chtRes = { status: 400, data: { success: false } };
-    (axios.post as any)
-      .mockResolvedValueOnce(fhirRes)
-      .mockResolvedValue(chtRes);
+      mockGetFHIRPatientResource.mockRejectedValueOnce(patientRes);
 
-    const patient = { status: 200, data: {} };
-    (axios.get as any).mockResolvedValueOnce(patient);
+      const res = await createServiceRequest(request);
 
-    const res = await createServiceRequest(request);
+      expect(res.status).toBe(patientRes.status);
+      expect(res.data).toBe(patientRes.data);
+    });
 
-    expect(res.status).toBe(500);
-    expect(res.data).toMatchSnapshot();
-    expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toMatchSnapshot();
-    expect(axios.post).toMatchSnapshot();
-  });
+    it('deletes fhir subscription resource if cht record creation fails', async () => {
+      const recordRes = { status: 200, data: { success: false } };
+      const patientRes = { status: 200, data: { resourceType: 'Patient' } };
+      const endpointRes = { status: 200, data: { resourceType: 'Endpoint' } };
+      const subscriptionRes = {
+        status: 201,
+        data: { resourceType: 'Subscription' },
+      };
 
-  it("returns status code and server error when fhir fails to get patient resource", async () => {
-    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
-    const patient = { status: 404, data: { message: "" } };
-    (axios.get as any).mockResolvedValueOnce(patient);
+      mockGetFHIRPatientResource.mockResolvedValueOnce(patientRes as any);
+      mockGetFHIROrgEndpointResource.mockResolvedValueOnce(endpointRes as any);
+      mockCreateFHIRSubscriptionResource.mockResolvedValueOnce(
+        subscriptionRes as any
+      );
+      mockCreateChtRecord.mockResolvedValueOnce(recordRes as any);
+      mockDeleteFhirSubscription.mockResolvedValueOnce({} as any);
 
-    const res = await createServiceRequest(request);
+      const res = await createServiceRequest(request);
 
-    expect(res.status).toBe(patient.status);
-    expect(res.data).toEqual(patient.data);
-    expect(axios.get).toHaveBeenCalled();
-    expect(axios.post).not.toHaveBeenCalled();
-    expect(logger.error).not.toHaveBeenCalled();
-  });
-
-  it("returns status code and error when server fails to create a subscription", async () => {
-    const request = { patient_id: "PATIENT_ID", callback_url: "CALLBACK_URL" };
-
-    const fhirRes = { status: 400, data: { id: "SUBSCRIPTION_ID" } };
-    (axios.post as any).mockRejectedValueOnce(fhirRes);
-
-    const patient = { status: 200, data: {} };
-    (axios.get as any).mockResolvedValueOnce(patient);
-
-    const res = await createServiceRequest(request);
-
-    expect(res.status).toBe(500);
-    expect(res.data).toMatchSnapshot();
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toMatchSnapshot();
-    expect(axios.post).toMatchSnapshot();
-    expect(logger.error).toHaveBeenCalled();
-  });
-
-  it("returns status code and error message when give an invalid service request", async () => {
-    const request = {};
-
-    const patient = { status: 200, data: {} };
-    (axios.get as any).mockResolvedValueOnce(patient);
-
-    const res = await createServiceRequest(request as any);
-
-    expect(res.status).toBe(400);
-    expect(res.data).toMatchSnapshot();
-    expect(axios.post).not.toHaveBeenCalled();
-    expect(axios.get).toHaveBeenCalled();
-    expect(logger.error).toHaveBeenCalled();
+      expect(res.status).toBe(500);
+      expect(res.data.message).toMatchInlineSnapshot(
+        `"Unable to create the follow up task"`
+      );
+    });
   });
 });

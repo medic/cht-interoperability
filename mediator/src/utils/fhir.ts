@@ -1,62 +1,39 @@
+import { Fhir } from 'fhir';
+import { FHIR } from '../../config';
+import axios from 'axios';
+import { logger } from '../../logger';
+
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
-export interface IPatient {
-  name: string;
-  date_of_birth: string;
-  _id: string;
-  sex: typeof VALID_GENDERS[number];
-}
+const axiosOptions = {
+  auth: {
+    username: FHIR.username,
+    password: FHIR.password,
+  },
+};
 
-export function generateFHIRPatientResource(patient: IPatient) {
-  if (!patient.name) {
-    throw new Error(`Invalid 'name' expected type of 'string' but recieved '${patient.name}'`);
-  }
-  
-  const patientLastName = patient.name.split(' ').slice(-1);
-  const birthDate = new Date(patient.date_of_birth);
+const fhir = new Fhir();
 
-  if (!isValidDate(birthDate)) {
-    throw new RangeError("Invalid 'date_of_birth' range: received " + patient.date_of_birth);
-  } else if (!patient._id) {
-    throw new Error(`Invalid '_id' epxted type of 'string' or 'number' but recieved '${typeof patient._id}' with value '${patient._id}'`);
-  }  else if (!patient.sex || !VALID_GENDERS.includes(patient.sex)) {
-    throw new Error(`Invalid 'sex' expected 'male', 'female', 'other', 'unknown' but recieved '${patient.sex}'`);
-  }
-
-  const FHITPatientResource = {
-    resourceType: 'Patient',
-    id: patient._id,
-    identifier: [
-      {
-        system: 'cht',
-        value: patient._id
-      }
-    ],
-    name: [
-      {
-        use: 'official',
-        family: patientLastName,
-        given: [patient.name]
-      }
-    ],
-    gender: patient.sex,
-    birthDate: birthDate.toISOString()
+export function validateFhirResource(resourceType: string) {
+  return function wrapper(data: any) {
+    return fhir.validate({ ...data, resourceType });
   };
-
-  return FHITPatientResource;
 }
 
-export function isValidDate(d: Date) {
-  return d instanceof Date && !isNaN(d as any);
-}
-
-export function generateFHIRSubscriptionResource(patientId: string, callbackUrl: string) {
+export function generateFHIRSubscriptionResource(
+  patientId: string,
+  callbackUrl: string
+) {
   if (!patientId) {
-    throw new Error(`Invalid patient id was expecting type of 'string' or 'number' but received '${typeof patientId}'`)
+    throw new Error(
+      `Invalid patient id was expecting type of 'string' or 'number' but received '${typeof patientId}'`
+    );
   } else if (!callbackUrl) {
-    throw new Error(`Invalid 'callbackUrl' was expecting type of 'string' but recieved '${typeof callbackUrl}'`)
+    throw new Error(
+      `Invalid 'callbackUrl' was expecting type of 'string' but recieved '${typeof callbackUrl}'`
+    );
   }
-  
+
   const FHIRSubscriptionResource = {
     resourceType: 'Subscription',
     id: patientId,
@@ -67,9 +44,85 @@ export function generateFHIRSubscriptionResource(patientId: string, callbackUrl:
       type: 'rest-hook',
       endpoint: callbackUrl,
       payload: 'application/fhir+json',
-      header: ['Content-Type: application/fhir+json']
-    }
+      header: ['Content-Type: application/fhir+json'],
+    },
   };
 
   return FHIRSubscriptionResource;
+}
+
+export async function createFHIRSubscriptionResource(
+  patientId: string,
+  callbackUrl: string
+) {
+  const res = generateFHIRSubscriptionResource(patientId, callbackUrl);
+  return await axios.post(`${FHIR.url}/Subscription`, res, axiosOptions);
+}
+
+export async function getFHIROrgEndpointResource(id: string) {
+  const res = await axios.get(
+    `${FHIR.url}/Organization/?identifier=${id}`,
+    axiosOptions
+  );
+
+  if (!res.data.entry) {
+    const error: any = new Error('Organization not found');
+    error.status = 404;
+    throw error;
+  }
+
+  const entry = res.data.entry[0];
+  if (!entry) {
+    const error: any = new Error('Organization not found');
+    error.status = 404;
+    throw error;
+  }
+
+  const organization = entry.resource;
+  const endpoints = organization.endpoint;
+
+  if (!endpoints) {
+    const error: any = new Error('Organization has no endpoint attached');
+    error.status = 400;
+    throw error;
+  }
+
+  const endpointRef = endpoints[0];
+
+  if (!endpointRef) {
+    const error: any = new Error('Organization has no endpoint attached');
+    error.status = 400;
+    throw error;
+  }
+
+  const endpointId = endpointRef.reference.replace('Endpoint/', '');
+
+  return await axios.get(`${FHIR.url}/Endpoint/${endpointId}`, axiosOptions);
+}
+
+export async function getFHIRPatientResource(patientId: string) {
+  return await axios.get(
+    `${FHIR.url}/Patient/?identifier=${patientId}`,
+    axiosOptions
+  );
+}
+
+export async function deleteFhirSubscription(id?: string) {
+  return await axios.delete(`${FHIR.url}/Subscription/${id}`, axiosOptions);
+}
+
+export async function createFhirResource(doc: fhir4.Resource) {
+  try {
+    const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, {
+      auth: {
+        username: FHIR.username,
+        password: FHIR.password,
+      },
+    });
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }

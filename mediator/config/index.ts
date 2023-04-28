@@ -23,10 +23,10 @@ export const CHT = {
 };
 
 
-function getEnvironmentVariable(env: string | undefined, def: string) {
+function getEnvironmentVariable(env: string, def: string) {
   if (process.env.NODE_ENV === 'test') {
     return def;
   }
   
-  return process.env[env as string] || def;
+  return process.env[env] || def;
 }

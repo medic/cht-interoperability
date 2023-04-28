@@ -1,45 +1,38 @@
-import { createServiceRequest } from "../../controllers/service-request";
-import request from "supertest";
-import app from "../../..";
+import { createServiceRequest } from '../../controllers/service-request';
+import request from 'supertest';
+import app from '../../..';
+import { ServiceRequestFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
-jest.mock("../../controllers/service-request");
+jest.mock('../../controllers/service-request');
 
-describe("POST /service-request", () => {
-  it("calls handler for valid incoming request", async () => {
+describe('POST /service-request', () => {
+  it('accepts incoming request with valid service request resource', async () => {
     (createServiceRequest as any).mockResolvedValueOnce({
       data: {},
       status: 201,
     });
 
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "https://callback.medic.org",
-    };
+    const data = ServiceRequestFactory.build();
+    data.status = 'active';
 
-    const res = await request(app).post("/service-request").send(data);
+    const res = await request(app).post('/service-request').send(data);
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
-    expect(createServiceRequest).toHaveBeenCalledWith(data);
+    expect(createServiceRequest).toHaveBeenCalledWith({
+      ...data,
+      resourceType: 'ServiceRequest',
+    });
     expect(createServiceRequest).toHaveBeenCalled();
-    expect(createServiceRequest).toMatchSnapshot();
   });
 
-  it("returns a bad request error for invalid incoming request", async () => {
-    (createServiceRequest as any).mockResolvedValueOnce({
-      data: {},
-      status: 201,
-    });
+  it('doesn\'t accept incoming request with invalid service request resource', async () => {
+    const data = ServiceRequestFactory.build({ request: undefined });
 
-    const data = {
-      patient_id: "PATIENT_ID",
-      callback_url: "INVALID_CALLBACK_URL",
-    };
-
-    const res = await request(app).post("/service-request").send(data);
+    const res = await request(app).post('/service-request').send(data);
 
     expect(res.status).toBe(400);
-    expect(res.body).toMatchSnapshot();
+    expect(res.body.message).toMatchInlineSnapshot(`""ServiceRequest.status" Missing property"`);
     expect(createServiceRequest).not.toHaveBeenCalled();
   });
 });

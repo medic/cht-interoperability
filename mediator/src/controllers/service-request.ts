@@ -1,95 +1,44 @@
-import axios from 'axios';
 import { logger } from '../../logger';
-import { FHIR, CHT } from '../../config';
-import { generateFHIRSubscriptionResource } from '../utils/fhir';
-import https from 'https';
-import { generateChtRecordsApiUrl } from '../utils/url';
+import { createChtRecord } from '../utils/cht';
+import {
+  getFHIRPatientResource,
+  getFHIROrgEndpointResource,
+  createFHIRSubscriptionResource,
+  deleteFhirSubscription,
+} from '../utils/fhir';
+import { Response } from '../utils/request';
 
-const { url: fhirUrl, password: fhirPassword, username: fhirUsername } = FHIR;
-
-interface IServiceRequest {
-  patient_id: string;
-  callback_url: string;
-}
-
-export async function createServiceRequest(request: IServiceRequest) {
+export async function createServiceRequest(request: fhir4.ServiceRequest) {
   try {
-    const {patient_id: patientId, callback_url: callbackUrl} = request;
+    const patientId = (request.subject as any).reference.replace('Patient/', '');
+    // Check if patient exists - axios throws error for non 200
+    await getFHIRPatientResource(patientId);
 
-    const patientRes = await getFHIRPatientResource(patientId); 
+    const orgId = (request.requester as any).reference.replace('Organization/', '');
+    const endpointRes = await getFHIROrgEndpointResource(orgId);
 
-    if (patientRes.status !== 200) {
-      return { status: patientRes.status, data: patientRes.data };
+    // Create a subscription for the Organization in FHIR to respond to an Encounter in the future
+    const url = endpointRes.data.address;
+    const subscriptionRes = await createFHIRSubscriptionResource(patientId, url);
+    
+    const recordRes = await createChtRecord(patientId);
+
+    if (recordRes.data.success !== true) {
+      await deleteFhirSubscription(subscriptionRes.data.id);
+      return {
+        status: 500,
+        data: { message: 'Unable to create the follow up task' },
+      };
     }
 
-    // generate subscription resource
-    const subRes = await createFHIRSubscriptionResource(patientId, callbackUrl);
+    return { status: subscriptionRes.status, data: subscriptionRes.data };
+  } catch (error: any) {
+    logger.error(`Error: ${error}`);
 
-    if (subRes.status !== 201) {
-      return { status: subRes.status, data: subRes.data };
-    }
+    const res = {} as Response;
+    res.status = error.status || 500;
+    res.data = error.data || { message: error.message };
 
-    // call the CHT API to set up the follow up task
-    const recRes = await createChtRecord(patientId);
-
-    if (recRes.data.success !== true) {
-      // TODO: delete the subscription
-      return { status: 500, data: 'unable to create the follow up task' };
-    }
-
-    logger.info(JSON.stringify(recRes.data, null, 4));
-
-    return { status: subRes.status, data: subRes.data };
-  } catch (err: any) {
-    logger.error(err);
-
-    if (!err.status) {
-      return { status: 400, data: { message: err.message } };
-    }
-
-    return {status: 500, data: { message: err.message }};
+    return res;
   }
-}
-
-
-/* Internal Functions */
-
-async function createChtRecord(patientId: string) {
-  const record = {
-    _meta: {
-      form: 'interop_follow_up',
-    },
-    patient_uuid: patientId,
-  };
-  
-  const options = {
-    httpsAgent: new https.Agent({
-      rejectUnauthorized: false,
-    }),
-  };
-
-  const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
-  
-  return await axios.post(chtApiUrl, record, options);
-}
-
-async function createFHIRSubscriptionResource(patientId: string, callbackUrl: string) {
-  const options = {
-    auth: {
-      username: fhirUsername,
-      password: fhirPassword,
-    }
-  };
-  const FHIRSubscriptionResource = generateFHIRSubscriptionResource(patientId, callbackUrl);
-  return await axios.post(`${fhirUrl}/Subscription`, FHIRSubscriptionResource, options);
-}
-
-async function getFHIRPatientResource(patientId: string) {
-  const options = {
-    auth: {
-      username: fhirUsername,
-      password: fhirPassword,
-    }
-  };
-  return await axios.get(`${fhirUrl}/Patient/?identifier=${patientId}`, options);
 }

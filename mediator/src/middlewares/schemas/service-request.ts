@@ -1,6 +1,15 @@
 import joi from 'joi';
 
-export const createServiceSchema = joi.object({
-  patient_id: joi.string().required(),
-  callback_url: joi.string().uri().required(),
+const RequesterSchema = joi.object({
+  reference: joi.string().regex(/Organization\/\S+/),
+});
+
+export const ServiceRequestSchema = joi.object({
+  intent: joi.string().required(),
+  subject: joi
+    .object({
+      reference: joi.string().regex(/Patient\/\S+/),
+    })
+    .required(),
+  requester: RequesterSchema.required(),
 });
