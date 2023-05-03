@@ -1,27 +1,38 @@
 import request from 'supertest';
+import { OPENHIM, CHT, FHIR } from '../config';
+import { EndpointFactory as EndpointFactoryBase, OrganizationFactory, ServiceRequestFactory } from '../src/middlewares/schemas/tests/fhir-resource-factories';
 const openhimMediatorUtils = require('openhim-mediator-utils');
+
+jest.setTimeout(10000);
+
 let placeId: string;
 let chwUserName: string;
 let chwPassword: string;
 let contactId: string;
 let patientId: string;
 let encounterUrl: String;
+let endpointId: String;
+
+const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
+  .attr('address', 'https://interop.free.beeceptor.com/callback')
+  .attr('payloadType', [{ text: 'application/json' }]);
 
 let installMediatorConfiguration = new Promise(function (resolve, reject) {
+
   openhimMediatorUtils.authenticate(
     {
-      apiURL: "https://localhost:8080",
-      username: "interop@openhim.org",
+      apiURL: OPENHIM.apiURL,
+      username: OPENHIM.username,
       rejectUnauthorized: false,
     },
     async () => {
       const authHeaders = openhimMediatorUtils.genAuthHeaders({
-        username: "interop@openhim.org",
-        password: "interop-password",
+        username: OPENHIM.username,
+        password: OPENHIM.password,
       });
 
       try {
-        const res = await request('https://localhost:8080')
+        const res = await request(OPENHIM.apiURL)
           .post("/mediators/urn:mediator:ltfu-mediator/channels")
           .send(['Mediator'])
           .set('auth-username', authHeaders['auth-username'])
@@ -30,7 +41,7 @@ let installMediatorConfiguration = new Promise(function (resolve, reject) {
           .set('auth-token', authHeaders['auth-token']);
 
         if (res.status == 201) {
-          resolve('Exito');
+          resolve('Success');
         } else {
           throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
         }
@@ -42,14 +53,15 @@ let installMediatorConfiguration = new Promise(function (resolve, reject) {
 });
 
 const configureCHT = async () => {
-  const createPlaceResponse = await request('http://localhost:5988')
+  console.log(CHT.url);
+  const createPlaceResponse = await request(CHT.url)
     .post('/api/v1/places')
-    .auth('admin', 'password')
+    .auth(CHT.username, CHT.password)
     .send({ "name": "CHP Branch Two", "type": "district_hospital" });
-  if (createPlaceResponse.status == 200 && createPlaceResponse.body.ok == true) {
+  if (createPlaceResponse.status === 200 && createPlaceResponse.body.ok === true) {
     placeId = createPlaceResponse.body.id;
   } else {
-    throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.status}`);
+    throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.body}`);
   }
   const user = {
     password: "Dakar1234",
@@ -67,31 +79,55 @@ const configureCHT = async () => {
   };
   chwUserName = user.username;
   chwPassword = user.password;
-  const createUserResponse = await request('http://localhost:5988')
+  const createUserResponse = await request(CHT.url)
     .post('/api/v2/users')
-    .auth('admin', 'password')
+    .auth(CHT.username, CHT.password)
     .send(user);
-  expect(createUserResponse.status).toBe(200);
-  if (createUserResponse.status == 200) {
+  if (createUserResponse.status === 200) {
     contactId = createUserResponse.body.contact.id;
   } else {
     throw new Error(`CHT user creation failed: Reason ${createPlaceResponse.status}`);
   }
 };
 
-describe.only("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
+describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
   beforeAll(async () => {
     await installMediatorConfiguration;
     await configureCHT();
   });
 
-  it.only("Should follow the LTFU workflow", async () => {
-    const checkMediatorResponse = await request('http://localhost:5001')
+  it("Should follow the LTFU workflow", async () => {
+    const checkMediatorResponse = await request(FHIR.url)
       .get("/mediator/")
-      .auth('interop-client', 'interop-password');
+      .auth(FHIR.username, FHIR.password);
 
     expect(checkMediatorResponse.status).toBe(200);
     expect(checkMediatorResponse.body.status).toBe("success");
+
+    let identifier = [{ system: 'official', value: 'test-endpoint' }];
+
+    const endpoint = EndpointFactory.build({ identifier: identifier });
+    const createMediatorEndpointResponse = await request(FHIR.url)
+      .post('/mediator/endpoint')
+      .auth(FHIR.username, FHIR.password)
+      .send(endpoint);
+
+    expect(createMediatorEndpointResponse.status).toBe(201);
+    endpointId = createMediatorEndpointResponse.body.id;
+
+    /*TODO retreive endpoint*/
+
+    identifier[0].value = 'test-org';
+    const organization = OrganizationFactory.build({ endpointId: endpointId }, { identifier: identifier });
+    console.log(organization)
+    const createMediatorOrganizationResponse = await request(FHIR.url)
+      .post('/mediator/organization')
+      .auth(FHIR.username, FHIR.password)
+      .send(organization);
+
+    expect(createMediatorOrganizationResponse.status).toBe(201);
+
+    /*TODO Retreive organization*/
 
     const patient = {
       name: "John Test",
@@ -103,29 +139,38 @@ describe.only("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
       contact_type: "patient",
       place: placeId
     };
-    const createPatientResponse = await request('http://localhost:5988')
+
+    const createPatientResponse = await request(CHT.url)
       .post('/api/v1/people')
-      .auth('admin', 'password')
+      .auth(chwUserName, chwPassword)
       .send(patient);
 
     expect(createPatientResponse.status).toBe(200);
     expect(createPatientResponse.body.ok).toEqual(true);
     patientId = createPatientResponse.body.id;
 
-    const retrieveFhirPatientIdResponse = await request('http://localhost:5001')
+    const retrieveFhirPatientIdResponse = await request(FHIR.url)
       .get('/fhir/Patient/?identifier=' + patientId)
-      .auth('interop-client', 'interop-password');
+      .auth(FHIR.username, FHIR.password);
 
     expect(retrieveFhirPatientIdResponse.status).toBe(200);
+    const serviceRequest2 = ServiceRequestFactory.build({ patientId: patientId }, { organizationId: identifier[0].value });
+    console.log(serviceRequest2)
+    const serviceRequest = {
+      intent: "order",
+      subject: {
+        reference: `Patient/${patientId}`,
+      },
+      requester: {
+        reference: "Organization/test-org",
+      },
+      status: "active",
+    };
 
-    const sendMediatorServiceRequestResponse = await request('http://localhost:5001')
+    const sendMediatorServiceRequestResponse = await request(FHIR.url)
       .post('/mediator/service-request')
-      .auth('interop-client', 'interop-password')
-      .send({
-        "patient_id": patientId,
-        "callback_url": "https://interop.free.beeceptor.com/callback"
-      });
-
+      .auth(FHIR.username, FHIR.password)
+      .send(serviceRequest);
     expect(sendMediatorServiceRequestResponse.status).toBe(201);
     encounterUrl = sendMediatorServiceRequestResponse.body.criteria;
 
@@ -186,16 +231,18 @@ describe.only("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
       "new_edits": false
     };
 
-    const submitChtTaskResponse = await request('http://localhost:5988')
+    const submitChtTaskResponse = await request(CHT.url)
       .post('/medic/_bulk_docs')
       .auth(chwUserName, chwPassword)
       .send(taskForm);
 
     expect(submitChtTaskResponse.status).toBe(201);
 
-    const retrieveFhirDbEncounter = await request('http://localhost:5001')
+    await new Promise((r) => setTimeout(r, 1000));
+
+    const retrieveFhirDbEncounter = await request(FHIR.url)
       .get('/fhir/' + encounterUrl)
-      .auth('interop-client', 'interop-password');
+      .auth(FHIR.username, FHIR.password);
 
     expect(retrieveFhirDbEncounter.status).toBe(200);
     expect(retrieveFhirDbEncounter.body.total).toBe(1);
