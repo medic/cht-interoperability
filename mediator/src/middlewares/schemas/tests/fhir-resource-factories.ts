@@ -35,16 +35,17 @@ export const OrganizationFactory = Factory.define('organization')
   .attr('name', ['athena'])
   .attr('endpoint', [{ reference: 'Endpoint/' + randomUUID() }]);
 
-const SubjectFactory = Factory.define('subject').option('patienId', randomUUID()).attr(
-  'reference', ['patientId'], (patienId) => { 'Patient/' + patienId });
+const SubjectFactory = Factory.define('subject').attr(
+  'reference',
+  () => 'Patient/' + randomUUID()
+);
 
-const RequesterFactory = Factory.define('subject').option('organizationId', randomUUID()).attr(
-  'reference', ['organizationId'], (organizationId) => { 'Organization/' + organizationId }
+const RequesterFactory = Factory.define('subject').attr(
+  'reference',
+  () => 'Organization/' + randomUUID()
 );
 
 export const ServiceRequestFactory = Factory.define('serviceRequest')
-  .option('patienId', randomUUID())
-  .option('organizationId', randomUUID())
   .attr('intent', 'order')
-  .attr('subject', ['patientId'], (patienId) => { SubjectFactory.build({ patienId: patienId }) })
-  .attr('requester', ['organizationId'], (organizationId) => { RequesterFactory.build({ organizationId: organizationId }) });
+  .attr('subject', SubjectFactory.build())
+  .attr('requester', RequesterFactory.build());

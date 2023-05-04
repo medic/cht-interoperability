@@ -1,6 +1,13 @@
 import request from 'supertest';
 import { OPENHIM, CHT, FHIR } from '../config';
-import { EndpointFactory as EndpointFactoryBase, OrganizationFactory, ServiceRequestFactory } from '../src/middlewares/schemas/tests/fhir-resource-factories';
+import {
+  UserFactory, PatientFactory, TaskReportFactory
+} from './cht-resource-factories';
+import {
+  EndpointFactory as EndpointFactoryBase,
+  OrganizationFactory as OrganizationFactoryBase,
+  ServiceRequestFactory as ServiceRequestFactoryBase
+} from '../src/middlewares/schemas/tests/fhir-resource-factories';
 const openhimMediatorUtils = require('openhim-mediator-utils');
 
 jest.setTimeout(10000);
@@ -16,6 +23,10 @@ let endpointId: String;
 const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('address', 'https://interop.free.beeceptor.com/callback')
   .attr('payloadType', [{ text: 'application/json' }]);
+
+const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system: 'official', value: 'test-org' }]);
+
+const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
 
 let installMediatorConfiguration = new Promise(function (resolve, reject) {
 
@@ -53,7 +64,6 @@ let installMediatorConfiguration = new Promise(function (resolve, reject) {
 });
 
 const configureCHT = async () => {
-  console.log(CHT.url);
   const createPlaceResponse = await request(CHT.url)
     .post('/api/v1/places')
     .auth(CHT.username, CHT.password)
@@ -63,20 +73,9 @@ const configureCHT = async () => {
   } else {
     throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.body}`);
   }
-  const user = {
-    password: "Dakar1234",
-    username: "maria",
-    type: "chw",
-    place: {
-      name: "CHP Branch One",
-      type: "district_hospital",
-      parent: placeId
-    },
-    contact: {
-      name: "Maria Blob",
-      phone: "+2868917046"
-    }
-  };
+
+  const user = UserFactory.build({}, { placeId: placeId });
+
   chwUserName = user.username;
   chwPassword = user.password;
   const createUserResponse = await request(CHT.url)
@@ -104,8 +103,7 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
     expect(checkMediatorResponse.status).toBe(200);
     expect(checkMediatorResponse.body.status).toBe("success");
 
-    let identifier = [{ system: 'official', value: 'test-endpoint' }];
-
+    const identifier = [{ system: 'official', value: 'test-endpoint' }];
     const endpoint = EndpointFactory.build({ identifier: identifier });
     const createMediatorEndpointResponse = await request(FHIR.url)
       .post('/mediator/endpoint')
@@ -116,10 +114,9 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
     endpointId = createMediatorEndpointResponse.body.id;
 
     /*TODO retreive endpoint*/
+    const organization = OrganizationFactory.build();
+    organization.endpoint[0].reference = `Endpoint/${endpointId}`;
 
-    identifier[0].value = 'test-org';
-    const organization = OrganizationFactory.build({ endpointId: endpointId }, { identifier: identifier });
-    console.log(organization)
     const createMediatorOrganizationResponse = await request(FHIR.url)
       .post('/mediator/organization')
       .auth(FHIR.username, FHIR.password)
@@ -128,17 +125,7 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
     expect(createMediatorOrganizationResponse.status).toBe(201);
 
     /*TODO Retreive organization*/
-
-    const patient = {
-      name: "John Test",
-      phone: "+2548277217095",
-      date_of_birth: "1980-06-06",
-      sex: "male",
-      type: "person",
-      role: "patient",
-      contact_type: "patient",
-      place: placeId
-    };
+    const patient = PatientFactory.build({}, { placeId: placeId });
 
     const createPatientResponse = await request(CHT.url)
       .post('/api/v1/people')
@@ -154,18 +141,9 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
       .auth(FHIR.username, FHIR.password);
 
     expect(retrieveFhirPatientIdResponse.status).toBe(200);
-    const serviceRequest2 = ServiceRequestFactory.build({ patientId: patientId }, { organizationId: identifier[0].value });
-    console.log(serviceRequest2)
-    const serviceRequest = {
-      intent: "order",
-      subject: {
-        reference: `Patient/${patientId}`,
-      },
-      requester: {
-        reference: "Organization/test-org",
-      },
-      status: "active",
-    };
+    const serviceRequest = ServiceRequestFactory.build();
+    serviceRequest.subject.reference = `Patient/${patientId}`;
+    serviceRequest.requester.reference = "Organization/test-org";
 
     const sendMediatorServiceRequestResponse = await request(FHIR.url)
       .post('/mediator/service-request')
@@ -174,67 +152,12 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
     expect(sendMediatorServiceRequestResponse.status).toBe(201);
     encounterUrl = sendMediatorServiceRequestResponse.body.criteria;
 
-    const taskForm = {
-      "docs": [
-        {
-          "form": "interop_follow_up",
-          "type": "data_record",
-          "contact": {
-            "_id": contactId,
-            "parent": {
-              "_id": placeId
-            }
-          },
-          "from": "",
-          "hidden_fields": [
-            "meta"
-          ],
-          "fields": {
-            "inputs": {
-              "meta": {
-                "location": {
-                  "lat": "",
-                  "long": "",
-                  "error": "",
-                  "message": ""
-                },
-                "deprecatedID": ""
-              },
-              "source": "task",
-              "is_covid_vaccine_referral": "",
-              "contact": {
-                "_id": patientId,
-                "name": "John Test",
-                "date_of_birth": "1980-06-06",
-                "sex": "male",
-                "parent": {
-                  "parent": {
-                    "contact": {
-                      "name": "",
-                      "phone": ""
-                    }
-                  }
-                }
-              }
-            },
-            "vaccination_details": {
-              "interop_follow_up": "yes"
-            },
-            "meta": {
-              "instanceID": "uuid:0fbe39f1-8aa5-477a-89ea-863831766766"
-            }
-          },
-          "_id": "{{$guid}}",
-          "_rev": "1-{{$guid}}"
-        }
-      ],
-      "new_edits": false
-    };
+    const taskReport = TaskReportFactory.build({}, { placeId, contactId, patientId });
 
     const submitChtTaskResponse = await request(CHT.url)
       .post('/medic/_bulk_docs')
       .auth(chwUserName, chwPassword)
-      .send(taskForm);
+      .send(taskReport);
 
     expect(submitChtTaskResponse.status).toBe(201);
 
