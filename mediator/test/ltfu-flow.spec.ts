@@ -16,7 +16,9 @@ const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('address', 'https://interop.free.beeceptor.com/callback')
   .attr('payloadType', [{ text: 'application/json' }]);
 
-const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system: 'official', value: 'test-org' }]);
+const endpointIdentifier = 'test-endpoint';
+const organizationIdentifier = 'test-org';
+const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system: 'official', value: organizationIdentifier }]);
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
 
@@ -42,7 +44,7 @@ const installMediatorConfiguration = async () => {
   } catch (error) {
     throw new Error(`Mediator channel installation failed`);
   }
-}
+};
 let placeId: string;
 let chwUserName: string;
 let chwPassword: string;
@@ -94,7 +96,7 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
     expect(checkMediatorResponse.status).toBe(200);
     expect(checkMediatorResponse.body.status).toBe('success');
 
-    const identifier = [{ system: 'official', value: 'test-endpoint' }];
+    const identifier = [{ system: 'official', value: endpointIdentifier }];
     const endpoint = EndpointFactory.build({ identifier: identifier });
     const createMediatorEndpointResponse = await request(FHIR.url)
       .post('/mediator/endpoint')
@@ -104,7 +106,13 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
     expect(createMediatorEndpointResponse.status).toBe(201);
     endpointId = createMediatorEndpointResponse.body.id;
 
-    /*TODO retreive endpoint*/
+    const retrieveEndpointResponse = await request(FHIR.url)
+      .get('/fhir/Endpoint/?identifier=' + endpointIdentifier)
+      .auth(FHIR.username, FHIR.password);
+
+    expect(retrieveEndpointResponse.status).toBe(200);
+    expect(retrieveEndpointResponse.body.total).toBe(1);
+
     const organization = OrganizationFactory.build();
     organization.endpoint[0].reference = `Endpoint/${endpointId}`;
 
@@ -115,7 +123,13 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
 
     expect(createMediatorOrganizationResponse.status).toBe(201);
 
-    /*TODO Retreive organization*/
+    const retrieveOrganizationResponse = await request(FHIR.url)
+      .get('/fhir/Organization/?identifier=' + organizationIdentifier)
+      .auth(FHIR.username, FHIR.password);
+
+    expect(retrieveOrganizationResponse.status).toBe(200);
+    expect(retrieveOrganizationResponse.body.total).toBe(1);
+
     const patient = PatientFactory.build({}, { placeId: placeId });
 
     const createPatientResponse = await request(CHT.url)
@@ -132,9 +146,10 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
       .auth(FHIR.username, FHIR.password);
 
     expect(retrieveFhirPatientIdResponse.status).toBe(200);
+
     const serviceRequest = ServiceRequestFactory.build();
     serviceRequest.subject.reference = `Patient/${patientId}`;
-    serviceRequest.requester.reference = 'Organization/test-org';
+    serviceRequest.requester.reference = `Organization/${organizationIdentifier}`;
 
     const sendMediatorServiceRequestResponse = await request(FHIR.url)
       .post('/mediator/service-request')
