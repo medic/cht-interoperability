@@ -3,15 +3,15 @@ import { Factory } from 'rosie';
 
 const PlaceFactory = Factory.define('place')
   .option('placeId', randomUUID())
-  .attr('name', "CHP Branch One")
-  .attr('type', "district_hospital")
+  .attr('name', 'CHP Branch One')
+  .attr('type', 'district_hospital')
   .attr('parent', ['placeId'], function (placeId) {
     return placeId;
   });
 
 const ContactFactory = Factory.define('contact')
-  .attr('name', "Maria Blob")
-  .attr('phone', "+2868917046");
+  .attr('name', 'Maria Blob')
+  .attr('phone', '+2868917046');
 
 export const UserFactory = Factory.define('user')
   .option('placeId')
@@ -43,13 +43,13 @@ const DocsFieldsFactory = Factory.define('fields')
   .option('placeId')
   .attr('inputs', ['patientId'], function (patientId) {
     return {
-      "source": "task",
-      "is_covid_vaccine_referral": "",
-      "contact": { "_id": patientId }
+      'source': 'task',
+      'is_covid_vaccine_referral': '',
+      'contact': { '_id': patientId }
     };
   })
-  .attr('vaccination_details', { "interop_follow_up": "yes" })
-  .attr('meta', { "instanceID": "uuid:0fbe39f1-8aa5-477a-89ea-863831766766" })
+  .attr('vaccination_details', { 'interop_follow_up': 'yes' })
+  .attr('meta', { 'instanceID': 'uuid:0fbe39f1-8aa5-477a-89ea-863831766766' })
   .attr('contact_type', '1patient')
   .attr('place', ['placeId'], function (placeId) {
     return placeId;
@@ -59,18 +59,18 @@ const DocsFactory = Factory.define('docs')
   .option('placeId')
   .option('contactId')
   .option('patientId')
-  .attr('form', "interop_follow_up")
-  .attr('type', "data_record")
+  .attr('form', 'interop_follow_up')
+  .attr('type', 'data_record')
   .attr('contact', ['placeId', 'contactId'], function (placeId, contactId) {
     return ContactFactory.attr('_id', contactId).attr('parent', { '_id': placeId }).build();
   })
-  .attr('from', "")
-  .attr('hidden_fields', ["meta"])
+  .attr('from', '')
+  .attr('hidden_fields', ['meta'])
   .attr('fields', ['patientId', 'placeId'], function (patientId, placeId) {
     return DocsFieldsFactory.build({}, { patientId, placeId });
   })
-  .attr('_id', "{{$guid}}")
-  .attr('_rev', "1-{{$guid}}");
+  .attr('_id', '{{$guid}}')
+  .attr('_rev', '1-{{$guid}}');
 
 export const TaskReportFactory = Factory.define('report')
   .option('placeId')

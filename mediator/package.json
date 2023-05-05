@@ -10,7 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "unit-test": "jest src/",
+    "e2e-test": "test/e2e-test.sh"
   },
   "repository": {
     "type": "git",

@@ -12,14 +12,6 @@ const openhimMediatorUtils = require('openhim-mediator-utils');
 
 jest.setTimeout(10000);
 
-let placeId: string;
-let chwUserName: string;
-let chwPassword: string;
-let contactId: string;
-let patientId: string;
-let encounterUrl: String;
-let endpointId: String;
-
 const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('address', 'https://interop.free.beeceptor.com/callback')
   .attr('payloadType', [{ text: 'application/json' }]);
@@ -28,7 +20,7 @@ const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
 
-let installMediatorConfiguration = new Promise(function (resolve, reject) {
+const installMediatorConfiguration = new Promise(function (resolve, reject) {
 
   openhimMediatorUtils.authenticate(
     {
@@ -44,14 +36,14 @@ let installMediatorConfiguration = new Promise(function (resolve, reject) {
 
       try {
         const res = await request(OPENHIM.apiURL)
-          .post("/mediators/urn:mediator:ltfu-mediator/channels")
+          .post('/mediators/urn:mediator:ltfu-mediator/channels')
           .send(['Mediator'])
           .set('auth-username', authHeaders['auth-username'])
           .set('auth-ts', authHeaders['auth-ts'])
           .set('auth-salt', authHeaders['auth-salt'])
           .set('auth-token', authHeaders['auth-token']);
 
-        if (res.status == 201) {
+        if (res.status === 201) {
           resolve('Success');
         } else {
           throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
@@ -63,11 +55,17 @@ let installMediatorConfiguration = new Promise(function (resolve, reject) {
   );
 });
 
+let placeId: string;
+let chwUserName: string;
+let chwPassword: string;
+let contactId: string;
+
 const configureCHT = async () => {
   const createPlaceResponse = await request(CHT.url)
     .post('/api/v1/places')
     .auth(CHT.username, CHT.password)
-    .send({ "name": "CHP Branch Two", "type": "district_hospital" });
+    .send({ 'name': 'CHP Branch Two', 'type': 'district_hospital' });
+
   if (createPlaceResponse.status === 200 && createPlaceResponse.body.ok === true) {
     placeId = createPlaceResponse.body.id;
   } else {
@@ -78,6 +76,7 @@ const configureCHT = async () => {
 
   chwUserName = user.username;
   chwPassword = user.password;
+
   const createUserResponse = await request(CHT.url)
     .post('/api/v2/users')
     .auth(CHT.username, CHT.password)
@@ -85,23 +84,27 @@ const configureCHT = async () => {
   if (createUserResponse.status === 200) {
     contactId = createUserResponse.body.contact.id;
   } else {
-    throw new Error(`CHT user creation failed: Reason ${createPlaceResponse.status}`);
+    throw new Error(`CHT user creation failed: Reason ${createUserResponse.status}`);
   }
 };
 
-describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
+describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
+  let patientId: string;
+  let encounterUrl: string;
+  let endpointId: string;
+
   beforeAll(async () => {
     await installMediatorConfiguration;
     await configureCHT();
   });
 
-  it("Should follow the LTFU workflow", async () => {
+  it('Should follow the LTFU workflow', async () => {
     const checkMediatorResponse = await request(FHIR.url)
-      .get("/mediator/")
+      .get('/mediator/')
       .auth(FHIR.username, FHIR.password);
 
     expect(checkMediatorResponse.status).toBe(200);
-    expect(checkMediatorResponse.body.status).toBe("success");
+    expect(checkMediatorResponse.body.status).toBe('success');
 
     const identifier = [{ system: 'official', value: 'test-endpoint' }];
     const endpoint = EndpointFactory.build({ identifier: identifier });
@@ -143,7 +146,7 @@ describe("Steps to follow the Loss To Follow-Up (LTFU) workflow", () => {
     expect(retrieveFhirPatientIdResponse.status).toBe(200);
     const serviceRequest = ServiceRequestFactory.build();
     serviceRequest.subject.reference = `Patient/${patientId}`;
-    serviceRequest.requester.reference = "Organization/test-org";
+    serviceRequest.requester.reference = 'Organization/test-org';
 
     const sendMediatorServiceRequestResponse = await request(FHIR.url)
       .post('/mediator/service-request')

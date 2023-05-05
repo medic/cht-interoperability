@@ -16,5 +16,4 @@ jobs:
         working-directory: ./mediator
         run: |
           npm install
-          npm test
-
+          npm run unit-test
