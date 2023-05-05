@@ -1,10 +1,11 @@
 {
-  "name": "interoperability",
+  "name": "cht-interoperability",
   "version": "1.0.0",
-  "description": "This is a placeholder for 2023 interoperability project",
+  "description": "CHT - eCHIS interoperability project",
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --fix",
+    "postinstall": "husky install",
     "init": "./startup.sh init",
     "down": "./startup.sh down",
     "destory": "./startup.sh destroy",
@@ -12,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/medic/interoperability-placeholder.git"
+    "url": "git+https://github.com/medic/cht-interoperability.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/medic/interoperability-placeholder/issues"
+    "url": "https://github.com/medic/cht-interoperability/issues"
   },
-  "homepage": "https://github.com/medic/interoperability-placeholder#readme",
+  "homepage": "https://github.com/medic/cht-interoperability#readme",
   "devDependencies": {
     "@commitlint/cli": "^17.6.1",
     "@commitlint/config-conventional": "^17.6.1",
