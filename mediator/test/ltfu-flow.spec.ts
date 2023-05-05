@@ -8,7 +8,7 @@ import {
   OrganizationFactory as OrganizationFactoryBase,
   ServiceRequestFactory as ServiceRequestFactoryBase
 } from '../src/middlewares/schemas/tests/fhir-resource-factories';
-const openhimMediatorUtils = require('openhim-mediator-utils');
+const { generateAuthHeaders } = require('../../configurator/libs/authentication');
 
 jest.setTimeout(10000);
 
@@ -20,41 +20,29 @@ const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
 
-const installMediatorConfiguration = new Promise(function (resolve, reject) {
+const installMediatorConfiguration = async () => {
+  const authHeaders = await generateAuthHeaders({
+    apiURL: OPENHIM.apiURL,
+    username: OPENHIM.username,
+    password: OPENHIM.password,
+    rejectUnauthorized: false,
+  });
+  try {
+    const res = await request(OPENHIM.apiURL)
+      .post('/mediators/urn:mediator:ltfu-mediator/channels')
+      .send(['Mediator'])
+      .set('auth-username', authHeaders['auth-username'])
+      .set('auth-ts', authHeaders['auth-ts'])
+      .set('auth-salt', authHeaders['auth-salt'])
+      .set('auth-token', authHeaders['auth-token']);
 
-  openhimMediatorUtils.authenticate(
-    {
-      apiURL: OPENHIM.apiURL,
-      username: OPENHIM.username,
-      rejectUnauthorized: false,
-    },
-    async () => {
-      const authHeaders = openhimMediatorUtils.genAuthHeaders({
-        username: OPENHIM.username,
-        password: OPENHIM.password,
-      });
-
-      try {
-        const res = await request(OPENHIM.apiURL)
-          .post('/mediators/urn:mediator:ltfu-mediator/channels')
-          .send(['Mediator'])
-          .set('auth-username', authHeaders['auth-username'])
-          .set('auth-ts', authHeaders['auth-ts'])
-          .set('auth-salt', authHeaders['auth-salt'])
-          .set('auth-token', authHeaders['auth-token']);
-
-        if (res.status === 201) {
-          resolve('Success');
-        } else {
-          throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
-        }
-      } catch (error) {
-        return reject(error);
-      }
+    if (res.status !== 201) {
+      throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
     }
-  );
-});
-
+  } catch (error) {
+    throw new Error(`Mediator channel installation failed`);
+  }
+}
 let placeId: string;
 let chwUserName: string;
 let chwPassword: string;
@@ -94,7 +82,7 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
   let endpointId: string;
 
   beforeAll(async () => {
-    await installMediatorConfiguration;
+    await installMediatorConfiguration();
     await configureCHT();
   });
 
