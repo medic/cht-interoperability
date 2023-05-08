@@ -11,8 +11,6 @@ export NODE_TLS_REJECT_UNAUTHORIZED=0
 # Cleanup from last test, in case of interruptions
 cd $BASEDIR
 ./startup.sh destroy
-cd $DOCKERRDIR
-rm -rf srv
 
 # Starting the interoperability containers
 cd $BASEDIR
@@ -36,6 +34,4 @@ unset FHIR_URL
 unset CHT_URL
 cd $BASEDIR
 ./startup.sh destroy
-cd $DOCKERRDIR
-rm -rf srv
 
