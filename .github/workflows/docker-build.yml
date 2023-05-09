@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Build timestamp
@@ -35,3 +35,30 @@ jobs:
           file: ./mediator/Dockerfile
           push: true
           tags: medicmobile/openhim-mediator:${{ env.BUILD_TIMESTAMP }}
+  
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/master'
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set the Kubernetes context
+        uses: azure/k8s-set-context@v2
+        with:
+          method: service-account
+          k8s-url: <server-url>
+          k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Deploy to the Kubernetes cluster
+        uses: azure/k8s-deploy@v1
+        with:
+          namespace: default
+          manifests: |
+            kubernetes/deployment.yaml
+            kubernetes/ingress.yaml
+            kubernetes/service.yaml
+          images: |
+            medicmobile/openhim-mediator:${{ env.BUILD_TIMESTAMP }}
