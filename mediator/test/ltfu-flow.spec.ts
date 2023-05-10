@@ -167,7 +167,7 @@ describe('Steps to follow the Loss To Follow-Up (LTFU) workflow', () => {
 
     expect(submitChtTaskResponse.status).toBe(201);
 
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 2000));
 
     const retrieveFhirDbEncounter = await request(FHIR.url)
       .get('/fhir/' + encounterUrl)
