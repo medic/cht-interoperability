@@ -42,7 +42,7 @@ const installMediatorConfiguration = async () => {
       throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
     }
   } catch (error) {
-    throw new Error(`Mediator channel installation failed`);
+    throw new Error(`Mediator channel installation failed ${error}`);
   }
 };
 let placeId: string;

@@ -2,8 +2,6 @@
 set -e
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && cd .. && pwd )"
 MEDIATORDIR="${BASEDIR}/mediator"
-DOCKERRDIR="${BASEDIR}/docker"
-
 
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
