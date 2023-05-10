@@ -145,7 +145,7 @@ In the LTFU workflow, the `Endpoint` is crucial in creating a `ServiceRequest`. 
 - **ENDPOINT_IDENTIFIER:** An identifier for the `Endpoint` that can be used when querying the FHIR database in the future.
 - **ORG_CALLBACK_URL:** A callback URL that the mediator can use to contact the requesting system (`Organization`) in the future when a `ServiceRequest` has been fulfilled.
 
-> **NOTE** The FHIR Subscription created in the future requires `ORG_CALLBACK_URL` to accept HTTP PUT requests matching this path `${ORG_CALLBACK_URL}/:resourceType/:resourceId` and return a 200. In this workflow, the callback should expect to receive an `Encounter` resource sent back to the requesting system on `${ORG_CALLBACK_URL}/Encounter/:id`.
+> **NOTE** The FHIR `Subscription` that will be created ulteriorly requires `ORG_CALLBACK_URL` to accept HTTP `PUT` requests matching this path `${ORG_CALLBACK_URL}/:resourceType/:resourceId` and return a 200. In this workflow, the callback should expect to receive an `Encounter` resource sent back to the requesting system on `${ORG_CALLBACK_URL}/Encounter/:id`.
 
 ##### Request
 
