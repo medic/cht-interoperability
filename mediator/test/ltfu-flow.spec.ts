@@ -59,7 +59,7 @@ const configureCHT = async () => {
   if (createPlaceResponse.status === 200 && createPlaceResponse.body.ok === true) {
     placeId = createPlaceResponse.body.id;
   } else {
-    throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.body}`);
+    throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.status}`);
   }
 
   const user = UserFactory.build({}, { placeId: placeId });
