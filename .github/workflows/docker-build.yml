@@ -4,13 +4,15 @@ on:
   push:
     branches:
       - 'main'
-env:
-  BUILD_TIMESTAMP: ${{ github.event.repository.updated_at}}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Build timestamp
+        id: timestamp
+        run: echo "BUILD_TIMESTAMP=$(github.event.repository.updated_at | sed 's/:/./g')" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -41,6 +43,10 @@ jobs:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
+      - name: Build timestamp
+        id: timestamp
+        run: echo "BUILD_TIMESTAMP=$(github.event.repository.updated_at | sed 's/:/./g')" >> $GITHUB_ENV
+
       - name: Set the Kubernetes context
         uses: azure/k8s-set-context@v2
         with:
