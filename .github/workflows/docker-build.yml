@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
 env:
-  BUILD_TIMESTAMP: $(date +%Y%m%d%H%M)
+  BUILD_TIMESTAMP: ${{ github.event.repository.updated_at}}
 
 jobs:
   build:
