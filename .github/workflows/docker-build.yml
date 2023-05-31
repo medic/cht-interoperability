@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Print BUILD_TIMESTAMP
-        run: echo "$BUILD_TIMESTAMP"
+        run: echo $BUILD_TIMESTAMP
 
       - name: Deploy to the Kubernetes cluster
         uses: azure/k8s-deploy@v1
