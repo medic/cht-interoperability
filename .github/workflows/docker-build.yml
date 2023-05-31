@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
 env:
-  BUILD_TIMESTAMP=$(date +%Y%m%d%H%M)
+  BUILD_TIMESTAMP: $(date +%Y%m%d%H%M)
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
           context: ./mediator
           file: ./mediator/Dockerfile
           push: true
-          tags: medicmobile/openhim-mediator:${{ BUILD_TIMESTAMP }}
+          tags: medicmobile/openhim-mediator:$BUILD_TIMESTAMP
   
   deploy:
     name: Deploy
@@ -51,7 +51,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Print BUILD_TIMESTAMP
-
         run: echo $BUILD_TIMESTAMP
 
       - name: Deploy to the Kubernetes cluster
@@ -61,4 +60,4 @@ jobs:
           manifests: |
             kubernetes/deployment.yaml
           images: |
-            medicmobile/openhim-mediator:${{ BUILD_TIMESTAMP }}
+            medicmobile/openhim-mediator:$BUILD_TIMESTAMP
