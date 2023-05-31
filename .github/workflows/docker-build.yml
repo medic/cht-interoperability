@@ -61,5 +61,4 @@ jobs:
           manifests: |
             kubernetes/deployment.yaml
           images: |
-
             "medicmobile/openhim-mediator:$BUILD_TIMESTAMP"
