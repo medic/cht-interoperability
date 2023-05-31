@@ -8,10 +8,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      BUILD_TIMESTAMP: ${{ steps.outputtimestamp.outputs.BUILD_TIMESTAMP }}
     steps:
       - name: Build timestamp
         id: timestamp
-        run: echo "BUILD_TIMESTAMP=$(github.event.repository.updated_at | sed 's/:/./g')" >> $GITHUB_ENV
+        run: echo "BUILD_TIMESTAMP=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+
+      - id: outputtimestamp
+        run: echo "::set-output name=BUILD_TIMESTAMP::${{ env.BUILD_TIMESTAMP }}"
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,9 +48,9 @@ jobs:
     needs: [ build ]
     runs-on: ubuntu-latest
     steps:
-      - name: Build timestamp
-        id: timestamp
-        run: echo "BUILD_TIMESTAMP=$(github.event.repository.updated_at | sed 's/:/./g')" >> $GITHUB_ENV
+      - env:
+          BUILD_TIMESTAMP: ${{ needs.build.outputs.BUILD_TIMESTAMP }}
+        run: echo "$BUILD_TIMESTAMP" >> $GITHUB_ENV
 
       - name: Set the Kubernetes context
         uses: azure/k8s-set-context@v2
