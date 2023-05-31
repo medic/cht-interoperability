@@ -33,6 +33,7 @@ jobs:
           file: ./mediator/Dockerfile
           push: true
           tags: "medicmobile/openhim-mediator:$BUILD_TIMESTAMP"
+
   
   deploy:
     name: Deploy
@@ -60,4 +61,5 @@ jobs:
           manifests: |
             kubernetes/deployment.yaml
           images: |
+
             "medicmobile/openhim-mediator:$BUILD_TIMESTAMP"
