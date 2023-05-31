@@ -58,7 +58,5 @@ jobs:
           namespace: default
           manifests: |
             kubernetes/deployment.yaml
-            kubernetes/ingress.yaml
-            kubernetes/service.yaml
           images: |
             medicmobile/openhim-mediator:${{ env.BUILD_TIMESTAMP }}

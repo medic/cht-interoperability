@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  generation: 3
+  labels:
+    k8sApp.name: mediator
+  name: mediator
+  namespace: openhim-dev
+  selfLink: /apis/extensions/v1beta1/namespaces/openhim-dev/deployments/mediator
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8sApp.name: mediator
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        k8sApp.name: mediator
+    spec:
+      containers:
+      - envFrom:
+        - secretRef:
+            name: interop-secret
+        image: medicmobile/openhim-mediator:0.0.3
+        imagePullPolicy: Always
+        name: mediator
+        ports:
+        - containerPort: 6000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
