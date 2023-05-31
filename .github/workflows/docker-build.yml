@@ -50,7 +50,7 @@ jobs:
     steps:
       - env:
           BUILD_TIMESTAMP: ${{ needs.build.outputs.BUILD_TIMESTAMP }}
-        #run: echo "$BUILD_TIMESTAMP" >> $GITHUB_ENV
+        run: echo "BUILD_TIMESTAMP=${{ needs.build.outputs.BUILD_TIMESTAMP }}" >> $GITHUB_ENV
 
       - name: Set the Kubernetes context
         uses: azure/k8s-set-context@v2
@@ -72,4 +72,4 @@ jobs:
           manifests: |
             kubernetes/deployment.yaml
           images: |
-            "medicmobile/openhim-mediator:$BUILD_TIMESTAMP"
+            medicmobile/openhim-mediator:${{ env.BUILD_TIMESTAMP }}
