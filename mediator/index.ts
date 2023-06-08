@@ -14,13 +14,14 @@ import os from 'os';
 const {registerMediator} = require('openhim-mediator-utils');
 
 const app = express();
-const uptime = os.uptime();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('*', (_: Request, res: Response) => {
-  res.send({status: 'success', uptime});
+  const osUptime = os.uptime();
+  const processUptime = process.uptime();
+  res.send({status: 'success', osuptime: osUptime, processuptime: processUptime});
 });
 
 app.use('/patient', patientRoutes);
