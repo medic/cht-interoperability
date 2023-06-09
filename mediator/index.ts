@@ -1,7 +1,6 @@
-import {Request, Response} from 'express';
+import express, {Request, Response} from 'express';
 import { mediatorConfig } from './config/mediator';
 import { logger } from './logger';
-import express from 'express';
 import bodyParser from 'body-parser';
 import {PORT, OPENHIM} from './config';
 import patientRoutes from './src/routes/patient';
@@ -10,6 +9,7 @@ import encounterRoutes from './src/routes/encounter';
 import organizationRoutes from './src/routes/organization';
 import endpointRoutes from './src/routes/endpoint';
 import { registerMediatorCallback } from './src/utils/openhim';
+import os from 'os';
 
 const {registerMediator} = require('openhim-mediator-utils');
 
@@ -19,7 +19,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('*', (_: Request, res: Response) => {
-  res.send({status: 'success'});
+  const osUptime = os.uptime();
+  const processUptime = process.uptime();
+  res.send({status: 'success', osuptime: osUptime, processuptime: processUptime});
 });
 
 app.use('/patient', patientRoutes);
