@@ -11,6 +11,10 @@ jobs:
     outputs:
       BUILD_TIMESTAMP: ${{ steps.outputtimestamp.outputs.BUILD_TIMESTAMP }}
     steps:
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+        
       - name: Build timestamp
         id: timestamp
         run: echo "BUILD_TIMESTAMP=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
