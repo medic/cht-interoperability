@@ -60,7 +60,7 @@ jobs:
         uses: azure/k8s-set-context@v2
         with:
           method: service-account
-          k8s-url: https://api.cluster01.dev.medicmobile.org
+          k8s-url: https://23B4021D5F26E3760D05A01DA520DBA3.gr7.eu-west-2.eks.amazonaws.com
           k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
 
       - name: Checkout source code
