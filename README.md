@@ -6,12 +6,6 @@ This project implements a Loss to Follow Up (LTFU) workflow system for CHIS base
 
 A first version of the project can be found in the [chis-interoperability](https://github.com/medic/chis-interoperability) repository.
 
-### Interoperability
-
-Interoperability is the ability of health information systems to work together, even if they weren’t specifically designed to work together. With interoperability, patient information can be seen, exchanged, and used across different platforms. This is different from _integration_ which requires custom development to connect two specific systems together.
-
-Interoperability is the best practice for health systems because it allows information from one system to be shared with one or more other systems with no additional development.
-
 #### Components
 
 The components and reference information for interoperability used in this project are:
@@ -22,13 +16,10 @@ The components and reference information for interoperability used in this proje
 
 #### CHT
 
-The structure of documents in the CHT database reflect the configuration of the system, and therefore do not map directly to a FHIR message format. To achieve interoperability we used a middleware to convert the CHT data structure into a standardized form so the other systems can read it.
+The structure of documents in the CHT database reflect the configuration of the system, and therefore do not map directly to a FHIR message format. To achieve interoperability we used a middleware to convert the CHT data structure into a standardized form so the other systems can read it. Below is the standard data workflow;
 
 ![](./docs/images/flow.png)
-
-This project uses OpenHIM as the middleware component with [Mediators](http://openhim.org/docs/configuration/mediators/) to do the conversion. [Outbound Push](https://docs.communityhealthtoolkit.org/apps/reference/app-settings/outbound/) is configured to make a request to the middleware when relevant documents are created or modified in the CHT. A Mediator then creates a FHIR resource which is then routed to OpenHIM. OpenHIM routes the resource to any other configured systems.
-
-Conversely to bring data into the CHT, OpenHIM is configured to route the updated resource to the Mediator, which then calls the relevant [CHT APIs](https://docs.communityhealthtoolkit.org/apps/reference/api/) to update the document in the CHT database. This will then be replicated to users’ devices as per usual.
+See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the doc site.
 
 ### Services
 
