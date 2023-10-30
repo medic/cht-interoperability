@@ -19,6 +19,7 @@ The components and reference information for interoperability used in this proje
 The structure of documents in the CHT database reflect the configuration of the system, and therefore do not map directly to a FHIR message format. To achieve interoperability we used a middleware to convert the CHT data structure into a standardized form so the other systems can read it. Below is the standard data workflow;
 
 ![](./docs/images/flow.png)
+
 See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the doc site.
 
 ### Services
