@@ -20,6 +20,8 @@ The structure of documents in the CHT database reflect the configuration of the 
 
 ![](./docs/images/flow.png)
 
+This project uses OpenHIM as the middleware component with [Mediators](http://openhim.org/docs/configuration/mediators/) to do the conversion. [Outbound Push](https://docs.communityhealthtoolkit.org/apps/reference/app-settings/outbound/) is configured to make a request to the middleware when relevant documents are created or modified in the CHT. A Mediator then creates a FHIR resource which is then routed to OpenHIM. OpenHIM routes the resource to any other configured systems.
+
 See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the CHT documentation site.
 
 ### Services
