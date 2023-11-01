@@ -20,7 +20,7 @@ The structure of documents in the CHT database reflect the configuration of the 
 
 ![](./docs/images/flow.png)
 
-See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the doc site.
+See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the CHT documentation site.
 
 ### Services
 
