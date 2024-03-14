@@ -1,26 +1,9 @@
 import joi from 'joi';
 
 export const PatientSchema = joi.object({
-  identifier: joi
-    .array()
-    .items(
-      joi.object({
-        system: joi.string().valid('cht').required(),
-        value: joi.string().uuid().required(),
-      })
-    )
-    .min(1)
-    .required(),
-  name: joi
-    .array()
-    .items(
-      joi.object({
-        family: joi.string().required(),
-        given: joi.array().length(1).required(),
-      })
-    )
-    .min(1)
-    .required(),
+  id: joi.string().uuid().required(),
+  name: joi.string().required(),
   gender: joi.string().required(),
   birthDate: joi.string().required(),
+  phone: joi.string().required(),
 });
