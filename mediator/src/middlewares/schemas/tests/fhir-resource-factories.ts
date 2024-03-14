@@ -14,10 +14,11 @@ export const HumanNameFactory = Factory.define('humanName')
   .attr('given', ['John']);
 
 export const PatientFactory = Factory.define('patient')
-  .attr('identifier', identifier)
-  .attr('name', () => [HumanNameFactory.build()])
+  .attr('id', randomUUID)
+  .attr('name', 'Patient Zero')
   .attr('gender', 'male')
-  .attr('birthDate', '2000-01-01');
+  .attr('birthDate', '2000-01-01')
+  .attr('phone', '+97723423411');
 
 export const EncounterFactory = Factory.define('encounter')
   .attr('identifier', identifier)
