@@ -8,6 +8,8 @@ import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
 import organizationRoutes from './src/routes/organization';
 import endpointRoutes from './src/routes/endpoint';
+import chtRoutes from './src/routes/cht';
+import openmrsRoutes from './src/routes/openmrs';
 import { registerMediatorCallback } from './src/utils/openhim';
 import os from 'os';
 
@@ -24,11 +26,17 @@ app.get('*', (_: Request, res: Response) => {
   res.send({status: 'success', osuptime: osUptime, processuptime: processUptime});
 });
 
+// routes for valid fhir resources
 app.use('/patient', patientRoutes);
 app.use('/service-request', serviceRequestRoutes);
 app.use('/encounter', encounterRoutes);
 app.use('/organization', organizationRoutes);
 app.use('/endpoint', endpointRoutes);
+
+// routes for cht docs
+app.use('/cht', chtRoutes);
+// routes for openmrs
+app.use('/openmrs', openmrsRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
