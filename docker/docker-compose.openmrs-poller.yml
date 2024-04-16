@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  openmrs-poller:
+    build: ../openmrs-poller
+    container_name: openmrs-poller
+    networks:
+      - cht-net
+    environment:
+      - OPENMRS_URL=${OPENMRS_URL}
+      - OPENMRS_USER=${OPENMRS_USER}
+      - OPENMRS_PASSWORD=${OPENMRS_PASSWORD}
+      - OPENHIM_URL=${OPENHIM_URL}
+      - OPENHIM_USER=${OPENHIM_USER}
+      - OPENHIM_PASSWORD=${OPENHIM_PASSWORD}
