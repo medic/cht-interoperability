@@ -107,6 +107,34 @@ export async function getFHIRPatientResource(patientId: string) {
   );
 }
 
+export function copyIdToNamedIdentifier(resourceFrom: any, resourceTo: fhir4.Patient, fromIDType: fhir4.CodeableConcept){
+  const identifier: fhir4.Identifier = {
+    type: fromIDType,
+    value: resourceFrom.id || resourceFrom._id,
+  };
+  resourceTo.identifier?.push(identifier);
+  return resourceTo;
+}
+
+export function getIdType(resource: fhir4.Patient, idType: fhir4.CodeableConcept): string{
+  return resource.identifier?.find((id: any) => id?.type.text == idType.text)?.value || '';
+}
+
+export function addId(resource: fhir4.Patient, idType: fhir4.CodeableConcept, value: string){
+  const identifier: fhir4.Identifier = {
+    type: idType,
+    value: value
+  };
+  resource.identifier?.push(identifier);
+  return resource;
+}
+
+export async function getFHIRLocation(locationId: string) {
+  return await axios.get(
+    `${FHIR.url}/Patient/?identifier=${locationId}`,
+    axiosOptions
+  );
+}
 export async function deleteFhirSubscription(id?: string) {
   return await axios.delete(`${FHIR.url}/Subscription/${id}`, axiosOptions);
 }
@@ -114,6 +142,22 @@ export async function deleteFhirSubscription(id?: string) {
 export async function createFhirResource(doc: fhir4.Resource) {
   try {
     const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, {
+      auth: {
+        username: FHIR.username,
+        password: FHIR.password,
+      },
+    });
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
+}
+
+export async function updateFhirResource(doc: fhir4.Resource) {
+  try {
+    const res = await axios.put(`${FHIR.url}/${doc.resourceType}/${doc.id}`, doc, {
       auth: {
         username: FHIR.username,
         password: FHIR.password,

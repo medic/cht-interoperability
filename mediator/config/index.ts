@@ -22,6 +22,11 @@ export const CHT = {
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
 };
 
+export const OPENMRS = {
+  url: getEnvironmentVariable('OPENMRS_URL', 'http://openhim-core:5001/openmrs'),
+  username: getEnvironmentVariable('OPENMRS_USERNAME', 'interop-client'),
+  password: getEnvironmentVariable('OPENMRS_PASSWORD', 'interop-password'),
+};
 
 function getEnvironmentVariable(env: string, def: string) {
   if (process.env.NODE_ENV === 'test') {

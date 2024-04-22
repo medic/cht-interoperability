@@ -1,4 +1,14 @@
 import { randomUUID } from 'crypto';
+import { OPENMRS } from '../../config';
+import axios from 'axios';
+import { logger } from '../../logger';
+
+const axiosOptions = {
+  auth: {
+    username: OPENMRS.username,
+    password: OPENMRS.password,
+  },
+};
 
 interface OpenMRSIdentifier extends fhir4.Identifier {
   id: string //uuid
@@ -18,6 +28,10 @@ const chtIdentifierType: fhir4.CodeableConcept = {
 
 const medicIdentifierType: fhir4.CodeableConcept = {
   text: 'Medic ID'
+}
+
+export const openMRSIdentifierType: fhir4.CodeableConcept = {
+  text: 'OpenMRS Patient UUID'
 }
 
 const noteEncounterType: fhir4.CodeableConcept = {
@@ -104,6 +118,8 @@ export function buildOpenMRSObservation(patient_id: string, encounter_id: string
     type: "Encounter"
   };
 
+  const now = new Date().toISOString();
+
   const observation: fhir4.Observation = {
     resourceType: "Observation",
     subject: patientRef,
@@ -114,8 +130,8 @@ export function buildOpenMRSObservation(patient_id: string, encounter_id: string
           code: entry.code,
       }],
     },
-    effectiveDateTime: "2024-03-31T12:26:27+00:00",
-    issued: "2024-03-31T12:26:28.000+00:00",
+    effectiveDateTime: now,
+    issued: now
   };
 
   if ('valueCode' in entry){
@@ -151,6 +167,21 @@ export function buildOpenMRSPatient(chtPatient: Record<string, any>): fhir4.Pati
     use: 'usual'
   };
 
+  const patient: fhir4.Patient = {
+    resourceType: 'Patient',
+    name: [name],
+    birthDate: chtPatient.date_of_birth,
+    id: chtPatient._id,
+    identifier: [phoneIdentifier],
+    gender: chtPatient.sex
+  };
+
+  mergeIds(patient, chtPatient);
+
+  return patient;
+}
+
+export async function mergeIds(doc: fhir4.Patient, chtPatient: any) {
   const medicIdentifier: OpenMRSIdentifier = {
     id: randomUUID(),
     type: medicIdentifierType,
@@ -167,14 +198,50 @@ export function buildOpenMRSPatient(chtPatient: Record<string, any>): fhir4.Pati
     use: 'official'
   };
 
-  const patient: fhir4.Patient = {
-    resourceType: 'Patient',
-    name: [name],
-    birthDate: chtPatient.birthDate,
-    id: chtPatient._id,
-    identifier: [phoneIdentifier, chtIdentifier, medicIdentifier],
-    gender: chtPatient.gender
-  };
+  if (!doc.identifier) {
+    doc.identifier = [];
+  }
+  doc.identifier.push(medicIdentifier);
+  doc.identifier.push(chtIdentifier);
 
-  return patient;
+  return doc;
+}
+
+export async function getOpenMRSPatientResource(patientId: string) {
+  return await axios.get(
+    `${OPENMRS.url}/Patient/?identifier=${patientId}`,
+    axiosOptions
+  );
+}
+
+export async function createOpenMRSResource(doc: fhir4.Resource) {
+  try {
+    const res = await axios.post(`${OPENMRS.url}/${doc.resourceType}`, doc, {
+      auth: {
+        username: OPENMRS.username,
+        password: OPENMRS.password,
+      },
+    });
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
+}
+
+export async function updateOpenMRSResource(doc: fhir4.Resource) {
+  try {
+    const res = await axios.put(`${OPENMRS.url}/${doc.resourceType}/${doc.id}`, doc, {
+      auth: {
+        username: OPENMRS.username,
+        password: OPENMRS.password,
+      },
+    });
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
