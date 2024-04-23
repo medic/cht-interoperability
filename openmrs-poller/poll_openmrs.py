@@ -14,25 +14,9 @@ openhim_username = os.getenv('OPENHIM_USER')
 openhim_password = os.getenv('OPENHIM_PASSWORD')
 
 
-last_updated = datetime.datetime.now(datetime.UTC).isoformat()
+last_updated = datetime.datetime.utcnow().isoformat()
 patients_already_sent = []
 encounters_already_sent = []
-
-def get_patient_count():
-  count_url = f"{openmrs_url}?_summary=count"
-  response = requests.get(count_url, auth=(openmrs_username, openmrs_password), verify=False)
-  count = response.json()['total']
-  return count
-
-def fetch_and_post_by_id(patient_id):
-  patient_url = f"{openmrs_url}Patient/{patient_id}"
-  response = requests.get(patient_url, auth=(openmrs_username, openmrs_password))
-  return post_data_to_openhim(response.json(), 'patient')
-
-def fetch_and_post_observations(patient_id):
-  patient_url = f"{openmrs_url}Observation/?subject={patient_id}"
-  response = requests.get(patient_url, auth=(openmrs_username, openmrs_password))
-  return post_data_to_openhim(response.json(), 'observations')
 
 def fetch_new_patient_data():
   try:
@@ -68,9 +52,15 @@ def fetch_new_observations():
           patient_url = f"{openmrs_url}Observation/?subject={patient_id}"
           response = requests.get(patient_url, auth=(openmrs_username, openmrs_password))
           if response.status_code == 200:
-            response = post_data_to_openhim(response.json(), 'observations')
+            bundle = response.json()
+            patient_url = f"{openmrs_url}Patient/{patient_id}"
+            response = requests.get(patient_url, auth=(openmrs_username, openmrs_password))
             if response.status_code == 200 or response.status_code == 201:
-              encounters_already_sent.append(encounter['resource']['id'])
+              # add patient to the bundle to send to openhim
+              bundle['entry'].append({'resource': response.json()})
+              response = post_data_to_openhim(bundle, 'encounter')
+              if response.status_code == 200 or response.status_code == 201:
+                encounters_already_sent.append(encounter['resource']['id'])
     else:
       print(f"Failed to fetch patient data from OpenMRS. Status code: {response.status_code}")
   except requests.exceptions.RequestException as e:
