@@ -186,7 +186,6 @@ export async function mergeIds(doc: fhir4.Patient, chtPatient: any) {
     id: randomUUID(),
     type: medicIdentifierType,
     value: chtPatient.patient_id,
-    system: 'cht',
     use: 'official'
   };
 
@@ -194,7 +193,6 @@ export async function mergeIds(doc: fhir4.Patient, chtPatient: any) {
     id: randomUUID(),
     type: chtIdentifierType,
     value: chtPatient._id,
-    system: 'cht',
     use: 'official'
   };
 

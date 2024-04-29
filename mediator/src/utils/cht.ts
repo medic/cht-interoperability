@@ -42,32 +42,49 @@ export async function createChtRecord(patientId: string) {
   return await axios.post(chtApiUrl, record, getOptions());
 }
 
-async function getLocationByName(fhirPatient: fhir4.Patient) {
-  const query: CouchDBQuery = {
-    selector: {
-      type: "contact"
-    }
-  }
-
+async function getLocation(fhirPatient: fhir4.Patient) {
+  // first, extract address value; is fchv area available?
   const addresses = fhirPatient.address?.[0]?.extension?.[0]?.extension;
-
   var addressKey = "http://fhir.openmrs.org/ext/address#address4"
   var addressValue = addresses?.find((ext: any) => ext.url === addressKey)?.valueString;
 
-  if (addressValue) {
-    query.fields = ['place_id'];
-  } else {
+  if (!addressValue) {
+    // no fchv area, use next highest address
     addressKey = "http://fhir.openmrs.org/ext/address#address5"
     addressValue = addresses?.find((ext: any) => ext.url === addressKey)?.valueString;
-    //TODO: support getting area
-    //query.fields = ['default_place_id'];
-    query.fields = ['place_id'];
+
+    // still no... return nothing
+    if (!addressValue) {
+      return '';
+    }
   }
+  
+  // does the name have a place id included?
+  const regex = /\[(\d+)\]/;
+  const match = addressValue.match(regex);
 
-  query.selector.name = addressValue
+  // if so, return it and we're done
+  if (match) {
+    return match[1];
+  } else {
+    // if not, query by name
+    const query: CouchDBQuery = {
+      selector: {
+        type: "contact",
+        name: addressValue
+      },
+      fields: ['place_id']
+    }
+    const location = await queryCht(query);
 
-  const location = await queryCht(query);
-  return location.data.docs[0].place_id;
+    // edge cases can result in more than one location, get first matching
+    // if not found by name, no more we can do, give up
+    if (!location.data?.docs || location.data.docs.length == 0){
+      return '';
+    } else {
+      return location.data.docs[0].place_id;
+    }
+  }
 }
 
 export async function getPatientUUIDFromSourceId(source_id: string) {
@@ -88,7 +105,7 @@ export async function createChtPatient(fhirPatient: fhir4.Patient) {
 
   cht_patient._meta = { form: "openmrs_patient" }
 
-  const location_id = await getLocationByName(fhirPatient);
+  const location_id = await getLocation(fhirPatient);
   cht_patient.location_id = location_id;
 
   return chtRecordsApi(cht_patient);
