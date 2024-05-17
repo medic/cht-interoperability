@@ -29,7 +29,11 @@ export FHIR_USERNAME='interop-client'
 export FHIR_PASSWORD='interop-password'
 export CHT_USERNAME='admin'
 export CHT_PASSWORD='password'
-npm test ltfu-flow.spec.ts
+export OPENMRS_URL='http://openhim-core:5001/openmrs'
+export OPENMRS_USERNAME='interop-client'
+export OPENMRS_PASSWORD='interop-password'
+#npm test ltfu-flow.spec.ts
+npm test patient-creation-flow.spec.ts
 
 # Cleanup
 unset NODE_ENV
@@ -43,6 +47,9 @@ unset FHIR_USERNAME
 unset FHIR_PASSWORD
 unset CHT_USERNAME
 unset CHT_PASSWORD
+unset OPENMRS_URL
+unset OPENMRS_USERNAME
+unset OPENMRS_PASSWORD
 cd $BASEDIR
 ./startup.sh destroy
 
