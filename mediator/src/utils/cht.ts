@@ -4,21 +4,14 @@ import { generateBasicAuthUrl } from './url';
 import https from 'https';
 import path from 'path';
 import { logger } from '../../logger';
-import { openMRSIdentifierType } from './openmrs';
-import { getIdType } from './fhir';
+import { openMRSIdentifierType } from '../mappers/openmrs';
+import { getIdType, copyIdToNamedIdentifier } from './fhir';
+import { buildChtPatientFromFhir } from '../mappers/cht';
 
 type CouchDBQuery = {
     selector: Record<string, any>;
     fields?: string[];
 };
-
-export const chtIdentifierType: fhir4.CodeableConcept = {
-  text: 'CHT ID'
-}
-
-export const medicIdentifierType: fhir4.CodeableConcept = {
-  text: 'Medic ID'
-}
 
 function getOptions(){
   const options = {
@@ -58,7 +51,7 @@ async function getLocation(fhirPatient: fhir4.Patient) {
       return '';
     }
   }
-  
+
   // does the name have a place id included?
   const regex = /\[(\d+)\]/;
   const match = addressValue.match(regex);
@@ -131,29 +124,6 @@ export async function chtRecordFromObservations(patient_id: string, observations
   }
 
   return chtRecordsApi(record);
-}
-
-export function buildChtPatientFromFhir(fhirPatient: fhir4.Patient): any {
-  const name = fhirPatient.name?.[0];
-  const given = name?.given ? name?.given : '';
-
-  const tc = fhirPatient.telecom?.[0];
-
-  const now = new Date().getTime();
-  const birthDate = Date.parse(fhirPatient.birthDate || '');
-  const age_in_days = Math.floor((now - birthDate) / (1000 * 60 * 60 * 24));
-
-  const updateObject = {
-    patient_name: `${given} ${name?.family}`,
-    phone_number: tc?.value,
-    sex: fhirPatient.gender,
-    age_in_days: age_in_days,
-    //TODO: decouple from openmrs
-    openmrs_patient_uuid: fhirPatient.id,
-    openmrs_id: getIdType(fhirPatient, openMRSIdentifierType)
-  };
-
-  return updateObject;
 }
 
 export async function updateChtDocument(doc: any, update_object: any) {

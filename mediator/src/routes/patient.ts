@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { validateBodyAgainst } from '../middlewares';
-import { createFhirResource } from '../utils/fhir';
-import { buildOpenMRSPatient } from '../utils/openmrs';
+import { createFhirResource, validateFhirResource } from '../utils/fhir';
 import { PatientSchema } from '../middlewares/schemas/patient';
 import { requestHandler } from '../utils/request';
 
@@ -11,11 +10,8 @@ const resourceType = 'Patient';
 
 router.post(
   '/',
-  validateBodyAgainst(PatientSchema),
-  requestHandler((req) => {
-    const openMRSPatient = buildOpenMRSPatient(req.body);
-    return createFhirResource({ ...openMRSPatient, resourceType });
-  })
+  validateBodyAgainst(validateFhirResource(resourceType), PatientSchema),
+  requestHandler((req) => createFhirResource({ ...req.body, resourceType }))
 );
 
 export default router;

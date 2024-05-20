@@ -107,13 +107,20 @@ export async function getFHIRPatientResource(patientId: string) {
   );
 }
 
-export function copyIdToNamedIdentifier(resourceFrom: any, resourceTo: fhir4.Patient, fromIDType: fhir4.CodeableConcept){
+export async function getFHIRPatients(lastUpdated: Date) {
+  return await axios.get(
+    `${FHIR.url}/Patient/?_lastUpdated=gt${lastUpdated.toISOString()}`,
+    axiosOptions
+  );
+}
+
+export function copyIdToNamedIdentifier(resource: fhir4.Patient, fromIDType: fhir4.CodeableConcept){
   const identifier: fhir4.Identifier = {
     type: fromIDType,
-    value: resourceFrom.id || resourceFrom._id,
+    value: resource.id
   };
-  resourceTo.identifier?.push(identifier);
-  return resourceTo;
+  resource.identifier?.push(identifier);
+  return resource;
 }
 
 export function getIdType(resource: fhir4.Patient, idType: fhir4.CodeableConcept): string{
@@ -169,4 +176,11 @@ export async function updateFhirResource(doc: fhir4.Resource) {
     logger.error(error);
     return { status: error.status, data: error.data };
   }
+}
+
+export async function getFhirResourcesSince(lastUpdated: Date, resourceType: string) {
+  return await axios.get(
+    `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
+    axiosOptions
+  );
 }
