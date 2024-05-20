@@ -32,8 +32,7 @@ export CHT_PASSWORD='password'
 export OPENMRS_URL='http://openhim-core:5001/openmrs'
 export OPENMRS_USERNAME='interop-client'
 export OPENMRS_PASSWORD='interop-password'
-#npm test ltfu-flow.spec.ts
-npm test patient-creation-flow.spec.ts
+npm run test -t workflows.spec.ts
 
 # Cleanup
 unset NODE_ENV
