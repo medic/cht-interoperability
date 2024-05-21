@@ -1,0 +1,25 @@
+title CHT Outgoing Patients
+
+participant Requesting System
+
+participantgroup 
+participant OpenHIM
+participant Mediator
+participant FHIR Server
+end
+
+autoactivation on
+box over Requesting System: A FHIR Patient is created
+Mediator->Requesting System: Mediator GETs FHIR Patients
+activate Mediator
+Requesting System-->Mediator: FHIR Searchset Response 
+Mediator->FHIR Server: Mediator GETs FHIR Patients
+FHIR Server-->Mediator: FHIR Searchset Response
+box over Mediator: Mediator compares Resources from\nFHIR Server and Requesting System
+box over Mediator: Patients found in FHIR Serverbut\nnot in Requesting System are sent to Requesting System 
+Mediator->Requesting System: Mediator POSTS new Patients
+Requesting System-->Mediator: FHIR Patient Response\n(w/ Requesting System ids)
+Mediator->FHIR Server: Mediator PUTS Patient\nw/ updated ids from requesting System
+FHIR Server-->Mediator:
+deactivate Mediator
+autoactivation off
