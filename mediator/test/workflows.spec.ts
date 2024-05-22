@@ -80,44 +80,12 @@ const configureCHT = async () => {
   }
 };
 
-const cleanCHT = async () => {
-  const deleteUserResponse = await request(CHT.url)
-    .delete(' /api/v1/users/' + chwUserName)
-    .auth(CHT.username, CHT.password)
-    .send();
-
-  if (deleteUserResponse.status !== 200) {
-    throw new Error(`CHT user deletion failed: Reason ${deleteUserResponse.body}`);
-  }
-
-  const docs = {
-    "docs": [
-      { "_id": placeId },
-      { "_id": contactId },
-      { "_id": patientId }
-    ]
-  }
-
-  const bultDeleteResponse = await request(CHT.url)
-    .post('/api/v1/bulk-delete')
-    .auth(CHT.username, CHT.password)
-    .send(docs);
-
-  if (bultDeleteResponse.status !== 200) {
-    throw new Error(`CHT bulk delete failed: Reason ${bultDeleteResponse.status}`);
-  }
-};
-
 describe('Workflows', () => {
 
   beforeAll(async () => {
     await installMediatorConfiguration();
     await configureCHT();
   });
-
-  /*afterAll(async () => {
-    await cleanCHT();
-  });*/
 
   describe('Loss To Follow-Up (LTFU) workflow', () => {
     let encounterUrl: string;
@@ -181,6 +149,7 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
       const serviceRequest = ServiceRequestFactory.build();
       serviceRequest.subject.reference = `Patient/${patientId}`;
@@ -209,7 +178,7 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirDbEncounter.status).toBe(200);
-      //expect(retrieveFhirDbEncounter.body.total).toBe(1);
+      expect(retrieveFhirDbEncounter.body.total).toBe(1);
     });
   });
 
@@ -238,6 +207,7 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(2);
 
     });
 
