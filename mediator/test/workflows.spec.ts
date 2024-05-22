@@ -181,7 +181,6 @@ describe('Workflows', () => {
 
       expect(retrieveFhirDbEncounter.status).toBe(200);
       expect(retrieveFhirDbEncounter.body.total).toBe(1);
-
     });
   });
 
