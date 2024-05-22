@@ -179,8 +179,14 @@ export async function updateFhirResource(doc: fhir4.Resource) {
 }
 
 export async function getFhirResourcesSince(lastUpdated: Date, resourceType: string) {
-  return await axios.get(
-    `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
-    axiosOptions
-  );
+  try {
+    const res = await axios.get(
+      `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
+      axiosOptions
+    );
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }

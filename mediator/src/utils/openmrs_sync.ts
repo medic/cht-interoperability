@@ -28,7 +28,7 @@ interface SyncResults {
   outgoing: fhir4.Resource[]
 }
 
-async function sync(
+export async function compare(
   getKey: (resource: any) => string,
   resourceType: string
 ): Promise<SyncResults> {
@@ -61,11 +61,11 @@ async function sync(
 
 export async function syncPatients(){
   const getKey = (fhirPatient: any) => { return getIdType(fhirPatient, openMRSIdentifierType) || fhirPatient.id };
-  const results: SyncResults = await sync(getKey, 'Patient');
+  const results: SyncResults = await compare(getKey, 'Patient');
 
   results.incoming.forEach(async (openMRSResource) => {
     const response = await updateFhirResource(openMRSResource);
-    const response2 = await createChtPatient( response.data );
+    const response2 = await createChtPatient(response.data);
   });
 
   /*
@@ -86,11 +86,11 @@ export async function syncPatients(){
 
 export async function syncEncountersAndObservations(){
   const getEncounterKey = (fhirEncounter: any) => { return JSON.stringify(fhirEncounter.period); };
-  const encounters: SyncResults = await sync(getEncounterKey, 'Encounter');
+  const encounters: SyncResults = await compare(getEncounterKey, 'Encounter');
   const getObservationKey = (fhirObservation: any) => {
     return fhirObservation.effectiveDateTime + fhirObservation.code.coding[0].code;
   };
-  const observations: SyncResults = await sync(getObservationKey, 'Observation');
+  const observations: SyncResults = await compare(getObservationKey, 'Observation');
 
   const encountersToCht = new Map();
   // create encounters and observations in the fhir server
