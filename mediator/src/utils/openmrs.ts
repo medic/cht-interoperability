@@ -17,10 +17,16 @@ export async function getOpenMRSPatientResource(patientId: string) {
 }
 
 export async function getOpenMRSResourcesSince(lastUpdated: Date, resourceType: string) {
-  return await axios.get(
-    `${OPENMRS.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
-    axiosOptions
-  );
+  try {
+    const res = await axios.get(
+      `${OPENMRS.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
+      axiosOptions
+    );
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 export async function createOpenMRSResource(doc: fhir4.Resource) {

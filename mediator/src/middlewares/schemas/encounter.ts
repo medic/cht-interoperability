@@ -1,10 +1,14 @@
 import joi from 'joi';
 
 export const EncounterSchema = joi.object({
+  id: joi.string().uuid(),
   identifier: joi
     .array()
     .items(
       joi.object({
+        type: joi.object({
+          text: joi.string()
+        }),
         system: joi.string().valid('cht').required(),
         value: joi.string().uuid().required(),
       })

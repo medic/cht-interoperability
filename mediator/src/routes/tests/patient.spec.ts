@@ -16,11 +16,14 @@ describe('POST /patient', () => {
 
     expect(res.status).toBe(201);
     expect(res.body).toEqual({});
+    expect(fhir.createFhirResource).toHaveBeenCalledWith({
+      ...data,
+      resourceType: 'Patient',
+    });
     expect(fhir.createFhirResource).toHaveBeenCalled();
   });
 
-  // TODO: reenable when validating fhir resource after mapping
-  it.skip('doesn\'t accept incoming request with invalid patient resource', async () => {
+  it('doesn\'t accept incoming request with invalid patient resource', async () => {
     const data = PatientFactory.build({ birthDate: 'INVALID_BIRTH_DATE' });
 
     const res = await request(app).post('/patient').send(data);
