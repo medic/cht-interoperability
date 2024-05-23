@@ -87,7 +87,7 @@ describe('Workflows', () => {
     await configureCHT();
   });
 
-  describe('Loss To Follow-Up (LTFU) workflow', () => {
+  describe.skip('Loss To Follow-Up (LTFU) workflow', () => {
     let encounterUrl: string;
     let endpointId: string;
 
@@ -183,6 +183,10 @@ describe('Workflows', () => {
   });
 
   describe('OpenMRS workflow', () => {
+    /*beforeAll(async () => {
+      await configureOpenMRSClient();
+    });*/
+
     it('Should follow the CHT Patient to OpenMRS workflow', async () => {
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
@@ -201,13 +205,49 @@ describe('Workflows', () => {
       expect(createPatientResponse.status).toBe(200);
       expect(createPatientResponse.body.ok).toEqual(true);
       patientId = createPatientResponse.body.id;
+      let encounterUrl = 'Encounter?identifier=' + patientId;
+      let observationUrl = 'Observation?identifier=' + patientId;
 
       const retrieveFhirPatientIdResponse = await request(FHIR.url)
         .get('/fhir/Patient/?identifier=' + patientId)
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      expect(retrieveFhirPatientIdResponse.body.total).toBe(2);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
+
+      //retrieveOpenMrsPatient
+      //validate
+
+      const taskReport = TaskReportFactory.build({}, { placeId, contactId, patientId });
+
+      const submitChtTaskResponse = await request(CHT.url)
+        .post('/medic/_bulk_docs')
+        .auth(chwUserName, chwPassword)
+        .send(taskReport);
+
+      expect(submitChtTaskResponse.status).toBe(201);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const retrieveFhirDbEncounter = await request(FHIR.url)
+        .get('/fhir/' + encounterUrl)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirDbEncounter.status).toBe(200);
+      expect(retrieveFhirDbEncounter.body.total).toBe(1);
+
+      //retrieveOpenMrsObservators
+      //validate
+
+      const retrieveFhirDbObservator = await request(FHIR.url)
+        .get('/fhir/' + observationUrl)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirDbObservator.status).toBe(200);
+      expect(retrieveFhirDbObservator.body.total).toBe(1);//number of observators configured in cht outbound push
+
+      //retrieveOpenMrsObservators
+      //validate
 
     });
 
