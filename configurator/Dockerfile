@@ -1,10 +1,9 @@
 FROM node:16-alpine
 
-RUN apk add g++ make py3-pip git curl chromium
-
 WORKDIR /scripts/configurator
 
-COPY ./configurator ./
+COPY ./configurator/package.json ./package.json
+COPY ./configurator/package-lock.json ./package-lock.json
 
 RUN npm install
 
@@ -12,7 +11,11 @@ WORKDIR /scripts/cht-config
 
 COPY ../cht-config ./
 
-RUN npm install && npm install -g cht-conf && python -m pip install git+https://github.com/medic/pyxform.git@medic-conf-1.17#egg=pyxform-medic
+RUN npm install && npm install -g cht-conf
+
+WORKDIR /scripts/configurator
+
+COPY ./configurator ./
 
 WORKDIR /scripts
 
