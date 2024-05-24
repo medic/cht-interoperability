@@ -94,8 +94,69 @@ async function generateHapiFihrChannel () {
   };
 }
 
+async function generateOpenMRSChannel (host, port, username, password, type) {
+  return {
+    methods: [
+      'GET',
+      'POST',
+      'DELETE',
+      'PUT',
+      'OPTIONS',
+      'HEAD',
+      'TRACE',
+      'CONNECT',
+      'PATCH'
+    ],
+    type: type,
+    allow: CLIENT_ROLES,
+    whitelist: [],
+    authType: 'private',
+    matchContentTypes: [],
+    properties: [],
+    txViewAcl: [],
+    txViewFullAcl: [],
+    txRerunAcl: [],
+    status: 'enabled',
+    rewriteUrls: false,
+    addAutoRewriteRules: true,
+    autoRetryEnabled: false,
+    autoRetryPeriodMinutes: 60,
+    routes: [
+      {
+        type: type,
+        status: 'enabled',
+        forwardAuthHeader: false,
+        name: 'OpenMRS',
+        secured: false,
+        host: host,
+        port: port,
+        path: '',
+        pathTransform: 's/openmrs/openmrs\/ws\/fhir2\/R4/g',
+        primary: true,
+        username: username,
+        password: password
+      }
+    ],
+    requestBody: true,
+    responseBody: true,
+    rewriteUrlsConfig: [],
+    name: 'OpenMRS',
+    description: 'OpenMRS',
+    urlPattern: '^/openmrs/.*$',
+    priority: 1,
+    matchContentRegex: null,
+    matchContentXpath: null,
+    matchContentValue: null,
+    matchContentJson: null,
+    pollingSchedule: null,
+    tcpHost: null,
+    tcpPort: null,
+    alerts: []
+  };
+}
 module.exports = {
   generateClient,
   generateUser,
-  generateHapiFihrChannel
+  generateHapiFihrChannel,
+  generateOpenMRSChannel
 };
