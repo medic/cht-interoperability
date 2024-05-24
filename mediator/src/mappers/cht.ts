@@ -36,9 +36,7 @@ export function buildChtPatientFromFhir(fhirPatient: fhir4.Patient): any {
     phone_number: tc?.value,
     sex: fhirPatient.gender,
     age_in_days: age_in_days,
-    //TODO: decouple from openmrs
-    openmrs_patient_uuid: fhirPatient.id,
-    openmrs_id: getIdType(fhirPatient, openMRSIdentifierType)
+    external_id: fhirPatient.id
   };
 
   return updateObject;
@@ -81,7 +79,7 @@ export function buildFhirPatientFromCht(chtPatient: any): fhir4.Patient {
 
 export function buildFhirEncounterFromCht(chtReport: any): fhir4.Encounter {
   const patientRef: fhir4.Reference = {
-	  reference: `Patient/${chtReport.patient_id}`,
+	  reference: `Patient/${chtReport.patient_uuid}`,
     type: "Patient"
   };
 

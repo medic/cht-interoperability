@@ -1,7 +1,6 @@
 import { getFhirResourcesSince, updateFhirResource, getIdType } from './fhir'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
-import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation } from '../mappers/openmrs'
-import { openMRSIdentifierType } from '../mappers/openmrs'
+import { buildOpenMRSPatient, buildOpenMRSVisit, openMRSIdentifierType } from '../mappers/openmrs'
 import { createChtPatient, chtRecordFromObservations } from './cht'
 
 interface ComparisonResult {
@@ -10,7 +9,7 @@ interface ComparisonResult {
 }
 
 async function getResources(resourceType: string): Promise<ComparisonResult> {
-  var lastUpdated = new Date();
+  const lastUpdated = new Date();
   lastUpdated.setDate(lastUpdated.getDate() - 1);
 
   const fhirResponse = await getFhirResourcesSince(lastUpdated, resourceType);

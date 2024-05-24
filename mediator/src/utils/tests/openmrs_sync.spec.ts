@@ -5,6 +5,9 @@ import * as cht from '../cht';
 
 import { PatientFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 
+import axios from 'axios';
+jest.mock('axios');
+
 describe('OpenMRS Sync', () => {
   it('compares resources with the gvien key', async () => {
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({

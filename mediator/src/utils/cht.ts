@@ -3,9 +3,6 @@ import { CHT } from '../../config';
 import { generateBasicAuthUrl } from './url';
 import https from 'https';
 import path from 'path';
-import { logger } from '../../logger';
-import { openMRSIdentifierType } from '../mappers/openmrs';
-import { getIdType, copyIdToNamedIdentifier } from './fhir';
 import { buildChtPatientFromFhir } from '../mappers/cht';
 
 type CouchDBQuery = {
@@ -38,8 +35,8 @@ export async function createChtRecord(patientId: string) {
 async function getLocation(fhirPatient: fhir4.Patient) {
   // first, extract address value; is fchv area available?
   const addresses = fhirPatient.address?.[0]?.extension?.[0]?.extension;
-  var addressKey = "http://fhir.openmrs.org/ext/address#address4"
-  var addressValue = addresses?.find((ext: any) => ext.url === addressKey)?.valueString;
+  let addressKey = "http://fhir.openmrs.org/ext/address#address4"
+  let addressValue = addresses?.find((ext: any) => ext.url === addressKey)?.valueString;
 
   if (!addressValue) {
     // no fchv area, use next highest address
