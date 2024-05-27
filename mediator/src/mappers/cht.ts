@@ -72,7 +72,7 @@ export function buildFhirPatientFromCht(chtPatient: any): fhir4.Patient {
     telecom: [phone]
   };
 
-  copyIdToNamedIdentifier(patient, chtDocumentIdentifierType);
+  copyIdToNamedIdentifier(patient, patient, chtDocumentIdentifierType);
 
   return patient;
 }

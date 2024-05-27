@@ -25,7 +25,7 @@ const visitType: fhir4.CodeableConcept = {
   text: "Home Visit",
   coding: [{
     system: "http://fhir.openmrs.org/code-system/visit-type",
-    code: "d66e9fe0-7d51-4801-a550-5d462ad1c944",
+    code: "7b0f5697-27e3-40c4-8bae-f4049abfb4ed",
     display: "Home Visit",
   }]
 }
@@ -35,15 +35,22 @@ Build an OpenMRS Visit w/ Visit Note
 From a fhir Encounter
 One CHT encounter will become 2 OpenMRS Encounters
 */
-export function buildOpenMRSVisit(fhirEncounter: fhir4.Encounter): fhir4.Encounter[] {
+export function buildOpenMRSVisit(patientId: string, fhirEncounter: fhir4.Encounter): fhir4.Encounter[] {
   const openMRSVisit = fhirEncounter;
   openMRSVisit.type = [visitType]
-  //openMRSVisit.subject.reference = `Patient/${patient_id}`
+
+  const subjectRef: fhir4.Reference = {
+	  reference: `Patient/${patientId}`,
+    type: "Patient"
+  };
+
+  openMRSVisit.subject = subjectRef;
 
   const visitRef: fhir4.Reference = {
 	  reference: `Encounter/${openMRSVisit.id}`,
     type: "Encounter"
   };
+
   const openMRSVisitNote: fhir4.Encounter = {
     ...openMRSVisit,
     id: randomUUID(),
@@ -82,6 +89,7 @@ export function buildOpenMRSPatient(fhirPatient: fhir4.Patient): fhir4.Patient {
   }
   fhirPatient.name = fhirPatient.name?.map(addId);
   fhirPatient.identifier = fhirPatient.identifier?.map(addId);
+  fhirPatient.telecom = fhirPatient.telecom?.map(addId);
   return fhirPatient;
 }
 

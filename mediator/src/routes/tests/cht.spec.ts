@@ -2,6 +2,9 @@ import request from 'supertest';
 import app from '../../..';
 import { ChtPatientFactory, ChtPregnancyForm } from '../../middlewares/schemas/tests/cht-request-factories';
 import * as fhir from '../../utils/fhir';
+import axios from 'axios';
+
+jest.mock('axios');
 
 describe('POST /cht/patient', () => {
   it('accepts incoming request with valid patient resource', async () => {
@@ -44,6 +47,6 @@ describe('POST /cht/patient', () => {
       resourceType: 'Patient',
     });
     */
-    expect(fhir.createFhirResource).toHaveBeenCalled();
+    expect(fhir.updateFhirResource).toHaveBeenCalled();
   });
 });
