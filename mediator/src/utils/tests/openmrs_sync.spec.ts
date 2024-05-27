@@ -12,15 +12,15 @@ describe('OpenMRS Sync', () => {
   it('compares resources with the gvien key', async () => {
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
       data: { entry: [
-        {id: 'outgoing'},
-        {id: 'toupdate'}
+        { resource: {id: 'outgoing'}},
+        { resource: {id: 'toupdate'}}
       ] },
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
       data: { entry: [
-        {id: 'incoming'},
-        {id: 'toupdate'}
+        { resource: {id: 'incoming'}},
+        { resource: {id: 'toupdate'}}
       ] },
       status: 200,
     });
@@ -43,7 +43,7 @@ describe('OpenMRS Sync', () => {
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-      data: { entry: [ openMRSPatient ] },
+      data: { entry: [ { resource: openMRSPatient } ] },
       status: 200,
     });
     jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
@@ -65,7 +65,7 @@ describe('OpenMRS Sync', () => {
   it('sends outgoing Patients to OpenMRS', async () => {
     const fhirPatient = PatientFactory.build();
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-      data: { entry: [ fhirPatient ] },
+      data: { entry: [ { resource: fhirPatient } ] },
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({

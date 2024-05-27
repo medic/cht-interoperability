@@ -87,7 +87,11 @@ export async function getPatientUUIDFromSourceId(source_id: string) {
   }
 
   const patient = await queryCht(query);
-  return patient.data.docs[0]._id;
+  if ( patient.data.docs && patient.data.docs.length > 0 ){
+    return patient.data.docs[0]._id;
+  } else {
+    return ''
+  }
 }
 
 export async function createChtPatient(fhirPatient: fhir4.Patient) {

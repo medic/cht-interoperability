@@ -114,20 +114,24 @@ export async function getFHIRPatients(lastUpdated: Date) {
   );
 }
 
-export function copyIdToNamedIdentifier(resource: fhir4.Patient, fromIDType: fhir4.CodeableConcept){
+export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Patient | fhir4.Encounter, fromIDType: fhir4.CodeableConcept){
   const identifier: fhir4.Identifier = {
     type: fromIDType,
-    value: resource.id
+    value: fromResource.id,
+    use: "secondary"
   };
-  resource.identifier?.push(identifier);
-  return resource;
+  const sameIdType = (id: any) => (id.type.text === fromIDType.text)
+  if (!toResource.identifier?.some(sameIdType)) {
+    toResource.identifier?.push(identifier);
+  }
+  return toResource;
 }
 
-export function getIdType(resource: fhir4.Patient, idType: fhir4.CodeableConcept): string{
+export function getIdType(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept): string{
   return resource.identifier?.find((id: any) => id?.type.text == idType.text)?.value || '';
 }
 
-export function addId(resource: fhir4.Patient, idType: fhir4.CodeableConcept, value: string){
+export function addId(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept, value: string){
   const identifier: fhir4.Identifier = {
     type: idType,
     value: value
@@ -171,7 +175,7 @@ export async function updateFhirResource(doc: fhir4.Resource) {
       },
     });
 
-    return { status: res.status, data: res.data };
+    return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: error.data };
@@ -184,7 +188,20 @@ export async function getFhirResourcesSince(lastUpdated: Date, resourceType: str
       `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
       axiosOptions
     );
-    return { status: res.status, data: res.data };
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
+}
+
+export async function getFhirResource(id: string, resourceType: string) {
+  try {
+    const res = await axios.get(
+      `${FHIR.url}/${resourceType}/${id}`,
+      axiosOptions
+    );
+    return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
     return { status: error.status, data: error.data };

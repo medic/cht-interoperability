@@ -22,18 +22,19 @@ export async function createPatient(chtPatientDoc: any) {
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);
   // create or update in the FHIR Server
-  // note that either way, its a PUT with the id from the patient doc
+  // even for create, sends a PUT request
   return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
 }
 
 export async function updatePatientIds(chtFormDoc: any) {
   // first, get the existing patient from fhir server
-  const response = await getFHIRPatientResource(chtFormDoc.openmrs_patient_uuid);
+  const response = await getFHIRPatientResource(chtFormDoc.external_id);
 
   if (response.status != 200) {
     return { status: 500, data: { message: `FHIR responded with ${response.status}`} };
   } else if (response.data.total == 0){
-    return { status: 404, data: { message: `Patient not found`} };
+    // in case the patient is not found, return 200 to prevent retries
+    return { status: 200, data: { message: `Patient not found`} };
   }
 
   const fhirPatient = response.data.entry[0].resource;
@@ -41,25 +42,30 @@ export async function updatePatientIds(chtFormDoc: any) {
 
   // now, we need to get the actual patient doc from cht...
   const patient_uuid = await getPatientUUIDFromSourceId(chtFormDoc._id);
-  addId(fhirPatient, chtDocumentIdentifierType, patient_uuid);
-
-  return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  if (patient_uuid){
+    addId(fhirPatient, chtDocumentIdentifierType, patient_uuid);
+    return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  } else {
+    // in case the patient is not found, return 200 to prevent retries
+    return { status: 200, data: { message: `Patient not found`} };
+  }
 }
 
 export async function createEncounter(chtReport: any) {
   const fhirEncounter = buildFhirEncounterFromCht(chtReport);
+  const response = await updateFhirResource(fhirEncounter);
 
-  const bundle: fhir4.Bundle = {
-    resourceType: 'Bundle',
-    type: 'collection',
-    entry: [fhirEncounter]
+  if (response.status != 200 && response.status != 201){
+    // in case of an error from fhir server, return it to caller
+    return response;
   }
 
   for (const entry of chtReport.observations) {
     if (entry.valueCode || entry.valueString || entry.valueDateTime) {
       const observation = buildFhirObservationFromCht(chtReport.patient_uuid, fhirEncounter, entry);
-      bundle.entry?.push(observation);
+      updateFhirResource(observation);
     }
   }
-  return createFhirResource(bundle);
+
+  return { status: 200, data: {} };
 }
