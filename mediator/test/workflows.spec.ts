@@ -144,6 +144,8 @@ describe('Workflows', () => {
       expect(createPatientResponse.body.ok).toEqual(true);
       patientId = createPatientResponse.body.id;
 
+      await new Promise((r) => setTimeout(r, 2000));
+
       const retrieveFhirPatientIdResponse = await request(FHIR.url)
         .get('/fhir/Patient/?identifier=' + patientId)
         .auth(FHIR.username, FHIR.password);
@@ -203,6 +205,8 @@ describe('Workflows', () => {
       patientId = createPatientResponse.body.id;
       let encounterUrl = 'Encounter?identifier=' + patientId;
       let observationUrl = 'Observation?identifier=' + patientId;
+
+      await new Promise((r) => setTimeout(r, 2000));
 
       const retrieveFhirPatientIdResponse = await request(FHIR.url)
         .get('/fhir/Patient/?identifier=' + patientId)
