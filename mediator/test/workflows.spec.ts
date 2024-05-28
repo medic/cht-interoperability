@@ -183,10 +183,6 @@ describe('Workflows', () => {
   });
 
   describe('OpenMRS workflow', () => {
-    /*beforeAll(async () => {
-      await configureOpenMRSClient();
-    });*/
-
     it('Should follow the CHT Patient to OpenMRS workflow', async () => {
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
@@ -215,9 +211,15 @@ describe('Workflows', () => {
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
       expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
-      //retrieveOpenMrsPatient
-      //validate
+      const triggerOpenMrsSyncPatientResponse = await request(FHIR.url)
+        .post('/mediator/cht/sync')
+        .auth(FHIR.username, FHIR.password)
+        .send();
 
+      expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
+      //validate openmrs patient creation
+
+      //this should be pregnancyReport
       const taskReport = TaskReportFactory.build({}, { placeId, contactId, patientId });
 
       const submitChtTaskResponse = await request(CHT.url)
@@ -236,8 +238,13 @@ describe('Workflows', () => {
       expect(retrieveFhirDbEncounter.status).toBe(200);
       expect(retrieveFhirDbEncounter.body.total).toBe(1);
 
-      //retrieveOpenMrsObservators
-      //validate
+      const triggerOpenMrsSyncEncounterResponse = await request(FHIR.url)
+        .post('/mediator/cht/sync')
+        .auth(FHIR.username, FHIR.password)
+        .send();
+
+      expect(triggerOpenMrsSyncEncounterResponse.status).toBe(200);
+      //validate openmrs patient creation
 
       const retrieveFhirDbObservator = await request(FHIR.url)
         .get('/fhir/' + observationUrl)
@@ -245,9 +252,6 @@ describe('Workflows', () => {
 
       expect(retrieveFhirDbObservator.status).toBe(200);
       expect(retrieveFhirDbObservator.body.total).toBe(1);//number of observators configured in cht outbound push
-
-      //retrieveOpenMrsObservators
-      //validate
 
     });
 
