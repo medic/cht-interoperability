@@ -87,7 +87,7 @@ describe('Workflows', () => {
     await configureCHT();
   });
 
-  describe.skip('Loss To Follow-Up (LTFU) workflow', () => {
+  describe('Loss To Follow-Up (LTFU) workflow', () => {
     let encounterUrl: string;
     let endpointId: string;
 
