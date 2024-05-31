@@ -10,7 +10,7 @@ const OPENHIM_CLIENT_PASSWORD = process.env.OPENHIM_CLIENT_PASSWORD || 'interop-
 const OPENHIM_USER_PASSWORD = process.env.OPENHIM_USER_PASSWORD || 'interop-password';
 
 const OPENMRS_HOST = process.env.OPENMRS || 'openmrs';
-const OPENMRS_PORT = process.env.OPENMRS_PORT || 8090;
+const OPENMRS_PORT = process.env.OPENMRS_PORT || 8080;
 const OPENMRS_USERNAME =
   process.env.OPENMRS_USERNAME || 'admin';
 const OPENMRS_PASSWORD = 

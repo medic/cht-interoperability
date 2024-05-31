@@ -131,7 +131,7 @@ async function generateOpenMRSChannel (host, port, username, password, type) {
         host: host,
         port: port,
         path: '',
-        pathTransform: 's/openmrs/openmrs\/ws\/fhir2\/R4/g',
+        pathTransform: 's/openmrs/openmrs\\/ws\\/fhir2\\/R4/g',
         primary: true,
         username: username,
         password: password
