@@ -1,4 +1,4 @@
-import { compare, syncPatients, syncEncountersAndObservations  } from '../openmrs_sync';
+import { compare, syncPatients, syncEncounters } from '../openmrs_sync';
 import * as fhir from '../fhir';
 import * as openmrs from '../openmrs';
 import * as cht from '../cht';
@@ -12,15 +12,15 @@ describe('OpenMRS Sync', () => {
   it('compares resources with the gvien key', async () => {
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
       data: { entry: [
-        { resource: {id: 'outgoing'}},
-        { resource: {id: 'toupdate'}}
+        { resource: {id: 'outgoing', resourceType: 'Patient'}},
+        { resource: {id: 'toupdate', resourceType: 'Patient'}}
       ] },
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
       data: { entry: [
-        { resource: {id: 'incoming'}},
-        { resource: {id: 'toupdate'}}
+        { resource: {id: 'incoming', resourceType: 'Patient'}},
+        { resource: {id: 'toupdate', resourceType: 'Patient'}}
       ] },
       status: 200,
     });
@@ -28,9 +28,34 @@ describe('OpenMRS Sync', () => {
     const getKey = (obj: any) => { return obj.id };
     const comparison = await compare(getKey, 'Patient')
 
-    expect(comparison.incoming).toEqual([{id: 'incoming'}]);
-    expect(comparison.outgoing).toEqual([{id: 'outgoing'}]);
-    expect(comparison.toupdate).toEqual([{id: 'toupdate'}]);
+    expect(comparison.incoming).toEqual([{id: 'incoming', resourceType: 'Patient'}]);
+    expect(comparison.outgoing).toEqual([{id: 'outgoing', resourceType: 'Patient'}]);
+    expect(comparison.toupdate).toEqual([{id: 'toupdate', resourceType: 'Patient'}]);
+
+    expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
+    expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
+  });
+
+  it('loads references for related resources', async () => {
+    jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
+      data: { entry: [
+        { resource: {id: 'resource0', resourceType: 'Encounter'}},
+        { resource: {id: 'reference0', resourceType: 'Patient'}}
+      ] },
+      status: 200,
+    });
+    jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
+      data: { entry: [
+        { resource: {id: 'resource0', resourceType: 'Encounter'}},
+      ] },
+      status: 200,
+    });
+
+    const getKey = (obj: any) => { return obj.id };
+    const comparison = await compare(getKey, 'Encounter')
+
+    expect(comparison.references).toEqual([{id: 'reference0', resourceType: 'Patient'}]);
+    expect(comparison.toupdate).toEqual([{id: 'resource0', resourceType: 'Encounter'}]);
 
     expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
     expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();

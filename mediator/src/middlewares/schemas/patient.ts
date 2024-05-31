@@ -1,6 +1,7 @@
 import joi from 'joi';
 
 export const PatientSchema = joi.object({
+  resourceType: joi.string(),
   id: joi.string().uuid(),
   identifier: joi
     .array()

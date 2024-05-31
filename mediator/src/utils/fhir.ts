@@ -114,13 +114,13 @@ export async function getFHIRPatients(lastUpdated: Date) {
   );
 }
 
-export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Patient | fhir4.Encounter, fromIDType: fhir4.CodeableConcept){
+export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Patient | fhir4.Encounter, fromIdType: fhir4.CodeableConcept){
   const identifier: fhir4.Identifier = {
-    type: fromIDType,
+    type: fromIdType,
     value: fromResource.id,
     use: "secondary"
   };
-  const sameIdType = (id: any) => (id.type.text === fromIDType.text)
+  const sameIdType = (id: any) => (id.type.text === fromIdType.text)
   if (!toResource.identifier?.some(sameIdType)) {
     toResource.identifier?.push(identifier);
   }
@@ -128,7 +128,7 @@ export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Pat
 }
 
 export function getIdType(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept): string{
-  return resource.identifier?.find((id: any) => id?.type.text == idType.text)?.value || '';
+  return resource?.identifier?.find((id: any) => id?.type.text == idType.text)?.value || '';
 }
 
 export function addId(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept, value: string){
@@ -138,6 +138,14 @@ export function addId(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.C
   };
   resource.identifier?.push(identifier);
   return resource;
+}
+
+export function replaceReference(resource: any, referenceKey: string, referred: fhir4.Resource) {
+  const newReference: fhir4.Reference = {
+    reference: `${referred.resourceType}/${referred.id}`,
+    type: referred.resourceType
+  }
+  resource[referenceKey] = newReference;
 }
 
 export async function getFHIRLocation(locationId: string) {
@@ -152,13 +160,7 @@ export async function deleteFhirSubscription(id?: string) {
 
 export async function createFhirResource(doc: fhir4.Resource) {
   try {
-    const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, {
-      auth: {
-        username: FHIR.username,
-        password: FHIR.password,
-      },
-    });
-
+    const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, axiosOptions);
     return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
@@ -168,12 +170,7 @@ export async function createFhirResource(doc: fhir4.Resource) {
 
 export async function updateFhirResource(doc: fhir4.Resource) {
   try {
-    const res = await axios.put(`${FHIR.url}/${doc.resourceType}/${doc.id}`, doc, {
-      auth: {
-        username: FHIR.username,
-        password: FHIR.password,
-      },
-    });
+    const res = await axios.put(`${FHIR.url}/${doc.resourceType}/${doc.id}`, doc, axiosOptions); 
 
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
@@ -184,10 +181,12 @@ export async function updateFhirResource(doc: fhir4.Resource) {
 
 export async function getFhirResourcesSince(lastUpdated: Date, resourceType: string) {
   try {
-    const res = await axios.get(
-      `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
-      axiosOptions
-    );
+    let url = `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
+    // for encounters, include related resources
+    if (resourceType === 'Encounter') {
+      url = url + '&_revinclude=Observation:encounter&_include=Encounter:patient';
+    }
+    const res = await axios.get(url, axiosOptions);
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);

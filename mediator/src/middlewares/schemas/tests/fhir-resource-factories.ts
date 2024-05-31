@@ -17,6 +17,7 @@ export const HumanNameFactory = Factory.define('humanName')
   .attr('given', ['John']);
 
 export const PatientFactory = Factory.define('patient')
+  .attr('resourceType', 'Patient')
   .attr('id', randomUUID())
   .attr('identifier', identifier)
   .attr('name', () => [HumanNameFactory.build()])
@@ -24,6 +25,7 @@ export const PatientFactory = Factory.define('patient')
   .attr('birthDate', '2000-01-01');
 
 export const EncounterFactory = Factory.define('encounter')
+  .attr('resourceType', 'Encounter')
   .attr('id', randomUUID())
   .attr('identifier', identifier)
   .attr('status', 'planned')

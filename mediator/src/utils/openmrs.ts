@@ -18,10 +18,12 @@ export async function getOpenMRSPatientResource(patientId: string) {
 
 export async function getOpenMRSResourcesSince(lastUpdated: Date, resourceType: string) {
   try {
-    const res = await axios.get(
-      `${OPENMRS.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`,
-      axiosOptions
-    );
+    let url = `${OPENMRS.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
+    // for encounters, include related resources
+    if (resourceType === 'Encounter') {
+      url = url + '&_revinclude=Observation:encounter&_include=Encounter:patient';
+    }
+    const res = await axios.get(url, axiosOptions);
     return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
@@ -31,13 +33,7 @@ export async function getOpenMRSResourcesSince(lastUpdated: Date, resourceType: 
 
 export async function createOpenMRSResource(doc: fhir4.Resource) {
   try {
-    const res = await axios.post(`${OPENMRS.url}/${doc.resourceType}`, doc, {
-      auth: {
-        username: OPENMRS.username,
-        password: OPENMRS.password,
-      },
-    });
-
+    const res = await axios.post(`${OPENMRS.url}/${doc.resourceType}`, doc, axiosOptions);
     return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);
@@ -47,13 +43,7 @@ export async function createOpenMRSResource(doc: fhir4.Resource) {
 
 export async function updateOpenMRSResource(doc: fhir4.Resource) {
   try {
-    const res = await axios.put(`${OPENMRS.url}/${doc.resourceType}/${doc.id}`, doc, {
-      auth: {
-        username: OPENMRS.username,
-        password: OPENMRS.password,
-      },
-    });
-
+    const res = await axios.post(`${OPENMRS.url}/${doc.resourceType}/${doc.id}`, doc, axiosOptions);
     return { status: res.status, data: res.data };
   } catch (error: any) {
     logger.error(error);

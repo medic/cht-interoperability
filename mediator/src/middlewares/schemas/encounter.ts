@@ -1,6 +1,7 @@
 import joi from 'joi';
 
 export const EncounterSchema = joi.object({
+  resourceType: joi.string(),
   id: joi.string().uuid(),
   identifier: joi
     .array()

@@ -140,3 +140,27 @@ export function buildFhirObservationFromCht(patient_id: string, encounter: fhir4
 
   return observation;
 }
+
+export async function buildChtRecordFromObservations(patient: fhir4.Patient, observations: fhir4.Observation[]) {
+  const patientId = getIdType(patient, chtDocumentIdentifierType);
+
+  const record: any = {
+    _meta: {
+      form: "openmrs_anc"
+    },
+    patient_id: patientId
+  }
+
+  observations.forEach((observation: fhir4.Observation) => {
+    if ( observation?.code?.coding && observation.code.coding.length > 0){
+      const code = observation.code.coding[0].code?.toLowerCase() || '';
+      if (observation.valueCodeableConcept) {
+        record[code] = observation.valueCodeableConcept.text;
+      } else if (observation.valueDateTime) {
+        record[code] = observation.valueDateTime.split('T')[0];
+      }
+    }
+  });
+
+  return record;
+}
