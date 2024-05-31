@@ -3,7 +3,8 @@ import { CHT } from '../../config';
 import { generateBasicAuthUrl } from './url';
 import https from 'https';
 import path from 'path';
-import { buildChtPatientFromFhir } from '../mappers/cht';
+import { buildChtPatientFromFhir, buildChtRecordFromObservations } from '../mappers/cht';
+import { logger } from '../../logger';
 
 type CouchDBQuery = {
     selector: Record<string, any>;
@@ -29,7 +30,13 @@ export async function createChtRecord(patientId: string) {
 
   const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
 
-  return await axios.post(chtApiUrl, record, getOptions());
+  try {
+    const res = await axios.post(chtApiUrl, record, getOptions());
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 async function getLocation(fhirPatient: fhir4.Patient) {
@@ -105,47 +112,42 @@ export async function createChtPatient(fhirPatient: fhir4.Patient) {
   return chtRecordsApi(cht_patient);
 }
 
-export async function chtRecordFromObservations(patient_id: string, observations: any) {
-  const record: any = {
-    _meta: {
-      form: "openmrs_anc"
-    },
-    patient_id: patient_id
-  }
-
-  for (const entry of observations.entry) {
-    if (entry.resource.resourceType == 'Observation') {
-      const code:string = entry.resource.code.coding[0].code;
-      if (entry.resource.valueCodeableConcept) {
-        record[code.toLowerCase()] = entry.resource.valueCodeableConcept.text;
-      } else if (entry.resource.valueDateTime) {
-        record[code.toLowerCase()] = entry.resource.valueDateTime.split('T')[0];
-      }
-    }
-  }
-
+export async function chtRecordFromObservations(patient: fhir4.Patient, observations: fhir4.Observation[]) {
+  const record = buildChtRecordFromObservations(patient, observations);
   return chtRecordsApi(record);
-}
-
-export async function updateChtDocument(doc: any, update_object: any) {
-  const chtApiUrl = generateChtDBUrl(CHT.url, CHT.username, CHT.password);
-  const updated_doc = { ...doc, ...update_object }
-  return await axios.put(path.join(chtApiUrl, doc._id), updated_doc, getOptions());
 }
 
 export async function chtRecordsApi(doc: any) {
   const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
-  return await axios.post(chtApiUrl, doc, getOptions());
+  try {
+    const res = await axios.post(chtApiUrl, doc, getOptions());
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 export async function getChtDocumentById(doc_id: string) {
   const chtApiUrl = generateChtDBUrl(CHT.url, CHT.username, CHT.password);
-  return await axios.get(path.join(chtApiUrl, doc_id), getOptions());
+  try {
+    const res = await axios.get(path.join(chtApiUrl, doc_id), getOptions());
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 export async function queryCht(query: any) {
   const chtApiUrl = generateChtDBUrl(CHT.url, CHT.username, CHT.password);
-  return await axios.post(path.join(chtApiUrl, '_find'), query, getOptions());
+  try {
+    const res = await axios.post(path.join(chtApiUrl, '_find'), query, getOptions());
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 export const generateChtRecordsApiUrl = (chtUrl: string, username: string, password: string) => {

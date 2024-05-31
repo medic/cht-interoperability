@@ -63,7 +63,7 @@ export async function createEncounter(chtReport: any) {
   for (const entry of chtReport.observations) {
     if (entry.valueCode || entry.valueString || entry.valueDateTime) {
       const observation = buildFhirObservationFromCht(chtReport.patient_uuid, fhirEncounter, entry);
-      updateFhirResource(observation);
+      createFhirResource(observation);
     }
   }
 

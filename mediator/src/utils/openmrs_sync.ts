@@ -1,11 +1,21 @@
-import { getFhirResourcesSince, updateFhirResource, getIdType, copyIdToNamedIdentifier, getFhirResource } from './fhir'
+import {
+  getFhirResourcesSince,
+  updateFhirResource,
+  createFhirResource,
+  getIdType,
+  copyIdToNamedIdentifier,
+  getFhirResource,
+  replaceReference,
+  getFHIRPatientResource
+} from './fhir'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
-import { buildOpenMRSPatient, buildOpenMRSVisit, openMRSIdentifierType } from '../mappers/openmrs'
+import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation, openMRSIdentifierType } from '../mappers/openmrs'
 import { createChtPatient, chtRecordFromObservations } from './cht'
 
 interface ComparisonResources {
   fhirResources: fhir4.Resource[],
-  openMRSResources: fhir4.Resource[]
+  openMRSResources: fhir4.Resource[],
+  references: fhir4.Resource[]
 }
 
 /*
@@ -15,19 +25,29 @@ async function getResources(resourceType: string): Promise<ComparisonResources> 
   const lastUpdated = new Date();
   lastUpdated.setDate(lastUpdated.getDate() - 1);
 
+  function onlyType(resource: fhir4.Resource) {
+    return resource.resourceType === resourceType;
+  }
+  let references: fhir4.Resource[] = []
+
   const fhirResponse = await getFhirResourcesSince(lastUpdated, resourceType);
-  const fhirResources: fhir4.Resource[] = fhirResponse.data.entry?.map((entry: any) => entry.resource) || [];
+  let fhirResources: fhir4.Resource[] = fhirResponse.data.entry?.map((entry: any) => entry.resource) || [];
+  references = references.concat(fhirResources.filter((resource) => !onlyType(resource)));
+  fhirResources = fhirResources.filter(onlyType);
 
   const openMRSResponse = await getOpenMRSResourcesSince(lastUpdated, resourceType);
-  const openMRSResources: fhir4.Resource[] = openMRSResponse.data.entry?.map((entry: any) => entry.resource) || [];
+  let openMRSResources: fhir4.Resource[] = openMRSResponse.data.entry?.map((entry: any) => entry.resource) || [];
+  references = references.concat(openMRSResources.filter((resource) => !onlyType(resource)));
+  openMRSResources = openMRSResources.filter(onlyType);
 
-  return { fhirResources: fhirResources, openMRSResources: openMRSResources };
+  return { fhirResources: fhirResources, openMRSResources: openMRSResources, references: references };
 }
 
 interface ComparisonResult {
   toupdate: fhir4.Resource[],
   incoming: fhir4.Resource[],
-  outgoing: fhir4.Resource[]
+  outgoing: fhir4.Resource[],
+  references: fhir4.Resource[]
 }
 
 /*
@@ -44,13 +64,15 @@ export async function compare(
   getKey: (resource: any) => string,
   resourceType: string
 ): Promise<ComparisonResult> {
+  const comparison = await getResources(resourceType);
+
   const results: ComparisonResult = {
     toupdate: [],
     incoming: [],
-    outgoing: []
+    outgoing: [],
+    references: comparison.references
   }
 
-  const comparison = await getResources(resourceType);
   // get the key for each resource and create a Map
   const fhirIds = new Map(comparison.fhirResources.map(resource => [getKey(resource), resource]));
 
@@ -112,6 +134,45 @@ export async function syncPatients(){
   });
 }
 
+const getEncounterKey = (encounter: any) => { return getIdType(encounter, openMRSIdentifierType) || encounter.id };
+
+async function sendEncounterToOpenMRS(
+  encounter: fhir4.Encounter,
+  patient: fhir4.Patient,
+  observations: fhir4.Observation[]
+) {
+  const patientId = getIdType(patient, openMRSIdentifierType);
+  const openMRSVisit = buildOpenMRSVisit(patientId, encounter);
+  const visitResponse = await createOpenMRSResource(openMRSVisit[0]);
+  if (visitResponse.status == 200 || visitResponse.status == 201) {
+    const visitNoteResponse = await createOpenMRSResource(openMRSVisit[1]);
+    if (visitNoteResponse.status == 200 || visitNoteResponse.status == 201) {
+      const visitNote = visitNoteResponse.data as fhir4.Encounter;
+      // save openmrs id on orignal encounter
+      copyIdToNamedIdentifier(visitNote, encounter, openMRSIdentifierType);
+      updateFhirResource(encounter);
+      observations.forEach((observation) => {
+        const openMRSObservation = buildOpenMRSObservation(observation, patientId, visitNote.id || '');
+        createOpenMRSResource(openMRSObservation);
+      });
+    }
+  }
+}
+
+async function sendEncounterToFhir(
+  encounter: fhir4.Encounter,
+  patient: fhir4.Patient,
+  observations: fhir4.Observation[]
+) {
+  copyIdToNamedIdentifier(encounter, encounter, openMRSIdentifierType);
+  replaceReference(encounter, 'subject', patient);
+  const response = await updateFhirResource(encounter);
+  observations.forEach((observation) => {
+    replaceReference(observation, 'subject', patient);
+    createFhirResource(observation);
+  });
+}
+
 /*
   Sync Encounters and Observations
   For incoming encounters, saves them to FHIR Server, then gathers related Observations
@@ -119,62 +180,44 @@ export async function syncPatients(){
   For outgoing, converts to OpenMRS format and sends to OpenMRS
   Updates to Observations and Encounters are not allowed
 */
-export async function syncEncountersAndObservations(){
-  const getEncounterKey = (encounter: any) => { return getIdType(encounter, openMRSIdentifierType) || encounter.id };
+export async function syncEncounters(){
   const encounters: ComparisonResult = await compare(getEncounterKey, 'Encounter');
 
-  // observations are defined by their relataed encounter and code
-  const getObservationKey = (observation: any) => {
-    return getEncounter(observation) + observation.code.coding[0].code;
-  };
-  const observations: ComparisonResult = await compare(getObservationKey, 'Observation');
+  function getPatient(encounter: fhir4.Encounter): fhir4.Patient {
+    return encounters.references.filter((resource) => {
+      return resource.resourceType === 'Patient' && `Patient/${resource.id}` === encounter.subject?.reference
+    })[0] as fhir4.Patient;
+  }
 
-  const encountersToCht = new Map();
+  function getObservations(encounter: fhir4.Encounter): fhir4.Observation[] {
+    return encounters.references.filter((resource) => {
+      if (resource.resourceType === 'Observation') {
+        const observation = resource as fhir4.Observation;
+         return observation.encounter?.reference === `Encounter/${encounter.id}`
+      } else {
+        return false;
+      }
+    }) as fhir4.Observation[];
+  }
 
-  // for each incoming encounter, save it to fhir
-  // it will be forwarded to cht below, when its encounters are gathered
   encounters.incoming.forEach(async (openMRSResource) => {
     const encounter = openMRSResource as fhir4.Encounter;
-    copyIdToNamedIdentifier(encounter, encounter, openMRSIdentifierType);
-    const response = await updateFhirResource(encounter);
-
-    // save to map to push to cht below
-    encountersToCht.set(getEncounterKey(encounter), {
-      observations: [],
-      encounter: encounter
-    });
-  });
-
-  function getEncounter(observation: fhir4.Observation) {
-    return observation.encounter?.reference?.split('/')[1] || '';
-  };
-
-  observations.incoming.forEach(async (openMRSResource) => {
-    // group by encounter to forward to cht below
-    const observation = openMRSResource as fhir4.Observation;
-    encountersToCht.get(getEncounter(observation)).observations.push(observation);
-    const response = await updateFhirResource(openMRSResource);
-  });
-
-  // for outgoing encounters, get the openMRS patient id and then forward to OpenMRS
-  encounters.outgoing.forEach(async (resource) => {
-    const encounter = resource as fhir4.Encounter;
-    const patientId = encounter.subject?.reference?.split('/')[1] || '';
-    const patientResponse = await getFhirResource(patientId, 'Patient');
-    if (patientResponse.status == 200) {
-      const patient = patientResponse.data as fhir4.Patient;
-      const openMRSPatientId = getIdType(patient, openMRSIdentifierType);
-      const openMRSVisit = buildOpenMRSVisit(openMRSPatientId, encounter);
-      const response = await createOpenMRSResource(openMRSVisit[0]);
+    const patient = getPatient(encounter);
+    if (patient && patient.id) {
+      const observations = getObservations(encounter);
+      const patientResponse = await getFHIRPatientResource(patient.id);
+      if (patientResponse.status == 200 || patientResponse.status == 201) {
+        const existingPatient = patientResponse.data?.entry[0];
+        sendEncounterToFhir(encounter, existingPatient, observations);
+        chtRecordFromObservations(existingPatient.id, observations);
+      }
     }
   });
 
-  observations.outgoing.forEach(async (resource) => {
-    const response = await createOpenMRSResource(resource);
-  });
-
-  encountersToCht.forEach(async (key: string, value: any) => {
-    const patientId = value.encounter.subject.reference.split('/')[1];
-    const response = await chtRecordFromObservations(patientId, value.observations);
+  encounters.outgoing.forEach(async (openMRSResource) => {
+    const encounter = openMRSResource as fhir4.Encounter;
+    const patient = getPatient(encounter);
+    const observations = getObservations(encounter);
+    sendEncounterToOpenMRS(encounter, patient, observations);
   });
 }
