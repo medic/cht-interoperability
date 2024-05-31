@@ -11,7 +11,7 @@ WORKDIR /scripts/cht-config
 
 COPY ../cht-config ./
 
-RUN npm install && npm install -g cht-conf
+RUN npm install && npm install -g cht-conf && python -m pip install git+https://github.com/medic/pyxform.git@medic-conf-1.17#egg=pyxform-medic
 
 WORKDIR /scripts/configurator
 

@@ -442,11 +442,11 @@
     "mark_for_outbound": true
   },
   "outbound": {
-    "FHIR_patient": {
-      "relevant_to": "doc.type === 'person' && doc.role == 'patient'",
+    "patient": {
+      "relevant_to": "doc.type === 'person' && doc.patient_id && doc.role === 'patient'",
       "destination": {
         "base_url": "http://openhim-core:5001",
-        "path": "/mediator/patient",
+        "path": "/mediator/cht/patient",
         "auth": {
           "type": "basic",
           "username": "interop-client",
@@ -454,19 +454,29 @@
         }
       },
       "mapping": {
-        "resourceType": {
-          "expr": "'Patient'"
-        },
-        "identifier": {
-          "expr": "[{ \"system\": \"cht\", \"use\": \"official\", \"value\": doc._id }]",
-          "optional": false
-        },
-        "name": {
-          "expr": "[ { \"use\":\"official\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
-          "optional": false
-        },
-        "gender": "doc.sex",
-        "birthDate": "doc.date_of_birth"
+        "doc._id": "doc._id",
+        "doc.name": "doc.name",
+        "doc.phone": "doc.phone",
+        "doc.date_of_birth": "doc.date_of_birth",
+        "doc.sex": "doc.sex",
+        "doc.patient_id": "doc.patient_id"
+      }
+    },
+    "patient_id": {
+      "relevant_to": "doc.type === 'data_record' && doc.form === 'OPENMRS_PATIENT'",
+      "destination": {
+        "base_url": "http://openhim-core:5001",
+        "path": "/mediator/cht/patient_ids",
+        "auth": {
+          "type": "basic",
+          "username": "interop-client",
+          "password_key": "openhim1"
+        }
+      },
+      "mapping": {
+        "doc._id": "doc._id",
+        "doc.patient_id": "doc.patient_id",
+        "doc.external_id": "doc.fields.external_id"
       }
     },
     "FHIR_practitioner": {
@@ -570,6 +580,96 @@
         },
         "set_task": true
       }
+    },
+    "OPENMRS_PATIENT": {
+      "meta": {
+        "code": "openmrs_patient",
+        "translation_key": "forms.n.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "age_in_days": {
+          "labels": {
+            "tiny": {
+              "en": "Age in Days"
+            },
+            "short": {
+              "en": "Age in Days"
+            }
+          },
+          "position": 0,
+          "type": "integer",
+          "required": true
+        },
+        "patient_name": {
+          "labels": {
+            "tiny": {
+              "en": "patient_name"
+            },
+            "short": {
+              "en": "Patient Name"
+            }
+          },
+          "position": 1,
+          "type": "string",
+          "length": [
+            1,
+            40
+          ],
+          "required": true
+        },
+        "phone_number": {
+          "labels": {
+            "tiny": {
+              "en": "patient phone"
+            },
+            "short": {
+              "en": "patient Phone"
+            }
+          },
+          "position": 2,
+          "flags":{
+            "allow_duplicate": false
+          },
+          "type": "phone_number",
+          "required": true
+        },
+        "location_id": {
+          "labels": {
+            "tiny": {
+              "en": "location_id"
+            },
+            "short": {
+              "en": "location_id"
+            }
+          },
+          "position": 3,
+          "type": "string",
+          "length": [
+            1,
+            60
+          ],
+          "required": true
+        },
+        "external_id": {
+          "labels": {
+            "tiny": {
+              "en": "OpenMRS ID"
+            },
+            "short": {
+              "en": "OpenMRS ID"
+            }
+          },
+          "position": 4,
+          "type": "string",
+          "length": [
+            1,
+            60
+          ],
+          "required": true
+        }
+      },
+      "public_form": true
     }
   }
 }
