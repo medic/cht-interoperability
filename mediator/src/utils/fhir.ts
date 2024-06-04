@@ -10,6 +10,7 @@ const axiosOptions = {
     username: FHIR.username,
     password: FHIR.password,
   },
+  timeout: FHIR.timeout
 };
 
 const fhir = new Fhir();
@@ -101,17 +102,16 @@ export async function getFHIROrgEndpointResource(id: string) {
 }
 
 export async function getFHIRPatientResource(patientId: string) {
-  return await axios.get(
-    `${FHIR.url}/Patient/?identifier=${patientId}`,
-    axiosOptions
-  );
-}
-
-export async function getFHIRPatients(lastUpdated: Date) {
-  return await axios.get(
-    `${FHIR.url}/Patient/?_lastUpdated=gt${lastUpdated.toISOString()}`,
-    axiosOptions
-  );
+  try {
+    const res = await axios.get(
+      `${FHIR.url}/Patient/?identifier=${patientId}`,
+      axiosOptions
+    );
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.status, data: error.data };
+  }
 }
 
 export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Patient | fhir4.Encounter, fromIdType: fhir4.CodeableConcept){
@@ -120,6 +120,7 @@ export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Pat
     value: fromResource.id,
     use: "secondary"
   };
+  toResource.identifier = toResource.identifier || [];
   const sameIdType = (id: any) => (id.type.text === fromIdType.text)
   if (!toResource.identifier?.some(sameIdType)) {
     toResource.identifier?.push(identifier);
@@ -148,12 +149,6 @@ export function replaceReference(resource: any, referenceKey: string, referred: 
   resource[referenceKey] = newReference;
 }
 
-export async function getFHIRLocation(locationId: string) {
-  return await axios.get(
-    `${FHIR.url}/Patient/?identifier=${locationId}`,
-    axiosOptions
-  );
-}
 export async function deleteFhirSubscription(id?: string) {
   return await axios.delete(`${FHIR.url}/Subscription/${id}`, axiosOptions);
 }

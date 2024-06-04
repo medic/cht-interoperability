@@ -96,6 +96,8 @@ export function buildFhirEncounterFromCht(chtReport: any): fhir4.Encounter {
     }
   }
 
+  copyIdToNamedIdentifier(encounter, encounter, chtDocumentIdentifierType);
+
   return encounter
 }
 
@@ -141,7 +143,7 @@ export function buildFhirObservationFromCht(patient_id: string, encounter: fhir4
   return observation;
 }
 
-export async function buildChtRecordFromObservations(patient: fhir4.Patient, observations: fhir4.Observation[]) {
+export function buildChtRecordFromObservations(patient: fhir4.Patient, observations: fhir4.Observation[]) {
   const patientId = getIdType(patient, chtDocumentIdentifierType);
 
   const record: any = {

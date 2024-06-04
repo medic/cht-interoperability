@@ -16,6 +16,7 @@ function getOptions(){
     httpsAgent: new https.Agent({
       rejectUnauthorized: false,
     }),
+    timeout: CHT.timeout
   };
   return options;
 }
