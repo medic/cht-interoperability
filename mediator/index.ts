@@ -10,6 +10,7 @@ import organizationRoutes from './src/routes/organization';
 import endpointRoutes from './src/routes/endpoint';
 import chtRoutes from './src/routes/cht';
 import { registerMediatorCallback } from './src/utils/openhim';
+import { syncPatients, syncEncounters } from './src/utils/openmrs_sync'
 import os from 'os';
 
 const {registerMediator} = require('openhim-mediator-utils');
@@ -40,6 +41,16 @@ if (process.env.NODE_ENV !== 'test') {
   
   // TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'  
   registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
+
+  // start patient and ecnounter sync in the background
+  setInterval(async () => {
+    try {
+      await syncPatients();
+      await syncEncounters();
+    } catch (error: any) {
+      logger.error(error);
+    }
+  }, Number(process.env.SYNC_INTERVAL || (1000 * 60)));
 }
 
 export default app;

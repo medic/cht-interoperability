@@ -14,18 +14,21 @@ export const FHIR = {
   url: getEnvironmentVariable('FHIR_URL', 'http://openhim-core:5001/fhir'),
   username: getEnvironmentVariable('FHIR_USERNAME', 'interop-client'),
   password: getEnvironmentVariable('FHIR_PASSWORD', 'interop-password'),
+  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 
 export const CHT = {
   url: getEnvironmentVariable('CHT_URL', 'https://nginx'),
   username: getEnvironmentVariable('CHT_USERNAME', 'admin'),
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
+  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 
 export const OPENMRS = {
   url: getEnvironmentVariable('OPENMRS_URL', 'http://openhim-core:5001/openmrs'),
   username: getEnvironmentVariable('OPENMRS_USERNAME', 'interop-client'),
   password: getEnvironmentVariable('OPENMRS_PASSWORD', 'interop-password'),
+  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 
 function getEnvironmentVariable(env: string, def: string) {

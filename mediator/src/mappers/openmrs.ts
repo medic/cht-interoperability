@@ -36,7 +36,7 @@ From a fhir Encounter
 One CHT encounter will become 2 OpenMRS Encounters
 */
 export function buildOpenMRSVisit(patientId: string, fhirEncounter: fhir4.Encounter): fhir4.Encounter[] {
-  const openMRSVisit = fhirEncounter;
+  const openMRSVisit = { ...fhirEncounter };
   openMRSVisit.type = [visitType]
 
   const subjectRef: fhir4.Reference = {

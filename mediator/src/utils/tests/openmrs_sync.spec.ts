@@ -54,7 +54,7 @@ describe('OpenMRS Sync', () => {
     const getKey = (obj: any) => { return obj.id };
     const comparison = await compare(getKey, 'Encounter')
 
-    expect(comparison.references).toEqual([{id: 'reference0', resourceType: 'Patient'}]);
+    expect(comparison.references).toContainEqual({id: 'reference0', resourceType: 'Patient'});
     expect(comparison.toupdate).toEqual([{id: 'resource0', resourceType: 'Encounter'}]);
 
     expect(fhir.getFhirResourcesSince).toHaveBeenCalled();

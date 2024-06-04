@@ -7,6 +7,7 @@ const axiosOptions = {
     username: OPENMRS.username,
     password: OPENMRS.password,
   },
+  timeout: OPENMRS.timeout
 };
 
 export async function getOpenMRSPatientResource(patientId: string) {
