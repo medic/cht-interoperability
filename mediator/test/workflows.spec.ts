@@ -151,7 +151,7 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      //expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
       const serviceRequest = ServiceRequestFactory.build();
       serviceRequest.subject.reference = `Patient/${patientId}`;
@@ -181,6 +181,7 @@ describe('Workflows', () => {
 
       expect(retrieveFhirDbEncounter.status).toBe(200);
       expect(retrieveFhirDbEncounter.body.total).toBe(1);
+
     });
   });
 
@@ -203,6 +204,7 @@ describe('Workflows', () => {
       expect(createPatientResponse.status).toBe(200);
       expect(createPatientResponse.body.ok).toEqual(true);
       patientId = createPatientResponse.body.id;
+
       let encounterUrl = 'Encounter?identifier=' + patientId;
       let observationUrl = 'Observation?identifier=' + patientId;
 
@@ -213,7 +215,7 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      //expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
       const triggerOpenMrsSyncPatientResponse = await request(FHIR.url)
         .post('/mediator/cht/sync')
