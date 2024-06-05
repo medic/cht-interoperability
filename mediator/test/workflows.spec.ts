@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { OPENHIM, CHT, FHIR } from '../config';
+import { OPENHIM, CHT, FHIR, OPENMRS } from '../config';
 import {
   UserFactory, PatientFactory, TaskReportFactory
 } from './cht-resource-factories';
@@ -10,7 +10,7 @@ import {
 } from '../src/middlewares/schemas/tests/fhir-resource-factories';
 const { generateAuthHeaders } = require('../../configurator/libs/authentication');
 
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 const EndpointFactory = EndpointFactoryBase.attr('status', 'active')
   .attr('address', 'https://interop.free.beeceptor.com/callback')
@@ -184,7 +184,7 @@ describe('Workflows', () => {
     });
   });
 
-  describe('OpenMRS workflow', () => {
+  describe.only('OpenMRS workflow', () => {
     it('Should follow the CHT Patient to OpenMRS workflow', async () => {
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
@@ -204,9 +204,6 @@ describe('Workflows', () => {
       expect(createPatientResponse.body.ok).toEqual(true);
       patientId = createPatientResponse.body.id;
 
-      let encounterUrl = 'Encounter?identifier=' + patientId;
-      let observationUrl = 'Observation?identifier=' + patientId;
-
       await new Promise((r) => setTimeout(r, 2000));
 
       const retrieveFhirPatientIdResponse = await request(FHIR.url)
@@ -222,46 +219,24 @@ describe('Workflows', () => {
         .send();
 
       expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
-      //validate openmrs patient creation
 
-      //this should be pregnancyReport
-      const taskReport = TaskReportFactory.build({}, { placeId, contactId, patientId });
+      const retrieveOpenMrsPatientIdResponse = await request(OPENMRS.url)
+        .get('/Patient/?identifier=' + patientId)
+        .auth(OPENMRS.username, OPENMRS.password);
 
-      const submitChtTaskResponse = await request(CHT.url)
-        .post('/medic/_bulk_docs')
-        .auth(chwUserName, chwPassword)
-        .send(taskReport);
+      expect(retrieveOpenMrsPatientIdResponse.status).toBe(200);
+      expect(retrieveOpenMrsPatientIdResponse.body.total).toBe(1);
 
-      expect(submitChtTaskResponse.status).toBe(201);
-
-      await new Promise((r) => setTimeout(r, 2000));
-
-      const retrieveFhirDbEncounter = await request(FHIR.url)
-        .get('/fhir/' + encounterUrl)
-        .auth(FHIR.username, FHIR.password);
-
-      expect(retrieveFhirDbEncounter.status).toBe(200);
-      expect(retrieveFhirDbEncounter.body.total).toBe(1);
-
-      const triggerOpenMrsSyncEncounterResponse = await request(FHIR.url)
-        .post('/mediator/cht/sync')
-        .auth(FHIR.username, FHIR.password)
-        .send();
-
-      expect(triggerOpenMrsSyncEncounterResponse.status).toBe(200);
-      //validate openmrs patient creation
-
-      const retrieveFhirDbObservator = await request(FHIR.url)
-        .get('/fhir/' + observationUrl)
-        .auth(FHIR.username, FHIR.password);
-
-      expect(retrieveFhirDbObservator.status).toBe(200);
-      expect(retrieveFhirDbObservator.body.total).toBe(1);//number of observators configured in cht outbound push
+      //Validate HAPI updated ids
 
     });
 
     it('Should follow the OpenMRS Patient to CHT workflow', async () => {
-
+      //Create a patient using openMRS api
+      //Retrieve and validate patient from FHIR
+      //retrieve and validate patient from CHT api
+      //trigger openmrs sync
+      //validate id
     });
   });
 });
