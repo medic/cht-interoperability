@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  openmrs-mysql:
+  openmrs-referenceapplication-mysql:
     restart: "always"
     image: mysql:5.6
     command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
@@ -23,7 +23,7 @@ services:
     restart: "always"
     image: openmrs/openmrs-reference-application-distro:demo
     depends_on:
-      - openmrs-mysql
+      - openmrs-referenceapplication-mysql
     ports:
       - "8090:8080"
     environment:

@@ -12,6 +12,7 @@ elif [ "$1" == "down" ]; then
 elif [ "$1" == "destroy" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.cht-couchdb.yml -f ./docker/docker-compose.openmrs.yml down -v
 else
+
   echo "Invalid option $1
 
   Help:
