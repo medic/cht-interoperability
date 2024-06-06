@@ -11,17 +11,17 @@ jest.mock('axios');
 describe('OpenMRS Sync', () => {
   it('compares resources with the gvien key', async () => {
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-      data: { entry: [
-        { resource: {id: 'outgoing', resourceType: 'Patient'}},
-        { resource: {id: 'toupdate', resourceType: 'Patient'}}
-      ] },
+      data: [
+        { id: 'outgoing', resourceType: 'Patient'},
+        { id: 'toupdate', resourceType: 'Patient'}
+      ],
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-      data: { entry: [
-        { resource: {id: 'incoming', resourceType: 'Patient'}},
-        { resource: {id: 'toupdate', resourceType: 'Patient'}}
-      ] },
+      data: [
+        { id: 'incoming', resourceType: 'Patient'},
+        { id: 'toupdate', resourceType: 'Patient'}
+      ],
       status: 200,
     });
 
@@ -38,16 +38,14 @@ describe('OpenMRS Sync', () => {
 
   it('loads references for related resources', async () => {
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-      data: { entry: [
-        { resource: {id: 'resource0', resourceType: 'Encounter'}},
-        { resource: {id: 'reference0', resourceType: 'Patient'}}
-      ] },
+      data: [
+        { id: 'resource0', resourceType: 'Encounter'},
+        { id: 'reference0', resourceType: 'Patient'}
+      ],
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-      data: { entry: [
-        { resource: {id: 'resource0', resourceType: 'Encounter'}},
-      ] },
+      data: [ {id: 'resource0', resourceType: 'Encounter'} ],
       status: 200,
     });
 
@@ -64,11 +62,11 @@ describe('OpenMRS Sync', () => {
   it('sends incoming Patients to FHIR and CHT', async () => {
     const openMRSPatient = PatientFactory.build();
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-      data: { entry: [] },
+      data: [],
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-      data: { entry: [ { resource: openMRSPatient } ] },
+      data: [openMRSPatient],
       status: 200,
     });
     jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
@@ -90,11 +88,11 @@ describe('OpenMRS Sync', () => {
   it('sends outgoing Patients to OpenMRS', async () => {
     const fhirPatient = PatientFactory.build();
     jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-      data: { entry: [ { resource: fhirPatient } ] },
+      data: [fhirPatient],
       status: 200,
     });
     jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-      data: { entry: [] },
+      data: [],
       status: 200,
     });
     jest.spyOn(openmrs, 'createOpenMRSResource').mockResolvedValueOnce({

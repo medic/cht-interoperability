@@ -35,20 +35,18 @@ async function getResources(resourceType: string): Promise<ComparisonResources> 
   let references: fhir4.Resource[] = []
 
   const fhirResponse = await getFhirResourcesSince(lastUpdated, resourceType);
-  if (fhirResponse.status != 200 || !fhirResponse.data.entry) {
+  if (fhirResponse.status != 200) {
     throw new Error(`Error ${fhirResponse.status} when requesting FHIR resources`);
   }
-  let fhirResources: fhir4.Resource[] = fhirResponse.data.entry?.map((entry: any) => entry.resource) || [];
-  references = references.concat(fhirResources);
-  fhirResources = fhirResources.filter(onlyType);
+  const fhirResources = fhirResponse.data.filter(onlyType);
+  references = references.concat(fhirResponse.data);
 
   const openMRSResponse = await getOpenMRSResourcesSince(lastUpdated, resourceType);
-  if (openMRSResponse.status != 200 || !openMRSResponse.data.entry) {
+  if (openMRSResponse.status != 200) {
     throw new Error(`Error ${openMRSResponse.status} when requesting OpenMRS resources`);
   }
-  let openMRSResources: fhir4.Resource[] = openMRSResponse.data.entry?.map((entry: any) => entry.resource) || [];
-  references = references.concat(openMRSResources);
-  openMRSResources = openMRSResources.filter(onlyType);
+  const openMRSResources = openMRSResponse.data.filter(onlyType);
+  references = references.concat(openMRSResponse.data);
 
   return { fhirResources: fhirResources, openMRSResources: openMRSResources, references: references };
 }
