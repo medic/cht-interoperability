@@ -1,6 +1,8 @@
 import request from 'supertest';
 import app from '../../..';
-import { ChtPatientFactory, ChtPregnancyForm } from '../../middlewares/schemas/tests/cht-request-factories';
+import { ChtPatientFactory, ChtPregnancyForm, ChtSampleForm } from '../../middlewares/schemas/tests/cht-request-factories';
+import { PatientFactory, EncounterFactory, QuestionnaireFactory, QuestionnaireResponseFactory, CodedObservationFactory, DateTimeObservationFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
+import { buildQuestionnaireResponse, extractObservations } from '../../mappers/cht';
 import * as fhir from '../../utils/fhir';
 import axios from 'axios';
 
@@ -8,6 +10,10 @@ jest.mock('axios');
 
 describe('POST /cht/patient', () => {
   it('accepts incoming request with valid patient resource', async () => {
+    jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValueOnce({
+      data: {},
+      status: 200,
+    });
     jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
       data: {},
       status: 200,
@@ -30,6 +36,10 @@ describe('POST /cht/patient', () => {
   });
 
   it('accepts incoming request with valid form', async () => {
+    jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValueOnce({
+      data: { total: 1, entry: [ { resource: PatientFactory.build() } ] },
+      status: 200,
+    });
     jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
       data: {},
       status: 200,
@@ -49,4 +59,5 @@ describe('POST /cht/patient', () => {
     */
     expect(fhir.updateFhirResource).toHaveBeenCalled();
   });
+
 });

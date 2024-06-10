@@ -2,6 +2,7 @@ import {
   createFhirResource,
   updateFhirResource,
   getFHIRPatientResource,
+  replaceReference,
   addId
 } from '../utils/fhir';
 import {
@@ -21,9 +22,18 @@ export async function createPatient(chtPatientDoc: any) {
   }
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);
-  // create or update in the FHIR Server
-  // even for create, sends a PUT request
-  return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  const patientResponse = await getFHIRPatientResource(fhirPatient.id || '');
+  if (patientResponse.status != 200){
+    // any error, just return it to caller
+    return patientResponse;
+  } else if (patientResponse.data.total > 0) {
+    // updates not currently supported
+    return patientResponse;
+  } else {
+    // create or update in the FHIR Server
+    // even for create, sends a PUT request
+    return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  }
 }
 
 export async function updatePatientIds(chtFormDoc: any) {
@@ -53,6 +63,18 @@ export async function updatePatientIds(chtFormDoc: any) {
 
 export async function createEncounter(chtReport: any) {
   const fhirEncounter = buildFhirEncounterFromCht(chtReport);
+
+  const patientResponse = await getFHIRPatientResource(chtReport.patient_uuid);
+  if (patientResponse.status != 200){
+    // any error, just return it to caller
+    return patientResponse;
+  } else if (patientResponse.data.total == 0) {
+    // in case the patient is not found, return 200 to prevent retries
+    return { status: 200, data: { message: `Patient not found`} };
+  }
+
+  const patient = patientResponse.data.entry[0].resource as fhir4.Patient;
+  replaceReference(fhirEncounter, 'subject', patient);
   const response = await updateFhirResource(fhirEncounter);
 
   if (response.status != 200 && response.status != 201){
