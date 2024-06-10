@@ -1,8 +1,7 @@
 import request from 'supertest';
 import app from '../../..';
 import { ChtPatientFactory, ChtPregnancyForm, ChtSampleForm } from '../../middlewares/schemas/tests/cht-request-factories';
-import { PatientFactory, EncounterFactory, QuestionnaireFactory, QuestionnaireResponseFactory, CodedObservationFactory, DateTimeObservationFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
-import { buildQuestionnaireResponse, extractObservations } from '../../mappers/cht';
+import { PatientFactory, EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import * as fhir from '../../utils/fhir';
 import axios from 'axios';
 
