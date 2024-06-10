@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../..';
-import { ChtPatientFactory, ChtPregnancyForm, ChtSampleForm } from '../../middlewares/schemas/tests/cht-request-factories';
+import { ChtPatientFactory, ChtPregnancyForm } from '../../middlewares/schemas/tests/cht-request-factories';
 import { PatientFactory, EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
 import * as fhir from '../../utils/fhir';
 import axios from 'axios';
