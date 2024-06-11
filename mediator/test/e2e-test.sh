@@ -12,11 +12,11 @@ cd $BASEDIR
 
 # Starting the interoperability containers
 cd $BASEDIR
-./startup.sh init
+./startup.sh up-test
 
 # Waiting for configurator to finish
 echo 'Waiting for configurator to finish...'
-docker container wait chis-interop-configurator-1
+docker container wait chis-interop-cht-configurator-1
 
 # Executing mediator e2e tests
 cd $MEDIATORDIR

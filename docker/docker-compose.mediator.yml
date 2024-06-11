@@ -31,11 +31,9 @@ services:
     
   configurator:
     build:
-      context: ../
-      dockerfile: ./configurator/Dockerfile
+      context: ../configurator
+      dockerfile: ./Dockerfile
     environment:
-      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
-      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
       - "OPENHIM_API_HOSTNAME=${OPENHIM_API_HOSTNAME:-openhim-core}"
       - "OPENHIM_API_PORT=${OPENHIM_API_PORT:-8080}"
       - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-openhim-password}"
