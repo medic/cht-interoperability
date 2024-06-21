@@ -246,6 +246,10 @@ async function sendEncounterToFhir(
     logger.error(`Not re-sending encounter from cht ${encounter.id}`);
     return
   }
+  if (!encounter.period?.end) {
+    logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
+    return 
+  }
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);
