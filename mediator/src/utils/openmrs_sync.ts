@@ -7,11 +7,12 @@ import {
   copyIdToNamedIdentifier,
   getFhirResource,
   replaceReference,
-  getFHIRPatientResource
+  getFHIRPatientResource,
+  addSourceMeta
 } from './fhir'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
-import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation, openMRSIdentifierType } from '../mappers/openmrs'
-import { chtDocumentIdentifierType } from '../mappers/cht'
+import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation, openMRSIdentifierType, openMRSSource } from '../mappers/openmrs'
+import { chtDocumentIdentifierType, chtSource } from '../mappers/cht'
 import { createChtPatient, chtRecordFromObservations } from './cht'
 import { logger } from '../../logger';
 
@@ -112,6 +113,7 @@ export async function compare(
 async function sendPatientToFhir(patient: fhir4.Patient) {
   logger.info(`Sending Patient ${patient.id} to FHIR`);
   copyIdToNamedIdentifier(patient, patient, openMRSIdentifierType);
+  addSourceMeta(patient, openMRSSource);
   const response = await updateFhirResource(patient);
   if (response.status == 200 || response.status == 201) {
     logger.info(`Sending Patient ${patient.id} to CHT`);
@@ -126,6 +128,7 @@ async function sendPatientToFhir(patient: fhir4.Patient) {
 async function sendPatientToOpenMRS(patient: fhir4.Patient) {
   logger.info(`Sending Patient ${patient.id} to OpenMRS`);
   const openMRSPatient = buildOpenMRSPatient(patient);
+  addSourceMeta(openMRSPatient, chtSource);
   const response = await createOpenMRSResource(openMRSPatient);
   // copy openmrs identifier if successful
   if (response.status == 200 || response.status == 201) {
@@ -190,6 +193,10 @@ async function sendEncounterToOpenMRS(
   encounter: fhir4.Encounter,
   references: fhir4.Resource[]
 ) {
+  if (encounter.meta?.source == openMRSSource) {
+    logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
+    return
+  }
   logger.info(`Sending Encounter ${encounter.id} to OpenMRS`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);
@@ -203,6 +210,7 @@ async function sendEncounterToOpenMRS(
       // save openmrs id on orignal encounter
       logger.info(`Updating Encounter ${patient.id} with openMRSId ${visitNote.id}`);
       copyIdToNamedIdentifier(visitNote, encounter, openMRSIdentifierType);
+      addSourceMeta(visitNote, chtSource);
       await updateFhirResource(encounter);
       observations.forEach((observation) => {
         logger.info(`Sending Observation ${observation.code!.coding![0]!.code} to OpenMRS`);
@@ -234,6 +242,10 @@ async function sendEncounterToFhir(
   encounter: fhir4.Encounter,
   references: fhir4.Resource[]
 ) {
+  if (encounter.meta?.source == chtSource) {
+    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
+    return
+  }
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);
@@ -243,6 +255,7 @@ async function sendEncounterToFhir(
     if (patientResponse.status == 200 || patientResponse.status == 201) {
       const existingPatient = patientResponse.data?.entry[0].resource;
       copyIdToNamedIdentifier(encounter, encounter, openMRSIdentifierType);
+      addSourceMeta(encounter, openMRSSource);
 
       logger.info(`Replacing ${encounter.subject!.reference} with ${patient.id} for ${encounter.id}`);
       replaceReference(encounter, 'subject', existingPatient);

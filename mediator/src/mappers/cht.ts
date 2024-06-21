@@ -1,4 +1,4 @@
-import { getIdType, copyIdToNamedIdentifier } from '../utils/fhir';
+import { getIdType, copyIdToNamedIdentifier, addSourceMeta } from '../utils/fhir';
 import { openMRSIdentifierType } from './openmrs';
 
 export const chtDocumentIdentifierType: fhir4.CodeableConcept = {
@@ -8,6 +8,8 @@ export const chtDocumentIdentifierType: fhir4.CodeableConcept = {
 export const chtPatientIdentifierType: fhir4.CodeableConcept = {
   text: 'CHT Patient ID'
 }
+
+export const chtSource = 'cht';
 
 const chwVisitType: fhir4.CodeableConcept = {
   text: "Communtiy Health Worker Visit",

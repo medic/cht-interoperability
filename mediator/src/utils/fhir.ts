@@ -114,6 +114,11 @@ export async function getFHIRPatientResource(patientId: string) {
   }
 }
 
+export function addSourceMeta(resource: fhir4.Resource, source: string) {
+  resource.meta = resource.meta || {};
+  resource.meta['source'] = source;
+}
+
 export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Patient | fhir4.Encounter, fromIdType: fhir4.CodeableConcept){
   const identifier: fhir4.Identifier = {
     type: fromIdType,
