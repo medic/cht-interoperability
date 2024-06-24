@@ -10,6 +10,7 @@ import {
   getFHIRPatientResource,
   addSourceMeta
 } from './fhir'
+import { SYNC_INTERVAL } from '../../config'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
 import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation, openMRSIdentifierType, openMRSSource } from '../mappers/openmrs'
 import { chtDocumentIdentifierType, chtSource } from '../mappers/cht'
@@ -25,24 +26,20 @@ interface ComparisonResources {
 /*
   Get resources updates in the last day from both OpenMRS and the FHIR server
 */
-async function getResources(resourceType: string): Promise<ComparisonResources> {
-  const lastUpdated = new Date();
-  //lastUpdated.setDate(lastUpdated.getDate() - 1);
-  lastUpdated.setHours(lastUpdated.getHours() - 1);
-
+async function getResources(resourceType: string, startTime: Date): Promise<ComparisonResources> {
   function onlyType(resource: fhir4.Resource) {
     return resource.resourceType === resourceType;
   }
   let references: fhir4.Resource[] = []
 
-  const fhirResponse = await getFhirResourcesSince(lastUpdated, resourceType);
+  const fhirResponse = await getFhirResourcesSince(startTime, resourceType);
   if (fhirResponse.status != 200) {
     throw new Error(`Error ${fhirResponse.status} when requesting FHIR resources`);
   }
   const fhirResources = fhirResponse.data.filter(onlyType);
   references = references.concat(fhirResponse.data);
 
-  const openMRSResponse = await getOpenMRSResourcesSince(lastUpdated, resourceType);
+  const openMRSResponse = await getOpenMRSResourcesSince(startTime, resourceType);
   if (openMRSResponse.status != 200) {
     throw new Error(`Error ${openMRSResponse.status} when requesting OpenMRS resources`);
   }
@@ -71,16 +68,17 @@ interface ComparisonResult {
 */
 export async function compare(
   getKey: (resource: any) => string,
-  resourceType: string
+  resourceType: string,
+  startTime: Date,
 ): Promise<ComparisonResult> {
-  const comparison = await getResources(resourceType);
+  const comparison = await getResources(resourceType, startTime);
 
   const results: ComparisonResult = {
     toupdate: [],
     incoming: [],
     outgoing: [],
     references: comparison.references
-  }
+  };
 
   // get the key for each resource and create a Map
   const fhirIds = new Map(comparison.fhirResources.map(resource => [getKey(resource), resource]));
@@ -92,12 +90,26 @@ export async function compare(
       results.toupdate.push(openMRSResource);
       fhirIds.delete(key);
     } else {
-      results.incoming.push(openMRSResource);
+      const lastUpdated = new Date(openMRSResource.meta?.lastUpdated!);
+      if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
+        throw new Error("Invalid date format");
+      }
+      const diff = lastUpdated.getTime() - startTime.getTime();
+      if (diff > (Number(SYNC_INTERVAL) * 2)){
+        results.incoming.push(openMRSResource);
+      }
     }
   });
 
   fhirIds.forEach((resource, key) => {
-    results.outgoing.push(resource);
+    const lastUpdated = new Date(resource.meta?.lastUpdated || '');
+    if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
+      throw new Error("Invalid date format");
+    }
+    const diff = lastUpdated.getTime() - startTime.getTime();
+    if (diff > (Number(SYNC_INTERVAL) * 2)){
+      results.outgoing.push(resource);
+    }
   });
 
   logger.info(`Comparing ${resourceType}`);
@@ -143,9 +155,9 @@ async function sendPatientToOpenMRS(patient: fhir4.Patient) {
   for incoming, creates them in the FHIR server and forwars to CHT
   for outgoing, sends them to OpenMRS, receives the ID back, and updates the ID
 */
-export async function syncPatients(){
+export async function syncPatients(startTime: Date){
   const getKey = (fhirPatient: any) => { return getIdType(fhirPatient, openMRSIdentifierType) || fhirPatient.id };
-  const results: ComparisonResult = await compare(getKey, 'Patient');
+  const results: ComparisonResult = await compare(getKey, 'Patient', startTime);
 
   const incomingPromises = results.incoming.map(async (resource) => {
     const patient = resource as fhir4.Patient;
@@ -197,6 +209,7 @@ async function sendEncounterToOpenMRS(
     logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
     return
   }
+
   logger.info(`Sending Encounter ${encounter.id} to OpenMRS`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);
@@ -250,6 +263,7 @@ async function sendEncounterToFhir(
     logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
     return 
   }
+  
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);
@@ -293,9 +307,9 @@ async function sendEncounterToFhir(
   For outgoing, converts to OpenMRS format and sends to OpenMRS
   Updates to Observations and Encounters are not allowed
 */
-export async function syncEncounters(){
+export async function syncEncounters(startTime: Date){
   const getEncounterKey = (encounter: any) => { return getIdType(encounter, openMRSIdentifierType) || encounter.id };
-  const encounters: ComparisonResult = await compare(getEncounterKey, 'Encounter');
+  const encounters: ComparisonResult = await compare(getEncounterKey, 'Encounter', startTime);
 
   // for incoming encounters, save them in order so that references are saved before
   for (const resource of encounters.incoming) {
