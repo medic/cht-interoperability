@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express';
 import { mediatorConfig } from './config/mediator';
 import { logger } from './logger';
 import bodyParser from 'body-parser';
-import {PORT, OPENHIM} from './config';
+import {PORT, OPENHIM, SYNC_INTERVAL} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
@@ -45,12 +45,14 @@ if (process.env.NODE_ENV !== 'test') {
   // start patient and ecnounter sync in the background
   setInterval(async () => {
     try {
-      await syncPatients();
-      await syncEncounters();
+      const startTime = new Date();
+      startTime.setHours(startTime.getHours() - 1);
+      await syncPatients(startTime);
+      await syncEncounters(startTime);
     } catch (error: any) {
       logger.error(error);
     }
-  }, Number(process.env.SYNC_INTERVAL || (1000 * 60)));
+  }, Number(SYNC_INTERVAL));
 }
 
 export default app;

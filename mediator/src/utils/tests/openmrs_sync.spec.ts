@@ -26,7 +26,9 @@ describe('OpenMRS Sync', () => {
     });
 
     const getKey = (obj: any) => { return obj.id };
-    const comparison = await compare(getKey, 'Patient')
+    const startTime = new Date();
+    startTime.setHours(startTime.getHours() - 1);
+    const comparison = await compare(getKey, 'Patient', startTime)
 
     expect(comparison.incoming).toEqual([{id: 'incoming', resourceType: 'Patient'}]);
     expect(comparison.outgoing).toEqual([{id: 'outgoing', resourceType: 'Patient'}]);
@@ -50,7 +52,9 @@ describe('OpenMRS Sync', () => {
     });
 
     const getKey = (obj: any) => { return obj.id };
-    const comparison = await compare(getKey, 'Encounter')
+    const startTime = new Date();
+    startTime.setHours(startTime.getHours() - 1);
+    const comparison = await compare(getKey, 'Encounter', startTime)
 
     expect(comparison.references).toContainEqual({id: 'reference0', resourceType: 'Patient'});
     expect(comparison.toupdate).toEqual([{id: 'resource0', resourceType: 'Encounter'}]);
@@ -76,7 +80,9 @@ describe('OpenMRS Sync', () => {
     jest.spyOn(cht, 'createChtPatient')
 
     const getKey = (obj: any) => { return obj.id };
-    const comparison = await syncPatients();
+    const startTime = new Date();
+    startTime.setHours(startTime.getHours() - 1);
+    const comparison = await syncPatients(startTime);
 
     expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
     expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
@@ -102,7 +108,9 @@ describe('OpenMRS Sync', () => {
     //jest.spyOn(fhir, 'updateFhirResource')
 
     const getKey = (obj: any) => { return obj.id };
-    const comparison = await syncPatients();
+    const startTime = new Date();
+    startTime.setHours(startTime.getHours() - 1);
+    const comparison = await syncPatients(startTime);
 
     expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
     expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
