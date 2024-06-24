@@ -16,6 +16,9 @@ services:
       - "FHIR_URL=${FHIR_URL:-http://openhim-core:5001/fhir}"
       - "FHIR_USERNAME=${FHIR_USERNAME:-interop-client}"
       - "FHIR_PASSWORD=${FHIR_PASSWORD:-interop-password}"
+      - "OPENMRS_URL=${OPENMRS_URL:-http://openhim-core:5001/openmrs}"
+      - "OPENMRS_USERNAME=${OPENMRS_USERNAME:-interop-client}"
+      - "OPENMRS_PASSWORD=${OPENMRS_PASSWORD:-interop-password}"
       - "CHT_URL=${CHT_URL:-https://nginx}"
       - "CHT_USERNAME=${CHT_USERNAME:-admin}"
       - "CHT_PASSWORD=${CHT_PASSWORD:-password}"
@@ -28,11 +31,9 @@ services:
     
   configurator:
     build:
-      context: ../
-      dockerfile: ./configurator/Dockerfile
+      context: ../configurator
+      dockerfile: ./Dockerfile
     environment:
-      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
-      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
       - "OPENHIM_API_HOSTNAME=${OPENHIM_API_HOSTNAME:-openhim-core}"
       - "OPENHIM_API_PORT=${OPENHIM_API_PORT:-8080}"
       - "OPENHIM_PASSWORD=${OPENHIM_PASSWORD:-openhim-password}"

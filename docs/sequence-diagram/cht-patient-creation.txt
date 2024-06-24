@@ -1,0 +1,29 @@
+title CHT Patient Creation
+
+participant CHT
+
+participantgroup 
+participant OpenHIM
+participant Mediator
+participant FHIR Server
+end
+
+participant Requesting System
+autoactivation on
+box over CHT: Patient is created in CHT
+box over CHT: Outbound push\nrecognizes changes
+CHT->OpenHIM: Outbound push POSTS Patient\nDocument to OpenHim
+OpenHIM->Mediator:
+box over Mediator: Mediator converts Patient\nDocument to FHIR Patient
+Mediator->FHIR Server: POST Patient FHIR
+box over FHIR Server: FHIR Server saves\nthe Patient FHIR
+FHIR Server-->Mediator: FHIR Patient Response
+Mediator-->OpenHIM: 200 Response (no body)
+OpenHIM-->CHT: 200 Response (no body)
+destroysilent CHT
+box over Requesting System: Any FHIR Compliant Server\nthat has been set up as a client\nin OpenHIM can now request\nPatient records from CHT
+Requesting System->OpenHIM: GET FHIR Patient
+OpenHIM->FHIR Server: GET FHIR Patient
+FHIR Server-->OpenHIM: FHIR Searchset response
+OpenHIM-->Requesting System: FHIR Searchset Response
+autoactivation off
