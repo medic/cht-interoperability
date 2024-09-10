@@ -16,7 +16,7 @@ const ContactFactory = Factory.define('contact')
 export const UserFactory = Factory.define('user')
   .option('placeId')
   .attr('password', 'Dakar1234')
-  .attr('username', 'maria')
+  .attr('username', 'e145bae1-2272-496c-a867-4fcdfc5168a1')
   .attr('type', 'chw')
   .attr('place', ['placeId'], function (placeId) {
     return PlaceFactory.build({}, { placeId });
@@ -59,7 +59,7 @@ const DocsFactory = Factory.define('docs')
   .option('placeId')
   .option('contactId')
   .option('patientId')
-  .attr('form', 'interop_follow_up')
+  .attr('form', 'INTEROP_FOLLOW_UP')
   .attr('type', 'data_record')
   .attr('contact', ['placeId', 'contactId'], function (placeId, contactId) {
     return ContactFactory.attr('_id', contactId).attr('parent', { '_id': placeId }).build();
