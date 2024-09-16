@@ -5,19 +5,11 @@ MEDIATORDIR="${BASEDIR}/mediator"
 
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
-export COUCHDB_DATA=./test/srv
+
 # Cleanup from last test, in case of interruptions
 cd $BASEDIR
 ./startup.sh destroy
-cd docker
-# Remove the ./test/srv directory if it exists
-if [ -d "./test/srv" ]; then
-    echo "Removing ./test/srv directory..."
-    rm -rf ./test/srv
-    echo "./test/srv directory removed."
-else
-    echo "./test/srv directory does not exist."
-fi
+
 # Starting the interoperability containers
 cd $BASEDIR
 ./startup.sh init
@@ -53,12 +45,4 @@ unset CHT_USERNAME
 unset CHT_PASSWORD
 cd $BASEDIR
 ./startup.sh destroy
-cd docker
-# Remove the ./srv directory if it exists
-if [ -d "./test/srv" ]; then
-    echo "Removing ./test/srv directory..."
-    rm -rf ./test/srv
-    echo "./test/srv directory removed."
-else
-    echo "./test/srv directory does not exist."
-fi
+
