@@ -21,7 +21,19 @@ else
   init      starts the docker containers and configures OpenHIM
   up        starts the docker containers
   up-dev    starts the docker containers with updated files.
+  up-test   starts the docker containers with updated files, including CHT Core
   down      stops the docker containers
   destroy   shutdown the docker containers and deletes volumes
   "
 fi
+
+echo "
+
+   Possible URLs after startup:
+   -----------
+   OpenMRS         http://localhost:8090/
+   OpenMRS MySQL   localhost:3306
+   CHT Core        https://localhost:8843/
+   OpenHIM Console http://localhost:9000/
+
+"

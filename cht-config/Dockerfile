@@ -5,7 +5,8 @@ RUN apt update \
       git \
       python3-pip \
       python3-setuptools \
-      python3-wheel
+      python3-wheel \
+      curl
 
 RUN python3 -m pip install git+https://github.com/medic/pyxform.git@medic-conf-1.17#egg=pyxform-medic
 
