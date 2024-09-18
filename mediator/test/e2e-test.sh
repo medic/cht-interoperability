@@ -6,19 +6,33 @@ MEDIATORDIR="${BASEDIR}/mediator"
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# Cleanup from last test, in case of interruptions
+retry_startup() {
+  max_attempts=5
+  count=0
+  until ./startup.sh init || [ $count -eq $max_attempts ]; do
+    echo "Attempt $((count+1)) of $max_attempts to start containers failed, retrying in 30 seconds..."
+    count=$((count+1))
+    sleep 30
+  done
+
+  if [ $count -eq $max_attempts ]; then
+    echo "Failed to start containers after $max_attempts attempts."
+    exit 1
+  fi
+}
+
+echo 'Cleanup from last test, in case of interruptions...'
 cd $BASEDIR
 ./startup.sh destroy
 
-# Starting the interoperability containers
+echo 'Starting the interoperability containers...'
 cd $BASEDIR
-./startup.sh init
+retry_startup
 
-# Waiting for configurator to finish
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-configurator-1
 
-# Executing mediator e2e tests
+echo 'Executing mediator e2e tests...'
 cd $MEDIATORDIR
 export OPENHIM_API_URL='https://localhost:8080'
 export FHIR_URL='http://localhost:5001'
@@ -31,7 +45,7 @@ export CHT_USERNAME='admin'
 export CHT_PASSWORD='password'
 npm test ltfu-flow.spec.ts
 
-# Cleanup
+echo 'Cleanup after test...'
 unset NODE_ENV
 unset NODE_TLS_REJECT_UNAUTHORIZED
 unset OPENHIM_API_URL
