@@ -1,6 +1,7 @@
 const {OPENHIM_USER_PASSWORD, OPENHIM_CLIENT_PASSWORD} = require('./config');
+const {OPENMRS_USERNAME, OPENMRS_PASSWORD, OPENMRS_HOST, OPENMRS_PORT, OPENMRS_PROTOCOL} = require('./config');
 const {generateApiOptions, generateAuthHeaders} = require('./libs/authentication');
-const {generateUser, generateClient, generateHapiFihrChannel} = require('./libs/generators');
+const {generateUser, generateClient, generateHapiFihrChannel, generateOpenMRSChannel} = require('./libs/generators');
 const {fetch} = require('./utils');
 const logger = require('./logger');
 
@@ -16,6 +17,7 @@ async function handleConfiguration () {
   metadata.Users.push(await generateUser(OPENHIM_USER_PASSWORD));
   metadata.Clients.push(await generateClient(OPENHIM_CLIENT_PASSWORD));
   metadata.Channels.push(await generateHapiFihrChannel());
+  metadata.Channels.push(await generateOpenMRSChannel(OPENMRS_HOST, OPENMRS_PORT, OPENMRS_USERNAME, OPENMRS_PASSWORD, OPENMRS_PROTOCOL));
 
   const data = JSON.stringify(metadata);
   const apiOptions = generateApiOptions('/metadata');

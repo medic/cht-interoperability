@@ -1,0 +1,31 @@
+title CHT Form Submission
+
+participant CHT
+
+participantgroup 
+participant OpenHIM
+participant Mediator
+participant FHIR Server
+end
+
+participant Requesting System
+autoactivation on
+box over CHT: Form submission in CHT
+box over CHT: Outbound push\nrecognizes a\ntracked form was submitted
+CHT->OpenHIM: Outbound push POSTS Data Record\nDocument to OpenHim
+OpenHIM->Mediator:
+box over Mediator: Mediator creates Encounter FHIR
+box over Mediator: Mediator creates Observation FHIR Resources\nfrom the fields in the data record document
+box over Mediator: Mediator creates Bundle\nfrom Encounter and Observations
+Mediator->FHIR Server: POST Encounter Bundle
+box over FHIR Server: FHIR Server saves\nthe resources in the Bundle
+FHIR Server-->Mediator: FHIR Bundle Response
+Mediator-->OpenHIM: 200 Response (no body)
+OpenHIM-->CHT: 200 Response (no body)
+destroysilent CHT
+box over Requesting System: Any FHIR Compliant Server\nthat has been set up as a client\nin OpenHIM can now request\nEncounter or Observation records from CHT
+Requesting System->OpenHIM: GET FHIR Encounter
+OpenHIM->FHIR Server: GET FHIR Encounter
+FHIR Server-->OpenHIM: FHIR Searchset response
+OpenHIM-->Requesting System: FHIR Searchset Response
+autoactivation off

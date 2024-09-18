@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   mongo:
     image: mongo:4.2
@@ -11,13 +9,14 @@ services:
     
   openhim-core:
     container_name: openhim-core
+    platform: linux/x86_64
     image: jembi/openhim-core:7
     environment:
       - mongo_url=mongodb://mongo/openhim
       - mongo_atnaUrl=mongodb://mongo/openhim
     ports:
       - "8080:8080"
-      - "5000:5000"
+      - "5002:5000"
       - "5001:5001"
       - "5050:5050"
       - "5051:5051"
@@ -30,6 +29,7 @@ services:
   
   openhim-console:
     container_name: openhim-console
+    platform: linux/x86_64
     image: jembi/openhim-console:1.14.4
     ports:
         - "9000:80"
