@@ -33,7 +33,7 @@ async function generateUser (password) {
   };
 }
 
-async function generateHapiFihrChannel () {
+async function generateHapiFhirChannel () {
   return {
     methods: [
       'GET',
@@ -157,6 +157,6 @@ async function generateOpenMRSChannel (host, port, username, password, type) {
 module.exports = {
   generateClient,
   generateUser,
-  generateHapiFihrChannel,
+  generateHapiFhirChannel,
   generateOpenMRSChannel
 };
