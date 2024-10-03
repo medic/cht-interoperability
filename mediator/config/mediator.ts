@@ -1,8 +1,8 @@
 export const mediatorConfig = {
-  urn: 'urn:mediator:ltfu-mediator',
+  urn: 'urn:mediator:cht-mediator',
   version: '1.0.0',
-  name: 'Loss to Follow Up Mediator',
-  description: 'A loss to follow up mediator for mediator for CHIS.',
+  name: 'CHT Mediator',
+  description: 'The default mediator for CHT applications',
   defaultChannelConfig: [
     {
       name: 'Mediator',

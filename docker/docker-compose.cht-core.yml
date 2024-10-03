@@ -124,7 +124,7 @@ services:
   couchdb:
     image: public.ecr.aws/medic/cht-couchdb:4.10.0
     volumes:
-      - ${COUCHDB_DATA:-./srv}:/opt/couchdb/data
+      - couchdb-data:/opt/couchdb/data
       - cht-credentials:/opt/couchdb/etc/local.d/
     environment:
       - "COUCHDB_USER=${COUCHDB_USER:-admin}"
@@ -150,3 +150,4 @@ networks:
 volumes:
   cht-ssl:
   cht-credentials:
+  couchdb-data:
