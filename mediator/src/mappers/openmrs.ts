@@ -12,6 +12,8 @@ export const openMRSIdentifierType: fhir4.CodeableConcept = {
   text: 'OpenMRS Patient UUID'
 }
 
+export const openMRSSource = 'openmrs';
+
 const visitNoteType: fhir4.CodeableConcept = {
   text: "Visit Note",
   coding: [{

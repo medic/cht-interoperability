@@ -1,8 +1,9 @@
 import express, {Request, Response} from 'express';
 import { mediatorConfig } from './config/mediator';
+import { openMRSMediatorConfig } from './config/openmrs_mediator';
 import { logger } from './logger';
 import bodyParser from 'body-parser';
-import {PORT, OPENHIM} from './config';
+import {PORT, OPENHIM, SYNC_INTERVAL, OPENMRS} from './config';
 import patientRoutes from './src/routes/patient';
 import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
@@ -42,15 +43,22 @@ if (process.env.NODE_ENV !== 'test') {
   // TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'  
   registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
 
-  // start patient and ecnounter sync in the background
-  setInterval(async () => {
-    try {
-      await syncPatients();
-      await syncEncounters();
-    } catch (error: any) {
-      logger.error(error);
-    }
-  }, Number(process.env.SYNC_INTERVAL || (1000 * 60)));
+  // if OPENMRS is specified, register its mediator
+  // and start the sync background task
+  if (OPENMRS.url) {
+    registerMediator(OPENHIM, openMRSMediatorConfig, registerMediatorCallback);
+    // start patient and ecnounter sync in the background
+    setInterval(async () => {
+      try {
+        const startTime = new Date();
+        startTime.setHours(startTime.getHours() - 1);
+        await syncPatients(startTime);
+        await syncEncounters(startTime);
+      } catch (error: any) {
+        logger.error(error);
+      }
+    }, Number(SYNC_INTERVAL));
+  }
 }
 
 export default app;

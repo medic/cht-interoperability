@@ -21,7 +21,7 @@ function getOptions(){
   return options;
 }
 
-export async function createChtRecord(patientId: string) {
+export async function createChtFollowUpRecord(patientId: string) {
   const record = {
     _meta: {
       form: 'interop_follow_up',

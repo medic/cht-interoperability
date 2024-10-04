@@ -1,4 +1,4 @@
-import { createChtRecord } from '../../utils/cht';
+import { createChtFollowUpRecord } from '../../utils/cht';
 import {
   getFHIROrgEndpointResource,
   getFHIRPatientResource,
@@ -21,6 +21,6 @@ export const mockCreateFHIRSubscriptionResource =
   createFHIRSubscriptionResource as jest.MockedFn<
     typeof createFHIRSubscriptionResource
   >;
-export const mockCreateChtRecord = createChtRecord as jest.MockedFn<
-  typeof createChtRecord
+export const mockCreateChtRecord = createChtFollowUpRecord as jest.MockedFn<
+  typeof createChtFollowUpRecord
 >;
