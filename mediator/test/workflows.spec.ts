@@ -31,13 +31,34 @@ const installMediatorConfiguration = async () => {
   });
   try {
     const res = await request(OPENHIM.apiURL)
-      .post('/mediators/urn:mediator:ltfu-mediator/channels')
+      .post('/mediators/urn:mediator:cht-mediator/channels')
       .send(['Mediator'])
       .set('auth-username', authHeaders['auth-username'])
       .set('auth-ts', authHeaders['auth-ts'])
       .set('auth-salt', authHeaders['auth-salt'])
       .set('auth-token', authHeaders['auth-token']);
 
+    if (res.status !== 201) {
+      throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
+    }
+  } catch (error) {
+    throw new Error(`Mediator channel installation failed ${error}`);
+  }
+};
+
+const createOpenMRSIdType = async (name: string) => {
+  const patientIdType = {
+    name: name,
+    description: "CHT Patient ID",
+    required: false,
+    locationBehavior: "NOT_USED",
+    uniquenessBehavior: "Unique"
+  }
+  try {
+    const res = await request("http://localhost:8090")
+      .post('/openmrs/ws/rest/v1/patientidentifiertype')
+      .auth('admin', 'Admin123')
+      .send(patientIdType)
     if (res.status !== 201) {
       throw new Error(`Mediator channel installation failed: Reason ${res.status}`);
     }
@@ -85,6 +106,81 @@ describe('Workflows', () => {
   beforeAll(async () => {
     await installMediatorConfiguration();
     await configureCHT();
+    await createOpenMRSIdType('CHT Patient ID');
+    await createOpenMRSIdType('CHT Document ID');
+  });
+
+  describe('OpenMRS workflow', () => {
+    it('Should follow the CHT Patient to OpenMRS workflow', async () => {
+      const checkMediatorResponse = await request(FHIR.url)
+        .get('/mediator/')
+        .auth(FHIR.username, FHIR.password);
+
+      expect(checkMediatorResponse.status).toBe(200);
+      expect(checkMediatorResponse.body.status).toBe('success');
+
+      const patient = PatientFactory.build({}, { name: 'OpenMRS patient', placeId: placeId });
+
+      const createPatientResponse = await request(CHT.url)
+        .post('/api/v1/people')
+        .auth(chwUserName, chwPassword)
+        .send(patient);
+
+      expect(createPatientResponse.status).toBe(200);
+      expect(createPatientResponse.body.ok).toEqual(true);
+      patientId = createPatientResponse.body.id;
+
+      await new Promise((r) => setTimeout(r, 3000));
+
+      const retrieveFhirPatientIdResponse = await request(FHIR.url)
+        .get('/fhir/Patient/?identifier=' + patientId)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirPatientIdResponse.status).toBe(200);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
+
+      const triggerOpenMrsSyncPatientResponse = await request(FHIR.url)
+        .get('/mediator/openmrs/sync')
+        .auth(FHIR.username, FHIR.password)
+        .send();
+
+      expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
+
+      await new Promise((r) => setTimeout(r, 3000));
+
+      const retrieveOpenMrsPatientIdResponse = await request(OPENMRS.url)
+        .get('/Patient/?identifier=' + patientId)
+        .auth(OPENMRS.username, OPENMRS.password);
+
+      expect(retrieveOpenMrsPatientIdResponse.status).toBe(200);
+      //this should work after fixing openmrs to have latest fhir omod and cht identifier defined.
+      //expect(retrieveOpenMrsPatientIdResponse.body.total).toBe(1);
+
+      //Validate HAPI updated ids
+
+    });
+
+    it('Should follow the OpenMRS Patient to CHT workflow', async () => {
+      const checkMediatorResponse = await request(FHIR.url)
+        .get('/mediator/')
+        .auth(FHIR.username, FHIR.password);
+
+      expect(checkMediatorResponse.status).toBe(200);
+      expect(checkMediatorResponse.body.status).toBe('success');
+
+      //Create a patient using openMRS api
+
+      /*const retrieveFhirPatientIdResponse = await request(FHIR.url)
+        .get('/fhir/Patient/?identifier=' + patientId)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirPatientIdResponse.status).toBe(200);
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);*/
+
+      //retrieve and validate patient from CHT api
+      //trigger openmrs sync
+      //validate id
+    });
   });
 
   describe('Loss To Follow-Up (LTFU) workflow', () => {
@@ -181,79 +277,6 @@ describe('Workflows', () => {
 
       expect(retrieveFhirDbEncounter.status).toBe(200);
       expect(retrieveFhirDbEncounter.body.total).toBe(1);
-    });
-  });
-
-  describe('OpenMRS workflow', () => {
-    it('Should follow the CHT Patient to OpenMRS workflow', async () => {
-      const checkMediatorResponse = await request(FHIR.url)
-        .get('/mediator/')
-        .auth(FHIR.username, FHIR.password);
-
-      expect(checkMediatorResponse.status).toBe(200);
-      expect(checkMediatorResponse.body.status).toBe('success');
-
-      const patient = PatientFactory.build({}, { name: 'OpenMRS patient', placeId: placeId });
-
-      const createPatientResponse = await request(CHT.url)
-        .post('/api/v1/people')
-        .auth(chwUserName, chwPassword)
-        .send(patient);
-
-      expect(createPatientResponse.status).toBe(200);
-      expect(createPatientResponse.body.ok).toEqual(true);
-      patientId = createPatientResponse.body.id;
-
-      await new Promise((r) => setTimeout(r, 3000));
-
-      const retrieveFhirPatientIdResponse = await request(FHIR.url)
-        .get('/fhir/Patient/?identifier=' + patientId)
-        .auth(FHIR.username, FHIR.password);
-
-      expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
-
-      const triggerOpenMrsSyncPatientResponse = await request(FHIR.url)
-        .post('/mediator/cht/sync')
-        .auth(FHIR.username, FHIR.password)
-        .send();
-
-      expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
-
-      await new Promise((r) => setTimeout(r, 30000));
-
-      const retrieveOpenMrsPatientIdResponse = await request(OPENMRS.url)
-        .get('/Patient/?identifier=' + patientId)
-        .auth(OPENMRS.username, OPENMRS.password);
-
-      expect(retrieveOpenMrsPatientIdResponse.status).toBe(200);
-      //this should work after fixing openmrs to have latest fhir omod and cht identifier defined.
-      //expect(retrieveOpenMrsPatientIdResponse.body.total).toBe(1);
-
-      //Validate HAPI updated ids
-
-    });
-
-    it('Should follow the OpenMRS Patient to CHT workflow', async () => {
-      const checkMediatorResponse = await request(FHIR.url)
-        .get('/mediator/')
-        .auth(FHIR.username, FHIR.password);
-
-      expect(checkMediatorResponse.status).toBe(200);
-      expect(checkMediatorResponse.body.status).toBe('success');
-
-      //Create a patient using openMRS api
-
-      /*const retrieveFhirPatientIdResponse = await request(FHIR.url)
-        .get('/fhir/Patient/?identifier=' + patientId)
-        .auth(FHIR.username, FHIR.password);
-
-      expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);*/
-
-      //retrieve and validate patient from CHT api
-      //trigger openmrs sync
-      //validate id
     });
   });
 });

@@ -25,9 +25,9 @@ export const CHT = {
 };
 
 export const OPENMRS = {
-  url: getEnvironmentVariable('OPENMRS_URL', ''),
-  username: getEnvironmentVariable('OPENMRS_USERNAME', ''),
-  password: getEnvironmentVariable('OPENMRS_PASSWORD', ''),
+  url: getEnvironmentVariable('OPENMRS_CHANNEL_URL', 'http://openhim-core:5001/openmrs'),
+  username: getEnvironmentVariable('OPENMRS_CHANNEL_USERNAME', 'interop-client'),
+  password: getEnvironmentVariable('OPENMRS_CHANNEL_PASSWORD', 'interop-password'),
   timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 

@@ -22,18 +22,7 @@ export async function createPatient(chtPatientDoc: any) {
   }
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);
-  const patientResponse = await getFHIRPatientResource(fhirPatient.id || '');
-  if (patientResponse.status != 200){
-    // any error, just return it to caller
-    return patientResponse;
-  } else if (patientResponse.data.total > 0) {
-    // updates not currently supported
-    return patientResponse;
-  } else {
-    // create or update in the FHIR Server
-    // even for create, sends a PUT request
-    return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
-  }
+  return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
 }
 
 export async function updatePatientIds(chtFormDoc: any) {

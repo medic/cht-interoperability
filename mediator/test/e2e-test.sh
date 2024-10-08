@@ -6,6 +6,10 @@ MEDIATORDIR="${BASEDIR}/mediator"
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 
+export OPENMRS_HOST=openmrs
+export OPENMRS_USERNAME=admin
+export OPENMRS_PASSWORD=Admin123
+
 # Cleanup from last test, in case of interruptions
 cd $BASEDIR
 ./startup.sh destroy
@@ -29,14 +33,20 @@ export FHIR_USERNAME='interop-client'
 export FHIR_PASSWORD='interop-password'
 export CHT_USERNAME='admin'
 export CHT_PASSWORD='password'
-export OPENMRS_URL='http://openhim-core:5001/openmrs'
-export OPENMRS_USERNAME='interop-client'
-export OPENMRS_PASSWORD='interop-password'
+export OPENMRS_CHANNEL_URL='http://localhost:5001/openmrs'
+export OPENMRS_CHANNEL_USERNAME='interop-client'
+export OPENMRS_CHANNEL_PASSWORD='interop-password'
+
+echo 'Waiting for OpenMRS to be ready'
+sleep 180
 npm run test -t workflows.spec.ts
 
 # Cleanup
 unset NODE_ENV
 unset NODE_TLS_REJECT_UNAUTHORIZED
+unset OPENMRS_HOST
+unset OPENMRS_USERNAME
+unset OPENMRS_PASSWORD
 unset OPENHIM_API_URL
 unset FHIR_URL
 unset CHT_URL
@@ -46,9 +56,8 @@ unset FHIR_USERNAME
 unset FHIR_PASSWORD
 unset CHT_USERNAME
 unset CHT_PASSWORD
-unset OPENMRS_URL
-unset OPENMRS_USERNAME
-unset OPENMRS_PASSWORD
+unset OPENMRS_CHANNEL_URL
+unset OPENMRS_CHANNEL_USERNAME
+unset OPENMRS_CHANNEL_PASSWORD
 cd $BASEDIR
 ./startup.sh destroy
-

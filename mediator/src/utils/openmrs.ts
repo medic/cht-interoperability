@@ -1,12 +1,16 @@
 import { OPENMRS } from '../../config';
 import axios from 'axios';
 import { logger } from '../../logger';
+import https from 'https';
 
 const axiosOptions = {
   auth: {
     username: OPENMRS.username,
     password: OPENMRS.password,
   },
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
   timeout: OPENMRS.timeout
 };
 
