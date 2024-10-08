@@ -52,6 +52,8 @@ services:
       - COUCH_URL=http://${COUCHDB_USER:-admin}:${COUCHDB_PASSWORD:-password}@haproxy:${HAPROXY_PORT:-5984}/medic
       - BUILDS_URL=${MARKET_URL_READ:-https://staging.dev.medicmobile.org}/${BUILDS_SERVER:-_couch/builds_4}
       - UPGRADE_SERVICE_URL=${UPGRADE_SERVICE_URL:-http://localhost:5100}
+    ports:
+      - "5988:5988"
     logging:
       driver: "local"
       options:
@@ -117,6 +119,7 @@ services:
       - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
     depends_on:
       - couchdb
+      - api
     networks:
       - cht-net
 

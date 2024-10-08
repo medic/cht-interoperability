@@ -134,7 +134,7 @@ export function copyIdToNamedIdentifier(fromResource: any, toResource: fhir4.Pat
 }
 
 export function getIdType(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept): string{
-  return resource?.identifier?.find((id: any) => id?.type.text == idType.text)?.value || '';
+  return resource?.identifier?.find((id: any) => id?.type?.text == idType.text)?.value || '';
 }
 
 export function addId(resource: fhir4.Patient | fhir4.Encounter, idType: fhir4.CodeableConcept, value: string){
