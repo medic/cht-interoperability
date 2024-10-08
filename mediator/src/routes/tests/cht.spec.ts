@@ -9,10 +9,6 @@ jest.mock('axios');
 
 describe('POST /cht/patient', () => {
   it('accepts incoming request with valid patient resource', async () => {
-    jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValueOnce({
-      data: {},
-      status: 200,
-    });
     jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
       data: {},
       status: 200,
