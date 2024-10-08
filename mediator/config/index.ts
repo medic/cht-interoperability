@@ -31,7 +31,9 @@ export const OPENMRS = {
   timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 
-export const SYNC_INTERVAL = getEnvironmentVariable('SYNC_INTERVAL', '60000');
+//export const SYNC_INTERVAL = getEnvironmentVariable('SYNC_INTERVAL', '60000');
+// hard code sync interval to 1 minute because it is hard coded in mediator config
+export const SYNC_INTERVAL = '60000';
 
 function getEnvironmentVariable(env: string, def: string) {
   if (process.env.NODE_ENV === 'test') {
