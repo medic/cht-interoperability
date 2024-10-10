@@ -83,6 +83,9 @@ export async function compare(
   // get the key for each resource and create a Map
   const fhirIds = new Map(comparison.fhirResources.map(resource => [getKey(resource), resource]));
 
+  // dont sync resources created with 2 * SYNC_INTERVAL of start time
+  let syncWindow = (Number(SYNC_INTERVAL) * 1000) * 2
+
   comparison.openMRSResources.forEach((openMRSResource) => {
     const key = getKey(openMRSResource);
     if (fhirIds.has(key)) {
@@ -95,7 +98,7 @@ export async function compare(
         throw new Error("Invalid date format");
       }
       const diff = lastUpdated.getTime() - startTime.getTime();
-      if (diff > (Number(SYNC_INTERVAL) * 2)){
+      if (diff > syncWindow){
         results.incoming.push(openMRSResource);
       }
     }
@@ -107,7 +110,7 @@ export async function compare(
       throw new Error("Invalid date format");
     }
     const diff = lastUpdated.getTime() - startTime.getTime();
-    if (diff > (Number(SYNC_INTERVAL) * 2)){
+    if (diff > syncWindow){
       results.outgoing.push(resource);
     }
   });
