@@ -1,10 +1,13 @@
 import { logger } from '../../logger';
 import { syncPatients, syncEncounters } from '../utils/openmrs_sync'
+import { SYNC_PERIOD } from '../../config'
 
 export async function sync() {
   try {
-    const startTime = new Date();
-    startTime.setHours(startTime.getHours() - 1);
+    let now = Date.now();
+    let syncPeriod = parseInt(SYNC_PERIOD, 10);
+    let startTime = new Date(now - syncPeriod);
+
     await syncPatients(startTime);
     await syncEncounters(startTime);
     return { status: 200, data: { message: `OpenMRS sync completed successfully`} };
