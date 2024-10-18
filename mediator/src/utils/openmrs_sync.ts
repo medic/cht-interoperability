@@ -174,7 +174,7 @@ export async function syncPatients(startTime: Date){
 /*
   Get a patient from a list of resources, by an encounters subject reference
 */
-function getPatient(encounter: fhir4.Encounter, references: fhir4.Resource[]): fhir4.Patient {
+export function getPatient(encounter: fhir4.Encounter, references: fhir4.Resource[]): fhir4.Patient {
   return references.filter((resource) => {
     return resource.resourceType === 'Patient' && `Patient/${resource.id}` === encounter.subject?.reference
   })[0] as fhir4.Patient;
@@ -184,7 +184,7 @@ function getPatient(encounter: fhir4.Encounter, references: fhir4.Resource[]): f
   Get a list of observations from a list of resources
   where the observations encounter reference is the encounter
 */
-function getObservations(encounter: fhir4.Encounter, references: fhir4.Resource[]): fhir4.Observation[] {
+export function getObservations(encounter: fhir4.Encounter, references: fhir4.Resource[]): fhir4.Observation[] {
   return references.filter((resource) => {
     if (resource.resourceType === 'Observation') {
       const observation = resource as fhir4.Observation;
@@ -201,7 +201,7 @@ function getObservations(encounter: fhir4.Encounter, references: fhir4.Resource[
   Updates the OpenMRS Id on the CHT encounter to the VisitNote
   Sends Observations for the visitNote Encounter 
 */
-async function sendEncounterToOpenMRS(
+export async function sendEncounterToOpenMRS(
   encounter: fhir4.Encounter,
   references: fhir4.Resource[]
 ) {
@@ -221,7 +221,7 @@ async function sendEncounterToOpenMRS(
     if (visitNoteResponse.status == 200 || visitNoteResponse.status == 201) {
       const visitNote = visitNoteResponse.data as fhir4.Encounter;
       // save openmrs id on orignal encounter
-      logger.info(`Updating Encounter ${patient.id} with openMRSId ${visitNote.id}`);
+      logger.info(`Updating Encounter ${encounter.id} with openMRSId ${visitNote.id}`);
       copyIdToNamedIdentifier(visitNote, encounter, openMRSIdentifierType);
       addSourceMeta(visitNote, chtSource);
       await updateFhirResource(encounter);
@@ -238,7 +238,7 @@ async function sendEncounterToOpenMRS(
   Send Observation from OpenMRS to FHIR
   Replacing the subject reference
 */
-async function sendObservationToFhir(observation: fhir4.Observation, patient: fhir4.Patient) {
+export async function sendObservationToFhir(observation: fhir4.Observation, patient: fhir4.Patient) {
   logger.info(`Sending Observation ${observation.code!.coding![0]!.code} to FHIR`);
   replaceReference(observation, 'subject', patient);
   createFhirResource(observation);
@@ -251,7 +251,7 @@ async function sendObservationToFhir(observation: fhir4.Observation, patient: fh
   If this encounter matches a CHT form, gathers observations
   and sends them to CHT
 */
-async function sendEncounterToFhir(
+export async function sendEncounterToFhir(
   encounter: fhir4.Encounter,
   references: fhir4.Resource[]
 ) {
@@ -263,7 +263,6 @@ async function sendEncounterToFhir(
     logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
     return 
   }
-  
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
   const patient = getPatient(encounter, references);
   const observations = getObservations(encounter, references);

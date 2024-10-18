@@ -110,7 +110,7 @@ export async function getFHIRPatientResource(patientId: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -161,27 +161,30 @@ export async function deleteFhirSubscription(id?: string) {
 export async function createFhirResource(doc: fhir4.Resource) {
   try {
     const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, axiosOptions);
-    return { status: res.status, data: res.data };
+    return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
 export async function updateFhirResource(doc: fhir4.Resource) {
   try {
     const res = await axios.put(`${FHIR.url}/${doc.resourceType}/${doc.id}`, doc, axiosOptions); 
-
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
 export async function getFhirResourcesSince(lastUpdated: Date, resourceType: string) {
+  return getResourcesSince(FHIR.url, lastUpdated, resourceType);
+}
+
+export async function getResourcesSince(url: string, lastUpdated: Date, resourceType: string) {
   try {
-    let nextUrl = `${FHIR.url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
+    let nextUrl = `${url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
     let results: fhir4.Resource[] = [];
     // for encounters, include related resources
     if (resourceType === 'Encounter') {
@@ -199,13 +202,13 @@ export async function getFhirResourcesSince(lastUpdated: Date, resourceType: str
       nextUrl = nextLink ? nextLink.url : null;
       if (nextUrl) {
         const qs = nextUrl.split('?')[1];
-        nextUrl = `${FHIR.url}/?${qs}`;
+        nextUrl = `${url}/?${qs}`;
       }
     }
     return { status: 200, data: results };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -218,19 +221,6 @@ export async function getFhirResource(id: string, resourceType: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
-  }
-}
-
-export async function getQuestionnaire(name: string){
-  try {
-    const res = await axios.get(
-      `${FHIR.url}/Questionnaire`,
-      axiosOptions
-    );
-    return { status: res?.status, data: res?.data };
-  } catch (error: any) {
-    logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
