@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const PORT = process.env.PORT || 6000;
+const REQUEST_TIMEOUT = Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'));
 
 export const OPENHIM = {
   username: getEnvironmentVariable('OPENHIM_USERNAME', 'interop@openhim.org'),
@@ -11,24 +12,24 @@ export const OPENHIM = {
 };
 
 export const FHIR = {
-  url: getEnvironmentVariable('FHIR_URL', 'http://openhim-core:5001/fhir'),
+  url: getEnvironmentVariable('FHIR_URL', 'https://openhim-core:5001/fhir'),
   username: getEnvironmentVariable('FHIR_USERNAME', 'interop-client'),
   password: getEnvironmentVariable('FHIR_PASSWORD', 'interop-password'),
-  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
+  timeout: REQUEST_TIMEOUT
 };
 
 export const CHT = {
   url: getEnvironmentVariable('CHT_URL', 'https://nginx'),
   username: getEnvironmentVariable('CHT_USERNAME', 'admin'),
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
-  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
+  timeout: REQUEST_TIMEOUT
 };
 
 export const OPENMRS = {
-  url: getEnvironmentVariable('OPENMRS_CHANNEL_URL', 'http://openhim-core:5001/openmrs'),
+  url: getEnvironmentVariable('OPENMRS_CHANNEL_URL', 'https://openhim-core:5001/openmrs'),
   username: getEnvironmentVariable('OPENMRS_CHANNEL_USERNAME', 'interop-client'),
   password: getEnvironmentVariable('OPENMRS_CHANNEL_PASSWORD', 'interop-password'),
-  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
+  timeout: REQUEST_TIMEOUT
 };
 
 // hard code sync interval to 1 minute because it is hard coded in mediator config
