@@ -5,6 +5,7 @@ import {
   deleteFhirSubscription,
   createFHIRSubscriptionResource,
 } from '../../utils/fhir';
+import { queryCht } from '../../utils/cht';
 
 jest.mock('../../utils/fhir');
 jest.mock('../../utils/cht');
@@ -23,4 +24,7 @@ export const mockCreateFHIRSubscriptionResource =
   >;
 export const mockCreateChtRecord = createChtFollowUpRecord as jest.MockedFn<
   typeof createChtFollowUpRecord
+>;
+export const mockQueryCht = queryCht as jest.MockedFn<
+  typeof queryCht
 >;

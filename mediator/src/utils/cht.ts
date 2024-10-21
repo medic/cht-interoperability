@@ -36,11 +36,11 @@ export async function createChtFollowUpRecord(patientId: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
-async function getLocation(fhirPatient: fhir4.Patient) {
+export async function getLocationFromOpenMRSPatient(fhirPatient: fhir4.Patient) {
   // first, extract address value; is fchv area available?
   const addresses = fhirPatient.address?.[0]?.extension?.[0]?.extension;
   let addressKey = "http://fhir.openmrs.org/ext/address#address4"
@@ -107,7 +107,7 @@ export async function createChtPatient(fhirPatient: fhir4.Patient) {
 
   cht_patient._meta = { form: "openmrs_patient" }
 
-  const location_id = await getLocation(fhirPatient);
+  const location_id = await getLocationFromOpenMRSPatient(fhirPatient);
   cht_patient.location_id = location_id;
 
   return chtRecordsApi(cht_patient);
@@ -125,7 +125,7 @@ export async function chtRecordsApi(doc: any) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -136,7 +136,7 @@ export async function getChtDocumentById(doc_id: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -147,7 +147,7 @@ export async function queryCht(query: any) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
