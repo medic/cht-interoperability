@@ -30,9 +30,6 @@ export const OPENMRS = {
   username: getEnvironmentVariable('OPENMRS_CHANNEL_USERNAME', 'interop-client'),
   password: getEnvironmentVariable('OPENMRS_CHANNEL_PASSWORD', 'interop-password'),
   timeout: REQUEST_TIMEOUT
-  username: getEnvironmentVariable('OPENMRS_CHANNEL_USERNAME', 'interop-client'),
-  password: getEnvironmentVariable('OPENMRS_CHANNEL_PASSWORD', 'interop-password'),
-  timeout: Number(getEnvironmentVariable('REQUEST_TIMEOUT', '5000'))
 };
 
 // hard code sync interval to 1 minute because it is hard coded in mediator config
