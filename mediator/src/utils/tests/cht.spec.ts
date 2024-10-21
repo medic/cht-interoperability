@@ -1,4 +1,4 @@
-import { createChtRecord, generateChtRecordsApiUrl } from '../cht';
+import { createChtFollowUpRecord, generateChtRecordsApiUrl } from '../cht';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -6,14 +6,14 @@ jest.mock('axios');
 const mockAxios = axios as jest.Mocked<typeof axios>;
 
 describe('CHT Utils', () => {
-  describe('createChtRecord', () => {
+  describe('createChtFollowUpRecord', () => {
     it('creates a new cht record', async () => {
       const patientId = 'PATIENT_ID';
 
       const data = { status: 201, data: {} };
       mockAxios.post.mockResolvedValueOnce(data);
 
-      const res = await createChtRecord(patientId);
+      const res = await createChtFollowUpRecord(patientId);
 
       expect(res.status).toBe(data.status);
       expect(res.data).toStrictEqual(data.data);

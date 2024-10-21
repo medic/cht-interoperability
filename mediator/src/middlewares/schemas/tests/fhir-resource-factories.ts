@@ -4,6 +4,9 @@ import { VALID_CODE, VALID_SYSTEM } from '../endpoint';
 
 const identifier = [
   {
+    type: {
+      text: 'CHT Document Identifier'
+    },
     system: 'cht',
     value: randomUUID(),
   },
@@ -14,12 +17,16 @@ export const HumanNameFactory = Factory.define('humanName')
   .attr('given', ['John']);
 
 export const PatientFactory = Factory.define('patient')
+  .attr('resourceType', 'Patient')
+  .attr('id', randomUUID())
   .attr('identifier', identifier)
   .attr('name', () => [HumanNameFactory.build()])
   .attr('gender', 'male')
   .attr('birthDate', '2000-01-01');
 
 export const EncounterFactory = Factory.define('encounter')
+  .attr('resourceType', 'Encounter')
+  .attr('id', randomUUID())
   .attr('identifier', identifier)
   .attr('status', 'planned')
   .attr('class', 'outpatient')

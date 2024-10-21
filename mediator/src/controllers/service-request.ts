@@ -1,5 +1,5 @@
 import { logger } from '../../logger';
-import { createChtRecord } from '../utils/cht';
+import { createChtFollowUpRecord } from '../utils/cht';
 import {
   getFHIRPatientResource,
   getFHIROrgEndpointResource,
@@ -21,7 +21,7 @@ export async function createServiceRequest(request: fhir4.ServiceRequest) {
     const url = endpointRes.data.address;
     const subscriptionRes = await createFHIRSubscriptionResource(patientId, url);
     
-    const recordRes = await createChtRecord(patientId);
+    const recordRes = await createChtFollowUpRecord(patientId);
 
     if (recordRes.data.success !== true) {
       await deleteFhirSubscription(subscriptionRes.data.id);

@@ -1,8 +1,7 @@
-version: '3.9'
 
 services:
   haproxy:
-    image: public.ecr.aws/medic/cht-haproxy:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-haproxy:4.10.0
     restart: always
     hostname: haproxy
     environment:
@@ -12,6 +11,7 @@ services:
       - "COUCHDB_SERVERS=${COUCHDB_SERVERS:-couchdb}"
       - "HAPROXY_PORT=${HAPROXY_PORT:-5984}"
       - "HEALTHCHECK_ADDR=${HEALTHCHECK_ADDR:-healthcheck}"
+      - "DOCKER_DNS_RESOLVER=true"
     logging:
       driver: "local"
       options:
@@ -19,14 +19,15 @@ services:
         max-file: "${LOG_MAX_FILES:-20}"
     networks:
        - cht-net
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     expose:
       - ${HAPROXY_PORT:-5984}
-    ports:
-      - "5984:5984"
-
 
   healthcheck:
-    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.10.0
     restart: always
     environment:
       - "COUCHDB_SERVERS=${COUCHDB_SERVERS:-couchdb}"
@@ -41,18 +42,18 @@ services:
       - cht-net
 
   api:
-    image: public.ecr.aws/medic/cht-api:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-api:4.10.0
     restart: always
     depends_on:
       - haproxy
     expose:
       - "${API_PORT:-5988}"
-    ports:
-      - "5988:5988"
     environment:
       - COUCH_URL=http://${COUCHDB_USER:-admin}:${COUCHDB_PASSWORD:-password}@haproxy:${HAPROXY_PORT:-5984}/medic
       - BUILDS_URL=${MARKET_URL_READ:-https://staging.dev.medicmobile.org}/${BUILDS_SERVER:-_couch/builds_4}
       - UPGRADE_SERVICE_URL=${UPGRADE_SERVICE_URL:-http://localhost:5100}
+    ports:
+      - "5988:5988"
     logging:
       driver: "local"
       options:
@@ -62,7 +63,7 @@ services:
       - cht-net
 
   sentinel:
-    image: public.ecr.aws/medic/cht-sentinel:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-sentinel:4.10.0
     restart: always
     depends_on:
       - haproxy
@@ -78,14 +79,14 @@ services:
       - cht-net
 
   nginx:
-    image: public.ecr.aws/medic/cht-nginx:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-nginx:4.10.0
     restart: always
     depends_on:
       - api
       - haproxy
     ports:
-      - "${NGINX_HTTP_PORT:-80}:80"
-      - "${NGINX_HTTPS_PORT:-443}:443"
+      - "${NGINX_HTTP_PORT:-8880}:80"
+      - "${NGINX_HTTPS_PORT:-8843}:443"
     volumes:
       - cht-ssl:${SSL_VOLUME_MOUNT_PATH:-/etc/nginx/private/}
     environment:
@@ -109,9 +110,47 @@ services:
     networks:
       - cht-net
 
+  cht-configurator:
+    build:
+      context: ../cht-config
+      dockerfile: ./Dockerfile
+    environment:
+      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
+      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
+    depends_on:
+      - couchdb
+      - api
+    networks:
+      - cht-net
+
+
+  couchdb:
+    image: public.ecr.aws/medic/cht-couchdb:4.10.0
+    volumes:
+      - couchdb-data:/opt/couchdb/data
+      - cht-credentials:/opt/couchdb/etc/local.d/
+    environment:
+      - "COUCHDB_USER=${COUCHDB_USER:-admin}"
+      - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
+      - "COUCHDB_SECRET=${COUCHDB_SECRET:-secret}"
+      - "COUCHDB_UUID=${COUCHDB_UUID:-secret}"
+      - "SVC_NAME=${SVC_NAME:-couchdb}"
+      - "COUCHDB_LOG_LEVEL=${COUCHDB_LOG_LEVEL:-error}"
+    restart: always
+    logging:
+      driver: "local"
+      options:
+        max-size: "${LOG_MAX_SIZE:-50m}"
+        max-file: "${LOG_MAX_FILES:-20}"
+    networks:
+      - cht-net
+
+
 networks:
   cht-net:
     name: ${CHT_NETWORK:-cht-net}
 
 volumes:
   cht-ssl:
+  cht-credentials:
+  couchdb-data:
