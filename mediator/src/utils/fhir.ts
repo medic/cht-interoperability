@@ -187,7 +187,7 @@ export async function getFhirResourcesSince(lastUpdated: Date, resourceType: str
 */
 function getNextUrl(url: string, pagination: any) {
   let nextUrl = '';
-  const nextLink = pagination.link && pagination.link.find((link: any) => link.relation === 'next');
+  const nextLink = pagination.link?.find((link: any) => link.relation === 'next');
   if (nextLink?.url) {
     const qs = nextLink.url.split('?')[1];
     nextUrl = `${url}/?${qs}`;

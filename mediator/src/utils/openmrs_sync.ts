@@ -313,16 +313,26 @@ export async function sendEncounterToFhir(
 
   observations.forEach(o => sendObservationToFhir(o, existingPatient));
 
+  sendEncounterToCht(encounter, existingPatient, observations);
+}
+
+/*
+  Send an Encounter from OpenMRS to CHT
+*/
+export async function sendEncounterToCht(
+  encounter: fhir4.Encounter,
+  patient: fhir4.Patient,
+  observations: fhir4.Observation[]
+) {
   logger.info(`Sending Encounter ${encounter.id} to CHT`);
-  const chtResponse = await chtRecordFromObservations(existingPatient.id, observations);
+  const chtResponse = await chtRecordFromObservations(patient, observations);
   if (chtResponse.status != 200) {
     logger.error(`Error saving encounter to cht ${encounter.id}: ${chtResponse.status}`);
     return
   }
 
   const chtId = chtResponse.data.id;
-  addId(encounter, chtDocumentIdentifierType, chtId)
-
+  addId(encounter, chtDocumentIdentifierType, chtId);
   await updateFhirResource(encounter);
 }
 
