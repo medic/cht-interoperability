@@ -182,14 +182,43 @@ export async function getFhirResourcesSince(lastUpdated: Date, resourceType: str
   return getResourcesSince(FHIR.url, lastUpdated, resourceType);
 }
 
+/*
+ * get the "next" url from a fhir paginated response and a base url
+*/
+function getNextUrl(url: string, pagination: any) {
+  let nextUrl = '';
+  const nextLink = pagination.link && pagination.link.find((link: any) => link.relation === 'next');
+  if (nextLink?.url) {
+    const qs = nextLink.url.split('?')[1];
+    nextUrl = `${url}/?${qs}`;
+  }
+  return nextUrl;
+}
+
+/*
+ * Gets the full url for a resource type, given base url
+ * For some resource types, it is usefult o get related resources
+ * This function returns the full url including include clauses
+ * currently it is only for encounters, to include observations
+ * and the subject patient
+*/
+function getResourceUrl(baseUrl: string, lastUpdated: Date, resourceType: string) {
+  let url = `${baseUrl}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
+  // for encounters, include related resources
+  if (resourceType === 'Encounter') {
+    url = url + '&_revinclude=Observation:encounter&_include=Encounter:patient';
+  }
+  return url
+}
+
+/*
+ * get resources of a given type from url, where lastUpdated is > the given data
+ * if results are paginated, goes through all pages
+*/
 export async function getResourcesSince(url: string, lastUpdated: Date, resourceType: string) {
   try {
-    let nextUrl = `${url}/${resourceType}/?_lastUpdated=gt${lastUpdated.toISOString()}`;
     let results: fhir4.Resource[] = [];
-    // for encounters, include related resources
-    if (resourceType === 'Encounter') {
-      nextUrl = nextUrl + '&_revinclude=Observation:encounter&_include=Encounter:patient';
-    }
+    let nextUrl = getResourceUrl(url, lastUpdated, resourceType);
 
     while (nextUrl) {
       const res = await axios.get(nextUrl, axiosOptions);
@@ -198,12 +227,7 @@ export async function getResourcesSince(url: string, lastUpdated: Date, resource
         results = results.concat(res.data.entry.map((entry: any) => entry.resource));
       }
 
-      const nextLink = res.data.link && res.data.link.find((link: any) => link.relation === 'next');
-      nextUrl = nextLink ? nextLink.url : null;
-      if (nextUrl) {
-        const qs = nextUrl.split('?')[1];
-        nextUrl = `${url}/?${qs}`;
-      }
+      nextUrl = getNextUrl(url, res.data);
     }
     return { status: 200, data: results };
   } catch (error: any) {

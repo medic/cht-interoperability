@@ -110,7 +110,7 @@ describe('OpenMRS Sync', () => {
       });
       jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
         data: openMRSPatient,
-        status: 200
+        status: 201
       });
       jest.spyOn(cht, 'createChtPatient')
 
@@ -142,7 +142,7 @@ describe('OpenMRS Sync', () => {
       });
       jest.spyOn(openmrs, 'createOpenMRSResource').mockResolvedValueOnce({
         data: fhirPatient,
-        status: 200
+        status: 201
       });
       jest.spyOn(fhir, 'updateFhirResource')
 
@@ -190,7 +190,7 @@ describe('OpenMRS Sync', () => {
 
       jest.spyOn(fhir, 'updateFhirResource').mockResolvedValue({
         data: [],
-        status: 200,
+        status: 201,
       });
 
       jest.spyOn(fhir, 'createFhirResource')
@@ -232,7 +232,7 @@ describe('OpenMRS Sync', () => {
 
       jest.spyOn(openmrs, 'createOpenMRSResource').mockResolvedValue({
         data: [],
-        status: 200,
+        status: 201,
       });
 
       const startTime = new Date();
