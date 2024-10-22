@@ -21,7 +21,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('*', (_: Request, res: Response) => {
+app.get('/', (_: Request, res: Response) => {
   const osUptime = os.uptime();
   const processUptime = process.uptime();
   res.send({status: 'success', osuptime: osUptime, processuptime: processUptime});

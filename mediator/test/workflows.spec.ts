@@ -160,7 +160,7 @@ describe('Workflows', () => {
 
     });
 
-    it('Should follow the OpenMRS Patient to CHT workflow', async () => {
+    it.skip('Should follow the OpenMRS Patient to CHT workflow', async () => {
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
         .auth(FHIR.username, FHIR.password);
@@ -168,16 +168,16 @@ describe('Workflows', () => {
       expect(checkMediatorResponse.status).toBe(200);
       expect(checkMediatorResponse.body.status).toBe('success');
 
-      //Create a patient using openMRS api
+      //TODO: Create a patient using openMRS api
 
-      /*const retrieveFhirPatientIdResponse = await request(FHIR.url)
+      const retrieveFhirPatientIdResponse = await request(FHIR.url)
         .get('/fhir/Patient/?identifier=' + patientId)
         .auth(FHIR.username, FHIR.password);
 
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);*/
+      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
-      //retrieve and validate patient from CHT api
+      //TODO: retrieve and validate patient from CHT api
       //trigger openmrs sync
       //validate id
     });

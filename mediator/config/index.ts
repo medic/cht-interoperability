@@ -32,9 +32,9 @@ export const OPENMRS = {
   timeout: REQUEST_TIMEOUT
 };
 
-// hard code sync interval to 1 minute because it is hard coded in mediator config
+// how often in seconds the sync should run. hardcoded to 1 minute
 export const SYNC_INTERVAL = '60';
-// how far back shoudl the sync look for new resources
+// how far back should the sync look for new resources. Defaults to one hour
 export const SYNC_PERIOD = getEnvironmentVariable('SYNC_PERIOD', '3600');
 
 function getEnvironmentVariable(env: string, def: string) {
