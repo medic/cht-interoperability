@@ -1,0 +1,32 @@
+title CHT Incoming Forms
+
+participant Requesting System
+
+participantgroup
+participant OpenHIM
+participant Mediator
+participant FHIR Server
+end
+
+participant CHT
+
+autoactivation on
+box over Requesting System: A FHIR Encounter\nwith Observations is created
+activate Mediator
+Mediator->Requesting System: Mediator GETs FHIR Encounters
+Requesting System-->Mediator: FHIR Searchset Response
+Mediator->Requesting System: Mediator GETs FHIR Observations
+Requesting System-->Mediator: FHIR Searchset Response
+Mediator->FHIR Server: Mediator GETs FHIR Encounters
+FHIR Server-->Mediator: FHIR Searchset Response
+Mediator->FHIR Server: Mediator GETs FHIR Observations
+FHIR Server-->Mediator: FHIR Searchset Response
+box over Mediator: Mediator compares Resources from\nFHIR Server and Requesting System
+box over Mediator: Encounters found in Requesting System but\nnot in Requesting System are sent to CHT
+box over Mediator: Mediator converts FHIR Observations\n for each Encounter into form fields
+Mediator->CHT: Mediator POSTS to the records API
+box over CHT: CHT saves a data_record\nwith the data from the patient\ncreation form
+CHT-->Mediator: CHT Responds with source record id.
+deactivate Mediator
+autoactivation off
+
