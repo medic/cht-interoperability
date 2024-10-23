@@ -1,7 +1,7 @@
 
 services:
   haproxy:
-    image: public.ecr.aws/medic/cht-haproxy:4.10.0
+    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-haproxy:4.10.0
     restart: always
     hostname: haproxy
     environment:
@@ -27,7 +27,7 @@ services:
       - ${HAPROXY_PORT:-5984}
 
   healthcheck:
-    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.10.0
+    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-haproxy-healthcheck:4.10.0
     restart: always
     environment:
       - "COUCHDB_SERVERS=${COUCHDB_SERVERS:-couchdb}"
@@ -63,7 +63,7 @@ services:
       - cht-net
 
   sentinel:
-    image: public.ecr.aws/medic/cht-sentinel:4.10.0
+    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-sentinel:4.10.0
     restart: always
     depends_on:
       - haproxy
@@ -79,7 +79,7 @@ services:
       - cht-net
 
   nginx:
-    image: public.ecr.aws/medic/cht-nginx:4.10.0
+    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-nginx:4.10.0
     restart: always
     depends_on:
       - api
