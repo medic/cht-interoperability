@@ -83,31 +83,34 @@ export async function compare(
   // get the key for each resource and create a Map
   const fhirIds = new Map(comparison.fhirResources.map(resource => [getKey(resource), resource]));
 
+  function isValidDate(resource: fhir4.Resource) {
+    // if lastUpdated is missing or invalid, cannot proceed, throw an error
+    if (!resource.meta?.lastUpdated) {
+      throw new Error("Last updated missing");
+    }
+    const lastUpdated = new Date(resource.meta.lastUpdated);
+    if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
+      throw new Error("Invalid date format");
+    }
+
+    // don't sync resources created with 2 * SYNC_INTERVAL of start time
+    const syncWindow = (Number(SYNC_INTERVAL) * 1000) * 2
+    const diff = lastUpdated.getTime() - startTime.getTime();
+    return diff > syncWindow;
+  }
+
   comparison.openMRSResources.forEach((openMRSResource) => {
     const key = getKey(openMRSResource);
     if (fhirIds.has(key)) {
-      // ok so the fhir server already has it
       results.toupdate.push(openMRSResource);
       fhirIds.delete(key);
-    } else {
-      const lastUpdated = new Date(openMRSResource.meta?.lastUpdated!);
-      if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
-        throw new Error("Invalid date format");
-      }
-      const diff = lastUpdated.getTime() - startTime.getTime();
-      if (diff > (Number(SYNC_INTERVAL) * 2)){
-        results.incoming.push(openMRSResource);
-      }
+    } else if (isValidDate(openMRSResource)){
+      results.incoming.push(openMRSResource);
     }
   });
 
   fhirIds.forEach((resource, key) => {
-    const lastUpdated = new Date(resource.meta?.lastUpdated || '');
-    if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
-      throw new Error("Invalid date format");
-    }
-    const diff = lastUpdated.getTime() - startTime.getTime();
-    if (diff > (Number(SYNC_INTERVAL) * 2)){
+    if (isValidDate(resource)) {
       results.outgoing.push(resource);
     }
   });
