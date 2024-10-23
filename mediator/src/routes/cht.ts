@@ -13,7 +13,7 @@ router.post(
 
 router.post(
   '/patient_ids',
-  requestHandler((req) => updatePatientIds(req.body.doc))
+  requestHandler((req) => updatePatientIds(req.body))
 );
 
 router.post(

@@ -12,12 +12,6 @@ The document provided includes placeholders for URLs. Replacing these placeholde
 - **OpenHIM Admin Console** - http://localhost:9000/
 - **CHT with LTFU configuration** - http://localhost:5988/
 
-### Live Test Instance
-
-- **Mediator (`${MEDIATOR_ENDPOINT}`)** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator)
-- **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org)
-- **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/)
-
 ## Steps
 
 The following steps assume that you successfully logged in into OpenHIM and the CHT instances.

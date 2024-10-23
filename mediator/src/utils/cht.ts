@@ -36,11 +36,15 @@ export async function createChtFollowUpRecord(patientId: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
-async function getLocation(fhirPatient: fhir4.Patient) {
+/*
+  Get the address field from an OpenMRS Patient
+  Assuming it is stored at a specific path in the fhir Patient
+*/
+function getAddressFromOpenMRSPatient(fhirPatient: fhir4.Patient) {
   // first, extract address value; is fchv area available?
   const addresses = fhirPatient.address?.[0]?.extension?.[0]?.extension;
   let addressKey = "http://fhir.openmrs.org/ext/address#address4"
@@ -51,10 +55,47 @@ async function getLocation(fhirPatient: fhir4.Patient) {
     addressKey = "http://fhir.openmrs.org/ext/address#address5"
     addressValue = addresses?.find((ext: any) => ext.url === addressKey)?.valueString;
 
-    // still no... return nothing
-    if (!addressValue) {
-      return '';
-    }
+  }
+  return addressValue;
+}
+
+/*
+ * Query CouchDB to get a place_id from a name
+ * This is a workaround for patients not having an place_id
+ * in the address field (as described above)
+ * Because it relies on names matching excatly, and qurying a
+ * CHT couchdb directly, it is not intended for general use
+*/
+async function getPlaceIdFromCouch(addressValue: string) {
+  const query: CouchDBQuery = {
+    selector: {
+      type: "contact",
+      name: addressValue
+    },
+    fields: ['place_id']
+  }
+  const location = await queryCht(query);
+
+  // edge cases can result in more than one location, get first matching
+  // if not found by name, no more we can do, give up
+  if (!location.data?.docs || location.data.docs.length == 0){
+    return '';
+  } else {
+    return location.data.docs[0].place_id;
+  }
+}
+
+/*
+ * get a CHT place_id from an OpenMRS patient
+ * assumes that either the patient has an address containing the palce id
+ * (see above), or the name matches the contact name in CHT
+ * It is to support a specific workflow and is not intended for general use.
+*/
+export async function getLocationFromOpenMRSPatient(fhirPatient: fhir4.Patient) {
+  // if no address found, return empty string
+  const addressValue = getAddressFromOpenMRSPatient(fhirPatient);
+  if (!addressValue) {
+    return '';
   }
 
   // does the name have a place id included?
@@ -66,22 +107,7 @@ async function getLocation(fhirPatient: fhir4.Patient) {
     return match[1];
   } else {
     // if not, query by name
-    const query: CouchDBQuery = {
-      selector: {
-        type: "contact",
-        name: addressValue
-      },
-      fields: ['place_id']
-    }
-    const location = await queryCht(query);
-
-    // edge cases can result in more than one location, get first matching
-    // if not found by name, no more we can do, give up
-    if (!location.data?.docs || location.data.docs.length == 0){
-      return '';
-    } else {
-      return location.data.docs[0].place_id;
-    }
+    return getPlaceIdFromCouch(addressValue);
   }
 }
 
@@ -107,7 +133,7 @@ export async function createChtPatient(fhirPatient: fhir4.Patient) {
 
   cht_patient._meta = { form: "openmrs_patient" }
 
-  const location_id = await getLocation(fhirPatient);
+  const location_id = await getLocationFromOpenMRSPatient(fhirPatient);
   cht_patient.location_id = location_id;
 
   return chtRecordsApi(cht_patient);
@@ -125,7 +151,7 @@ export async function chtRecordsApi(doc: any) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -136,7 +162,7 @@ export async function getChtDocumentById(doc_id: string) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 
@@ -147,7 +173,7 @@ export async function queryCht(query: any) {
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
-    return { status: error.status, data: error.data };
+    return { status: error.response?.status, data: error.response?.data };
   }
 }
 

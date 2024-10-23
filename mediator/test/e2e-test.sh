@@ -11,18 +11,33 @@ export OPENMRS_USERNAME=admin
 export OPENMRS_PASSWORD=Admin123
 
 # Cleanup from last test, in case of interruptions
+retry_startup() {
+  max_attempts=5
+  count=0
+  until ./startup.sh init || [ $count -eq $max_attempts ]; do
+    echo "Attempt $((count+1)) of $max_attempts to start containers failed, retrying in 30 seconds..."
+    count=$((count+1))
+    sleep 30
+  done
+
+  if [ $count -eq $max_attempts ]; then
+    echo "Failed to start containers after $max_attempts attempts."
+    exit 1
+  fi
+}
+
+echo 'Cleanup from last test, in case of interruptions...'
 cd $BASEDIR
 ./startup.sh destroy
 
-# Starting the interoperability containers
-cd $BASEDIR
+echo 'Starting the interoperability containers...'
 ./startup.sh up-test
+retry_startup
 
-# Waiting for configurator to finish
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-cht-configurator-1
 
-# Executing mediator e2e tests
+echo 'Executing mediator e2e tests...'
 cd $MEDIATORDIR
 export OPENHIM_API_URL='https://localhost:8080'
 export FHIR_URL='http://localhost:5001'
@@ -41,7 +56,7 @@ echo 'Waiting for OpenMRS to be ready'
 sleep 180
 npm run test -t workflows.spec.ts
 
-# Cleanup
+echo 'Cleanup after test...'
 unset NODE_ENV
 unset NODE_TLS_REJECT_UNAUTHORIZED
 unset OPENMRS_HOST

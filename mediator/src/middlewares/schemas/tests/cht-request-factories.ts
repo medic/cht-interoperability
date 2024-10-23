@@ -12,6 +12,24 @@ export const ChtPatientDoc = Factory.define('chtPatientDoc')
   .attr('sex', 'female')
   .attr('patient_id', randomUUID());
 
+export const ChtSMSPatientFactory = Factory.define('chtPatient')
+  .attr('doc', () => ChtSMSPatientDoc.build())
+
+export const ChtSMSPatientDoc = Factory.define('chtPatientDoc')
+  .attr('_id', randomUUID())
+  .attr('name', 'John Doe')
+  .attr('phone', '+9770000000')
+  .attr('date_of_birth', '2000-01-01')
+  .attr('sex', 'female')
+  .attr('source_id', randomUUID());
+
+export const ChtPatientIdsFactory = Factory.define('chtPatientIds')
+  .attr('doc', () => ChtPatientIdsDoc.build())
+
+export const ChtPatientIdsDoc = Factory.define('chtPatientIds')
+  .attr('external_id', randomUUID())
+  .attr('patient_uuid', randomUUID());
+
 export const ChtPregnancyForm = Factory.define('chtPregnancyDoc')
   .attr('patient_uuid', randomUUID())
   .attr('reported_date', Date.now())
