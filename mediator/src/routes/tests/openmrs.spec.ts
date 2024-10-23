@@ -2,8 +2,10 @@ import request from 'supertest';
 import app from '../../..';
 import * as openmrs_sync from '../../utils/openmrs_sync';
 import axios from 'axios';
+import { logger } from '../../../logger';
 
 jest.mock('axios');
+jest.mock('../../../logger');
 
 describe('GET /openmrs/sync', () => {
   it('calls syncPatients and syncEncouners', async () => {
