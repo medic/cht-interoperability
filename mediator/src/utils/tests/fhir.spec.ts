@@ -1,5 +1,8 @@
 import { logger } from '../../../logger';
-import { EncounterFactory } from '../../middlewares/schemas/tests/fhir-resource-factories';
+import {
+	EncounterFactory,
+	PatientFactory
+} from '../../middlewares/schemas/tests/fhir-resource-factories';
 import {
   createFHIRSubscriptionResource,
   createFhirResource,
@@ -7,8 +10,11 @@ import {
   generateFHIRSubscriptionResource,
   getFHIROrgEndpointResource,
   getFHIRPatientResource,
+  getFhirResourcesSince,
+  addId
 } from '../fhir';
 import axios from 'axios';
+import { FHIR } from '../../../config';
 
 jest.mock('axios');
 jest.mock('../../../logger');
@@ -201,7 +207,9 @@ describe('FHIR Utils', () => {
     });
 
     it('should return an error if the FHIR server returns an error', async () => {
-      const data = { status: 400, data: { message: 'Bad request' } };
+      const data = {
+        response: { status: 400, data: { message: 'Bad request' } }
+      };
 
       mockAxios.post = jest.fn().mockRejectedValue(data);
 
@@ -211,8 +219,128 @@ describe('FHIR Utils', () => {
       expect(mockAxios.post.mock.calls[0][0]).toContain(resourceType);
       expect(mockAxios.post.mock.calls[0][1]).toEqual({...encounter, resourceType});
       expect(res.status).toEqual(400);
-      expect(res.data).toEqual(data.data);
+      expect(res.data).toEqual(data.response.data);
       expect(logger.error).toBeCalledTimes(1);
+    });
+  });
+
+  describe('addIds', () => {
+    it('should add ids to a fhir patient', () => {
+      const patient = PatientFactory.build();
+      const idType = { coding: [{ code: 'OpenMRS ID' }] };
+      const value = '12345';
+
+      const result = addId(patient, idType, value);
+
+      expect(result.identifier).toBeDefined();
+      // patient has one idenditifer already, so afterwards, should be 2
+      expect(result.identifier?.length).toBe(2);
+      // and the one we are checking is the second one
+      expect(result.identifier?.[1]).toEqual({
+        type: idType,
+        value: value
+      });
+    });
+  });
+
+  describe('getFhirResourcesSince', () => {
+    it('should fetch FHIR resources successfully', async () => {
+      const lastUpdated = new Date('2023-01-01T00:00:00Z');
+      const resourceType = 'Patient';
+      const mockResponse = {
+        data: {
+          entry: [
+            { resource: { id: '123', resourceType: 'Patient' } }
+          ],
+          link: []
+        }
+      };
+      mockAxios.get.mockResolvedValue(mockResponse);
+
+      const result = await getFhirResourcesSince(lastUpdated, resourceType);
+
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        `${FHIR.url}/Patient/?_lastUpdated=gt2023-01-01T00:00:00.000Z`,
+        expect.anything() // axiosOptions
+      );
+      expect(result.status).toBe(200);
+      expect(result.data).toEqual([{ id: '123', resourceType: 'Patient' }]);
+    });
+
+    it('should include related resources for encounters', async () => {
+      const lastUpdated = new Date('2023-01-01T00:00:00Z');
+      const resourceType = 'Encounter';
+      const mockResponse = {
+        data: {
+          entry: [
+            { resource: { id: 'enc-123', resourceType: 'Encounter' } }
+          ],
+          link: []
+        }
+      };
+      mockAxios.get.mockResolvedValue(mockResponse);
+
+      const result = await getFhirResourcesSince(lastUpdated, resourceType);
+
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        `${FHIR.url}/Encounter/?_lastUpdated=gt2023-01-01T00:00:00.000Z&_revinclude=Observation:encounter&_include=Encounter:patient`,
+        expect.anything() // axiosOptions
+      );
+      expect(result.status).toBe(200);
+      expect(result.data).toEqual([{ id: 'enc-123', resourceType: 'Encounter' }]);
+    });
+
+    it('should handle pagination', async () => {
+      const lastUpdated = new Date('2023-01-01T00:00:00Z');
+      const resourceType = 'Patient';
+      const mockFirstPageResponse = {
+        data: {
+          entry: [
+            { resource: { id: '123', resourceType: 'Patient' } }
+          ],
+          link: [
+            { relation: 'next', url: `${FHIR.url}/Patient/?page=2` }
+          ]
+        }
+      };
+      const mockSecondPageResponse = {
+        data: {
+          entry: [
+            { resource: { id: '124', resourceType: 'Patient' } }
+          ],
+          link: []
+        }
+      };
+      mockAxios.get
+      .mockResolvedValueOnce(mockFirstPageResponse)
+      .mockResolvedValueOnce(mockSecondPageResponse);
+
+      const result = await getFhirResourcesSince(lastUpdated, resourceType);
+
+      expect(mockAxios.get).toHaveBeenCalledTimes(2);
+      expect(result.status).toBe(200);
+      expect(result.data).toEqual([
+        { id: '123', resourceType: 'Patient' },
+        { id: '124', resourceType: 'Patient' }
+      ]);
+    });
+
+    it('should return an error if the request fails', async () => {
+      const lastUpdated = new Date('2023-01-01T00:00:00Z');
+      const resourceType = 'Patient';
+      const mockError = {
+        response: {
+          status: 500,
+          data: 'Internal Server Error'
+        }
+      };
+      mockAxios.get.mockRejectedValue(mockError);
+
+      const result = await getFhirResourcesSince(lastUpdated, resourceType);
+
+      expect(logger.error).toHaveBeenCalledWith(mockError);
+      expect(result.status).toBe(500);
+      expect(result.data).toBe('Internal Server Error');
     });
   });
 });

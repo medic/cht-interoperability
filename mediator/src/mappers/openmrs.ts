@@ -14,7 +14,7 @@ export const openMRSIdentifierType: fhir4.CodeableConcept = {
 
 export const openMRSSource = 'openmrs';
 
-const visitNoteType: fhir4.CodeableConcept = {
+export const visitNoteType: fhir4.CodeableConcept = {
   text: "Visit Note",
   coding: [{
     system: "http://fhir.openmrs.org/code-system/encounter-type",
@@ -23,7 +23,7 @@ const visitNoteType: fhir4.CodeableConcept = {
   }]
 }
 
-const visitType: fhir4.CodeableConcept = {
+export const visitType: fhir4.CodeableConcept = {
   text: "Home Visit",
   coding: [{
     system: "http://fhir.openmrs.org/code-system/visit-type",

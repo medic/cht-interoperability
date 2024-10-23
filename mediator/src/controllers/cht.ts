@@ -27,7 +27,7 @@ export async function createPatient(chtPatientDoc: any) {
 
 export async function updatePatientIds(chtFormDoc: any) {
   // first, get the existing patient from fhir server
-  const response = await getFHIRPatientResource(chtFormDoc.external_id);
+  const response = await getFHIRPatientResource(chtFormDoc.doc.external_id);
 
   if (response.status != 200) {
     return { status: 500, data: { message: `FHIR responded with ${response.status}`} };
@@ -37,10 +37,10 @@ export async function updatePatientIds(chtFormDoc: any) {
   }
 
   const fhirPatient = response.data.entry[0].resource;
-  addId(fhirPatient, chtPatientIdentifierType, chtFormDoc.patient_id);
+  addId(fhirPatient, chtPatientIdentifierType, chtFormDoc.doc.patient_id);
 
   // now, we need to get the actual patient doc from cht...
-  const patient_uuid = await getPatientUUIDFromSourceId(chtFormDoc._id);
+  const patient_uuid = await getPatientUUIDFromSourceId(chtFormDoc.doc._id);
   if (patient_uuid){
     addId(fhirPatient, chtDocumentIdentifierType, patient_uuid);
     return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
