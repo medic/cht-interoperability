@@ -42,7 +42,7 @@ services:
       - cht-net
 
   api:
-    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-api:4.10.0
+    image: public.ecr.aws/medic/cht-api:4.10.0
     restart: always
     depends_on:
       - haproxy
