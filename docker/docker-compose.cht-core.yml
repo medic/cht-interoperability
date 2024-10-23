@@ -119,7 +119,6 @@ services:
       - "COUCHDB_PASSWORD=${COUCHDB_PASSWORD:-password}"
     depends_on:
       - couchdb
-      - api
     networks:
       - cht-net
 
