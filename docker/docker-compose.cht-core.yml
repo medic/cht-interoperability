@@ -124,7 +124,7 @@ services:
 
 
   couchdb:
-    image: public.ecr.aws/medic/cht-couchdb:4.10.0
+    image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/medic/cht-couchdb:4.10.0
     volumes:
       - couchdb-data:/opt/couchdb/data
       - cht-credentials:/opt/couchdb/etc/local.d/
