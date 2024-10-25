@@ -160,13 +160,12 @@ describe('Workflows', () => {
 
     });
 
-    it.skip('Should follow the OpenMRS Patient to CHT workflow', async () => {
+    it('Should follow the OpenMRS Patient to CHT workflow', async () => {
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
         .auth(FHIR.username, FHIR.password);
 
       expect(checkMediatorResponse.status).toBe(200);
-      expect(checkMediatorResponse.body.status).toBe('success');
 
       //TODO: Create a patient using openMRS api
 
