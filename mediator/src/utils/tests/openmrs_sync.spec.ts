@@ -20,7 +20,7 @@ jest.mock('../../../logger');
 
 describe('OpenMRS Sync', () => {
   describe('compare', () => {
-    it('compares resources with the gvien key', async () => {
+    it('correctly identifies incoming, outgoing, and to-be-updated resources based on the given key', async () => {
       const lastUpdated = new Date();
       lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
 

@@ -2,11 +2,12 @@ import {
   createChtFollowUpRecord,
   generateChtRecordsApiUrl,
   getLocationFromOpenMRSPatient,
-  queryCht } from '../cht';
+  getPatientUUIDFromSourceId,
+	queryCht
+} from '../cht';
 import axios from 'axios';
 import { logger } from '../../../logger';
 import { OpenMRSPatientFactory } from '../../middlewares/schemas/tests/openmrs-resource-factories';
-import { mockQueryCht } from '../../controllers/tests/utils';
 
 jest.mock('axios');
 jest.mock('../../../logger');
@@ -52,7 +53,7 @@ describe('CHT Utils', () => {
         addressValue: 'FCHV Area [12345]'
       });
 
-      const result = await getLocationFromOpenMRSPatient(fhirPatient as any);
+      const result = await getLocationFromOpenMRSPatient(fhirPatient);
 
       expect(result).toBe('12345');
     });
@@ -63,9 +64,10 @@ describe('CHT Utils', () => {
         addressValue: 'Unknown Area'
       });
 
-      mockQueryCht.mockResolvedValue({ status: 200, data: { docs: [] } }); // Simulating no result from the query
+      const data = { status: 200, data: { docs: [] } };
+      mockAxios.post.mockResolvedValue(data);
 
-      const result = await getLocationFromOpenMRSPatient(fhirPatient as any);
+      const result = await getLocationFromOpenMRSPatient(fhirPatient);
 
       expect(result).toBe('');
     });
@@ -76,7 +78,7 @@ describe('CHT Utils', () => {
         addressValue: 'Health Center [54321]'
       });
 
-      const result = await getLocationFromOpenMRSPatient(fhirPatient as any);
+      const result = await getLocationFromOpenMRSPatient(fhirPatient);
 
       expect(result).toBe('54321');
     });
@@ -87,9 +89,66 @@ describe('CHT Utils', () => {
         addressValue: 'Unknown Location'
       });
 
-      mockQueryCht.mockRejectedValue(new Error('Database query failed'));
+      mockAxios.post.mockRejectedValue(new Error('Database query failed'));
 
-      const result = await getLocationFromOpenMRSPatient(fhirPatient as any);
+      const result = await getLocationFromOpenMRSPatient(fhirPatient);
+
+      expect(result).toBe('');
+    });
+
+    it('should return location by name if no address4 or address5', async () => {
+      const fhirPatient = OpenMRSPatientFactory.build({}, {
+        addressKey: 'address4',
+        addressValue: 'Area1'
+      });
+
+      const data = {
+        status: 200,
+        data: { docs: [ { place_id: 12345 } ] } };
+      mockAxios.post.mockResolvedValue(data);
+
+      const result = await getLocationFromOpenMRSPatient(fhirPatient);
+
+      expect(result).toBe(12345);
+    });
+  });
+
+  describe('getPatientUUIDFromSourceId', () => {
+    it('should return patient UUID if patient is found', async () => {
+      const sourceId = '12345';
+      const mockUUID = 'abcdef-123456';
+
+      const data = {
+        status: 200,
+        data: { docs: [{ _id: mockUUID }] }
+      };
+      mockAxios.post.mockResolvedValue(data);
+
+      const result = await getPatientUUIDFromSourceId(sourceId);
+
+      expect(result).toBe(mockUUID);
+    });
+
+    it('should return an empty string if no patient is found', async () => {
+      const sourceId = 'not_found_id';
+
+      const data = {
+        status: 200,
+        data: { docs: [] }
+      };
+      mockAxios.post.mockResolvedValue(data);
+
+      const result = await getPatientUUIDFromSourceId(sourceId);
+
+      expect(result).toBe('');
+    });
+
+    it('should handle error cases by returning an empty string when query fails', async () => {
+      const sourceId = 'error_id';
+
+      mockAxios.post.mockRejectedValue(new Error('Database query failed'));
+
+      const result = await getPatientUUIDFromSourceId(sourceId);
 
       expect(result).toBe('');
     });

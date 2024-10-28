@@ -25,6 +25,3 @@ export const mockCreateFHIRSubscriptionResource =
 export const mockCreateChtRecord = createChtFollowUpRecord as jest.MockedFn<
   typeof createChtFollowUpRecord
 >;
-export const mockQueryCht = queryCht as jest.MockedFn<
-  typeof queryCht
->;
