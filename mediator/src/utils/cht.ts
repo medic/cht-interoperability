@@ -121,7 +121,7 @@ export async function getPatientUUIDFromSourceId(source_id: string) {
   }
 
   const patient = await queryCht(query);
-  if ( patient.data.docs && patient.data.docs.length > 0 ){
+  if ( patient?.data?.docs && patient.data.docs.length > 0 ){
     return patient.data.docs[0]._id;
   } else {
     return ''

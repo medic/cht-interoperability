@@ -28,13 +28,17 @@ import { randomUUID } from 'crypto';
 jest.mock('axios');
 
 describe('CHT outgoing document controllers', () => {
+  beforeEach(async () => {
+    // All of these tests call updateFhirResource, either to create the 
+    // resource directly, or to update its id
+    jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
+      data: {},
+      status: 200,
+    });
+  });
+
   describe('createPatient', () => {
     it('creates a FHIR Patient from CHT patient doc', async () => {
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
-        data: {},
-        status: 200,
-      });
-
       const data = ChtPatientFactory.build();
 
       const res = await createPatient(data);
@@ -56,11 +60,6 @@ describe('CHT outgoing document controllers', () => {
     });
 
     it('creates a FHIR Patient from an SMS form using source id', async () => {
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
-        data: {},
-        status: 200,
-      });
-
       let sourceId = randomUUID();
       jest.spyOn(cht, 'getPatientUUIDFromSourceId').mockResolvedValueOnce(sourceId);
 
@@ -90,10 +89,6 @@ describe('CHT outgoing document controllers', () => {
       const existingPatient = PatientFactory.build();
       jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValue({
         data: { total: 1, entry: [ { resource: existingPatient } ] },
-        status: 200,
-      });
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
-        data: {},
         status: 200,
       });
 
@@ -129,11 +124,6 @@ describe('CHT outgoing document controllers', () => {
       });
       // observations use createFhirResource
       jest.spyOn(fhir, 'createFhirResource').mockResolvedValueOnce({
-        data: {},
-        status: 200,
-      });
-      // encounter uses updatedFhirResource
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
         data: {},
         status: 200,
       });
