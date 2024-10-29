@@ -21,4 +21,8 @@ export const EncounterSchema = joi.object({
   type: joi.array().length(1).required(),
   subject: joi.required(),
   participant: joi.array().length(1).required(),
+  period: joi.object({
+    start: joi.string(),
+    end: joi.string()
+  })
 });

@@ -26,16 +26,6 @@ Conversely, to bring data into the CHT, OpenHIM is configured to route the updat
 
 See more information on the [CHT interoperability](https://docs.communityhealthtoolkit.org/apps/concepts/interoperability/) page on the CHT documentation site.
 
-### Services
-
-Services are currently available at these URLs:
-
-- **OpenHIM Admin Console** - [https://interoperability.dev.medicmobile.org](https://interoperability.dev.medicmobile.org).
-- **OpenHIM Mediator** - [https://interoperability.dev.medicmobile.org:5001/mediator](https://interoperability.dev.medicmobile.org:5001/mediator).
-- **CHT with LTFU configuration** - [https://interop-cht-test.dev.medicmobile.org/](https://interop-cht-test.dev.medicmobile.org/).
-
-Credentials to the instances can be shared upon request.
-
 [GitHub repository for the kubernetes configuration](https://github.com/medic/interoperability-kubernetes/).
 
 ### Workflow Sequence Diagram

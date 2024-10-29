@@ -5,28 +5,28 @@ export const openMRSMediatorConfig = {
   description: 'A mediator to sync CHT data with OpenMRS',
   defaultChannelConfig: [
     {
-      name: 'OpenMRS Mediator',
-      urlPattern: '^/openmrs/.*$',
+      name: 'OpenMRS Sync',
+      urlPattern: '^/trigger$',
       routes: [
         {
-          name: 'OpenMRS Mediator',
+          name: 'OpenMRS polling Mediator',
           host: 'mediator',
-          pathTransform: 's/\\/openmrs/',
+          path: '/openmrs/sync',
           port: 6000,
           primary: true,
           type: 'http',
         },
       ],
       allow: ['interop'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      type: 'http',
+      type: 'polling',
+      pollingSchedule: '1 minute'
     },
   ],
   endpoints: [
     {
       name: 'OpenMRS Mediator',
-      host: 'openmrs',
-      path: '/',
+      host: 'mediator',
+      path: '/openmrs/sync',
       port: '6000',
       primary: true,
       type: 'http',

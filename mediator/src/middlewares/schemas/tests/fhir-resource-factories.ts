@@ -1,12 +1,11 @@
 import { randomUUID } from 'crypto';
 import { Factory } from 'rosie';
 import { VALID_CODE, VALID_SYSTEM } from '../endpoint';
+import { chtDocumentIdentifierType } from '../../../mappers/cht';
 
 const identifier = [
   {
-    type: {
-      text: 'CHT Document Identifier'
-    },
+    type: chtDocumentIdentifierType,
     system: 'cht',
     value: randomUUID(),
   },
@@ -28,11 +27,15 @@ export const EncounterFactory = Factory.define('encounter')
   .attr('resourceType', 'Encounter')
   .attr('id', randomUUID())
   .attr('identifier', identifier)
-  .attr('status', 'planned')
+  .attr('status', 'finished')
   .attr('class', 'outpatient')
   .attr('type', [{ text: 'Community health worker visit' }])
   .attr('subject', { reference: 'Patient/3' })
-  .attr('participant', [{ type: [{ text: 'Community health worker' }] }]);
+  .attr('participant', [{ type: [{ text: 'Community health worker' }] }])
+  .attr('period', {
+    start: new Date(new Date().getTime() - 60 * 60 * 1000).toISOString(),
+    end: new Date(new Date().getTime() - 50 * 60 * 1000).toISOString()
+  })
 
 export const EndpointFactory = Factory.define('endpoint')
   .attr('connectionType', { system: VALID_SYSTEM, code: VALID_CODE })
@@ -56,3 +59,14 @@ export const ServiceRequestFactory = Factory.define('serviceRequest')
   .attr('intent', 'order')
   .attr('subject', SubjectFactory.build())
   .attr('requester', RequesterFactory.build());
+
+export const ObservationFactory = Factory.define('Observation')
+  .attr('resourceType', 'Observation')
+  .attr('id', () => randomUUID())
+  .attr('encounter', () => { reference: 'Encounter/' + randomUUID() })
+  .attr('code', {
+    coding: [{ code: 'DANGER_SIGNS' }],
+  })
+  .attr('valueCodeableConcept', {
+    coding: [{ code: 'HIGH_BLOOD_PRESSURE' }]
+  });
