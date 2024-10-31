@@ -14,7 +14,7 @@ export OPENMRS_PASSWORD=Admin123
 retry_startup() {
   max_attempts=5
   count=0
-  until ./startup.sh init || [ $count -eq $max_attempts ]; do
+  until ./startup.sh up-test || [ $count -eq $max_attempts ]; do
     echo "Attempt $((count+1)) of $max_attempts to start containers failed, retrying in 30 seconds..."
     count=$((count+1))
     sleep 30
