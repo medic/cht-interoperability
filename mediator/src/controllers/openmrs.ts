@@ -5,7 +5,7 @@ import { SYNC_PERIOD } from '../../config'
 export async function sync() {
   try {
     let now = Date.now();
-    let syncPeriod = parseInt(SYNC_PERIOD, 10);
+    let syncPeriod = parseInt(SYNC_PERIOD, 10) * 1000; // Convert seconds to milliseconds
     let startTime = new Date(now - syncPeriod);
 
     await syncPatients(startTime);
