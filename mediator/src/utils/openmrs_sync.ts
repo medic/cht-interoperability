@@ -136,7 +136,7 @@ async function sendPatientToFhir(patient: fhir4.Patient) {
   copyIdToNamedIdentifier(patient, patient, openMRSIdentifierType);
   addSourceMeta(patient, openMRSSource);
   const response = await updateFhirResource(patient);
-  if (response.status == 200 || response.status == 201) {
+  if (response.status == 201) {
     logger.info(`Sending Patient ${patient.id} to CHT`);
     createChtPatient(response.data);
   }
