@@ -24,7 +24,7 @@ export async function createPatient(chtPatientDoc: any) {
 
   //check if patient already exists
   const patient = await getFhirResourceByIdentifier(chtPatientDoc.doc.patient_id, 'Patient');
-  if (patient.data.total > 0){
+  if (patient?.data?.total > 0){
     return { status: 200, data: { message: `Patient with the same patient_id already exists`} };
   }
 

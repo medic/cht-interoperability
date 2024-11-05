@@ -40,6 +40,10 @@ describe('CHT outgoing document controllers', () => {
   describe('createPatient', () => {
     it('creates a FHIR Patient from CHT patient doc', async () => {
       const data = ChtPatientFactory.build();
+      jest.spyOn(fhir, 'getFhirResourceByIdentifier').mockResolvedValue({
+        data: { total: 0 },
+        status: 200,
+      });
 
       const res = await createPatient(data);
 
