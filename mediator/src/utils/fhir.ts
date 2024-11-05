@@ -248,3 +248,16 @@ export async function getFhirResource(id: string, resourceType: string) {
     return { status: error.response?.status, data: error.response?.data };
   }
 }
+
+export async function getFhirResourceByIdentifier(identifierValue: string, resourceType: string) {
+  try {
+    const res = await axios.get(
+      `${FHIR.url}/${resourceType}/?identifier=${identifierValue}`,
+      axiosOptions
+    );
+    return { status: res?.status, data: res?.data };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: error.response?.status, data: error.response?.data };
+  }
+}

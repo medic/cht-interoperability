@@ -1,9 +1,10 @@
 import {
+  addId,
   createFhirResource,
-  updateFhirResource,
+  getFhirResourceByIdentifier,
   getFHIRPatientResource,
   replaceReference,
-  addId
+  updateFhirResource
 } from '../utils/fhir';
 import {
   buildFhirObservationFromCht,
@@ -19,6 +20,12 @@ export async function createPatient(chtPatientDoc: any) {
   // first get patient id from source
   if (chtPatientDoc.doc.source_id){
     chtPatientDoc.doc._id = await getPatientUUIDFromSourceId(chtPatientDoc.source_id);
+  }
+
+  //check if patient already exists
+  const patient = await getFhirResourceByIdentifier(chtPatientDoc.doc.patient_id, 'Patient');
+  if (patient.data.total > 0){
+    return { status: 200, data: { message: `Patient with the same patient_id already exists`} };
   }
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);

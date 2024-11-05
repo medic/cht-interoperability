@@ -82,6 +82,21 @@ describe('CHT outgoing document controllers', () => {
         })
       );
     });
+
+    it('does not create a patient if one with the same patient_id already exists', async () => {
+      const existingPatient = PatientFactory.build();
+      jest.spyOn(fhir, 'getFhirResourceByIdentifier').mockResolvedValue({
+        data: { total: 1, entry: [ { resource: existingPatient } ] },
+        status: 200,
+      });
+
+      const data = ChtPatientFactory.build();
+
+      const res = await createPatient(data);
+
+      expect(res.status).toBe(200);
+      expect(fhir.updateFhirResource).not.toHaveBeenCalled();
+    });
   });
 
   describe('updatePatientIds', () => {
