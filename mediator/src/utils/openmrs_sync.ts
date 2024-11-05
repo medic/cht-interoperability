@@ -1,14 +1,14 @@
 import {
-  getFhirResourcesSince,
-  updateFhirResource,
-  createFhirResource,
-  getIdType,
   addId,
+  addSourceMeta,
   copyIdToNamedIdentifier,
-  getFhirResource,
-  replaceReference,
+  createFhirResource,
   getFHIRPatientResource,
-  addSourceMeta
+  getFhirResourceByIdentifier,
+  getFhirResourcesSince,
+  getIdType,
+  replaceReference,
+  updateFhirResource
 } from './fhir'
 import { SYNC_INTERVAL } from '../../config'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
@@ -126,6 +126,12 @@ export async function compare(
   And forward to CHT if successful
 */
 async function sendPatientToFhir(patient: fhir4.Patient) {
+  // check if patient already exists
+  const openMRSPatient = await getFhirResourceByIdentifier(getIdType(patient, openMRSIdentifierType), 'Patient');
+  if (openMRSPatient.data?.total > 0) {
+    logger.error(`Patient with the same patient_id already exists`);
+    return { status: 200, data: { message: `Patient with the same ${openMRSIdentifierType} already exists`} };
+  }
   logger.info(`Sending Patient ${patient.id} to FHIR`);
   copyIdToNamedIdentifier(patient, patient, openMRSIdentifierType);
   addSourceMeta(patient, openMRSSource);
