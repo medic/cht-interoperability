@@ -10,29 +10,43 @@ export OPENMRS_HOST=openmrs
 export OPENMRS_USERNAME=admin
 export OPENMRS_PASSWORD=Admin123
 
-# Cleanup from last test, in case of interruptions
-retry_startup() {
-  max_attempts=5
-  count=0
-  until ./startup.sh up-test || [ $count -eq $max_attempts ]; do
-    echo "Attempt $((count+1)) of $max_attempts to start containers failed, retrying in 30 seconds..."
-    count=$((count+1))
-    sleep 30
-  done
-
-  if [ $count -eq $max_attempts ]; then
-    echo "Failed to start containers after $max_attempts attempts."
-    exit 1
-  fi
-}
-
 echo 'Cleanup from last test, in case of interruptions...'
 cd $BASEDIR
 ./startup.sh destroy
 
+echo 'Pulling Docker images with retry mechanism...'
+services=("haproxy" "healthcheck" "api" "sentinel" "nginx" "couchdb")
+max_retries=3
+retry_delay=10  # seconds
+
+# Retry pulling the images
+for service in "${services[@]}"; do
+  attempt=1
+  success=false
+  while [[ $attempt -le $max_retries ]]; do
+    echo "Pulling service: $service (Attempt $attempt of $max_retries)"
+
+    # Attempt to pull the image for the specific service
+    if docker compose -f ./docker/docker-compose.cht-core.yml pull $service; then
+      echo "$service pulled successfully!"
+      success=true
+      break
+    else
+      echo "Failed to pull $service. Retrying in $retry_delay seconds..."
+      sleep $retry_delay
+    fi
+    attempt=$(( attempt + 1 ))
+  done
+
+  # Check if we exhausted all retries without success
+  if [[ $success == false ]]; then
+    echo "ERROR: Failed to pull $service after $max_retries attempts."
+    exit 1  # Exit the script if pulling the image fails after retries
+  fi
+done
+
 echo 'Starting the interoperability containers...'
 ./startup.sh up-test
-retry_startup
 
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-cht-configurator-1
