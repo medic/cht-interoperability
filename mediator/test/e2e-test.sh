@@ -37,7 +37,6 @@ retry_startup
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-cht-configurator-1
 
-echo 'Executing mediator e2e tests...'
 cd $MEDIATORDIR
 export OPENHIM_API_URL='https://localhost:8080'
 export FHIR_URL='http://localhost:5001'
@@ -53,7 +52,8 @@ export OPENMRS_CHANNEL_USERNAME='interop-client'
 export OPENMRS_CHANNEL_PASSWORD='interop-password'
 
 echo 'Waiting for OpenMRS to be ready'
-sleep 180
+sleep 280
+echo 'Executing mediator e2e tests...'
 npm run test -t workflows.spec.ts
 
 echo 'Cleanup after test...'
