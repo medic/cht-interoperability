@@ -1,14 +1,14 @@
 import {
-  getFhirResourcesSince,
-  updateFhirResource,
-  createFhirResource,
-  getIdType,
   addId,
+  addSourceMeta,
   copyIdToNamedIdentifier,
-  getFhirResource,
-  replaceReference,
+  createFhirResource,
   getFHIRPatientResource,
-  addSourceMeta
+  getFhirResourceByIdentifier,
+  getFhirResourcesSince,
+  getIdType,
+  replaceReference,
+  updateFhirResource
 } from './fhir'
 import { SYNC_INTERVAL } from '../../config'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
@@ -213,6 +213,14 @@ export async function sendEncounterToOpenMRS(
     return
   }
 
+  // don't send if identifier already exists
+  const identifier = getIdType(encounter, chtDocumentIdentifierType);
+  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
+  if (existingEncounter?.data?.total > 0) {
+    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
+    return
+  }
+
   logger.info(`Sending Encounter ${encounter.id} to OpenMRS`);
 
   const patient = getPatient(encounter, references);
@@ -278,6 +286,13 @@ export async function sendEncounterToFhir(
   if (!encounter.period?.end) {
     logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
     return 
+  }
+
+  const identifier = getIdType(encounter, openMRSIdentifierType);
+  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
+  if (existingEncounter?.data?.total > 0) {
+    logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
+    return
   }
 
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
