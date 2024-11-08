@@ -1,14 +1,14 @@
 import {
-  getFhirResourcesSince,
-  updateFhirResource,
-  createFhirResource,
-  getIdType,
   addId,
+  addSourceMeta,
   copyIdToNamedIdentifier,
-  getFhirResource,
-  replaceReference,
+  createFhirResource,
   getFHIRPatientResource,
-  addSourceMeta
+  getFhirResourceByIdentifier,
+  getFhirResourcesSince,
+  getIdType,
+  replaceReference,
+  updateFhirResource
 } from './fhir'
 import { SYNC_INTERVAL } from '../../config'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
@@ -213,6 +213,14 @@ export async function sendEncounterToOpenMRS(
     return
   }
 
+  // don't send if identifier already exists
+  const identifier = getIdType(encounter, chtDocumentIdentifierType);
+  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
+  if (existingEncounter?.data?.total > 0) {
+    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
+    return
+  }
+
   logger.info(`Sending Encounter ${encounter.id} to OpenMRS`);
 
   const patient = getPatient(encounter, references);
@@ -270,53 +278,89 @@ export async function sendEncounterToFhir(
   encounter: fhir4.Encounter,
   references: fhir4.Resource[]
 ) {
-  if (encounter.meta?.source == chtSource) {
-    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
-    return
-  }
-
-  if (!encounter.period?.end) {
-    logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
-    return 
+  if (isEncounterFromCht(encounter) || isEncounterIncomplete(encounter) || await isEncounterAlreadySent(encounter)) {
+    return;
   }
 
   logger.info(`Sending Encounter ${encounter.id} to FHIR`);
 
   const observations = getObservations(encounter, references);
-
   const patient = getPatient(encounter, references);
-  if (!patient?.id) {
-    logger.error(`Patient ${encounter.subject!.reference} not found for ${encounter.id}`);
-    return
+
+  if (!await isPatientValid(patient, encounter)) {
+    return;
   }
 
-  // get patient from FHIR to resolve reference
+  prepareEncounterForFhir(encounter, patient);
+
+  if (!await saveEncounterToFhir(encounter)) {
+    return;
+  }
+
+  observations.forEach(o => sendObservationToFhir(o, patient));
+  sendEncounterToCht(encounter, patient, observations);
+}
+
+function isEncounterFromCht(encounter: fhir4.Encounter): boolean {
+  if (encounter.meta?.source == chtSource) {
+    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
+    return true;
+  }
+  return false;
+}
+
+function isEncounterIncomplete(encounter: fhir4.Encounter): boolean {
+  if (!encounter.period?.end) {
+    logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
+    return true;
+  }
+  return false;
+}
+
+async function isEncounterAlreadySent(encounter: fhir4.Encounter): Promise<boolean> {
+  const identifier = getIdType(encounter, openMRSIdentifierType);
+  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
+  if (existingEncounter?.data?.total > 0) {
+    logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
+    return true;
+  }
+  return false;
+}
+
+async function isPatientValid(patient: fhir4.Patient | undefined, encounter: fhir4.Encounter): Promise<boolean> {
+  if (!patient?.id) {
+    logger.error(`Patient ${encounter.subject!.reference} not found for ${encounter.id}`);
+    return false;
+  }
+
   const patientResponse = await getFHIRPatientResource(patient.id);
   if (patientResponse.status != 200) {
     logger.error(`Error getting Patient ${patient.id}: ${patientResponse.status}`);
-    return
+    return false;
   }
 
-  const existingPatient = patientResponse.data?.entry[0].resource;
+  return true;
+}
+
+function prepareEncounterForFhir(encounter: fhir4.Encounter, patient: fhir4.Patient) {
+  const existingPatient = patient;
   copyIdToNamedIdentifier(encounter, encounter, openMRSIdentifierType);
   addSourceMeta(encounter, openMRSSource);
 
   logger.info(`Replacing ${encounter.subject!.reference} with ${patient.id} for ${encounter.id}`);
   replaceReference(encounter, 'subject', existingPatient);
 
-  // remove unused references
   delete encounter.participant;
   delete encounter.location;
+}
 
+async function saveEncounterToFhir(encounter: fhir4.Encounter): Promise<boolean> {
   const response = await updateFhirResource(encounter);
   if (response.status != 201) {
     logger.error(`Error saving encounter to fhir ${encounter.id}: ${response.status}`);
-    return
+    return false;
   }
-
-  observations.forEach(o => sendObservationToFhir(o, existingPatient));
-
-  sendEncounterToCht(encounter, existingPatient, observations);
+  return true;
 }
 
 /*
