@@ -103,6 +103,39 @@ export function buildFhirEncounterFromCht(chtReport: any): fhir4.Encounter {
   return encounter
 }
 
+/*
+ * Copy the value from the form mapping to observation
+ * value are expected to already have been validated
+ * for types which are native to JSON (Integer, String, Boolean) just copy them exactly
+ * copy Time and DateTime as strings (they have been validated already)
+ * valueQuantity will be an object, but also just copy it directly
+ */
+function copyObservationValue(observation: any, entry: any) {
+  const copyValueTypes = [
+    'valueString',
+    'valueDateTime',
+    'valueTime',
+    'valueBoolean',
+    'valueInteger',
+    'valueQuantity'
+  ];
+  copyValueTypes.forEach((name) => {
+    if (entry.hasOwnProperty(name)) {
+      observation[name] = entry[name];
+    }
+  });
+
+  // valueCode needs a little bit of conversion; we are not requiring cht forms to
+  // map to codeableConcept, just to give the string
+  if ('valueCode' in entry){
+    observation.valueCodeableConcept = {
+      coding: [{
+        code: entry['valueCode']
+      }]
+    };
+  } 
+}
+
 export function buildFhirObservationFromCht(patient_id: string, encounter: fhir4.Encounter, entry: any): fhir4.Observation {
   const patientRef: fhir4.Reference = {
 	  reference: `Patient/${patient_id}`,
@@ -130,17 +163,7 @@ export function buildFhirObservationFromCht(patient_id: string, encounter: fhir4
     issued: now
   };
 
-  if ('valueCode' in entry){
-    observation.valueCodeableConcept = {
-      coding: [{
-        code: entry['valueCode']
-      }]
-    };
-  } else if ('valueDateTime' in entry){
-    observation.valueDateTime = entry['valueDateTime'];
-  } else if ('valueString' in entry){
-    observation.valueString = entry['valueString'];
-  }
+  copyObservationValue(observation, entry);
 
   return observation;
 }
