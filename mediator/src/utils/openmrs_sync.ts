@@ -126,11 +126,17 @@ export async function compare(
   And forward to CHT if successful
 */
 async function sendPatientToFhir(patient: fhir4.Patient) {
+  // check if patient already exists
+  const openMRSPatient = await getFhirResourceByIdentifier(getIdType(patient, openMRSIdentifierType), 'Patient');
+  if (openMRSPatient.data?.total > 0) {
+    logger.error(`Patient with the same patient_id already exists`);
+    return { status: 200, data: { message: `Patient with the same ${openMRSIdentifierType} already exists`} };
+  }
   logger.info(`Sending Patient ${patient.id} to FHIR`);
   copyIdToNamedIdentifier(patient, patient, openMRSIdentifierType);
   addSourceMeta(patient, openMRSSource);
   const response = await updateFhirResource(patient);
-  if (response.status == 200 || response.status == 201) {
+  if (response.status == 201) {
     logger.info(`Sending Patient ${patient.id} to CHT`);
     createChtPatient(response.data);
   }
