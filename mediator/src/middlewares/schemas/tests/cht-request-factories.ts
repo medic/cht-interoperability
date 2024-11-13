@@ -52,10 +52,6 @@ export const ChtPregnancyForm = Factory.define('chtPregnancyDoc')
     },
     {
       "code": "17a57368-5f59-42c8-aaab-f2774d21501e",
-      "valueCode": false
-    },
-    {
-      "code": "17a57368-5f59-42c8-aaab-f2774d21501e",
       "valueCode": "0d9e45d6-9288-494e-841c-80f3f9b8e126"
     },
     {
@@ -75,7 +71,19 @@ export const ChtPregnancyForm = Factory.define('chtPregnancyDoc')
       "valueDateTime": "2024-08-26"
     },
     {
-      "code": "13179cce-a424-43d7-9ad1-dce7861946e8",
-      "valueString": ""
+      "code": "73179cce-a424-43d7-9ad1-dce7861946e8",
+      "valueString": "String"
+    },
+    {
+      "code": "53179cce-a424-43d7-9ad1-dce7861946e8",
+      "valueQuantity": { "value": 160, "unit": "kg" }
+    },
+    {
+      "code": "37a57368-5f59-42c8-aaab-f2774d21501e",
+      "valueBoolean": false
+    },
+    {
+      "code": "47a57368-5f54-42c8-aaab-f2774d21501e",
+      "valueInteger": 12
     }
   ]);

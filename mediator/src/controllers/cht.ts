@@ -79,10 +79,8 @@ export async function createEncounter(chtReport: any) {
   }
 
   for (const entry of chtReport.observations) {
-    if (entry.valueCode || entry.valueString || entry.valueDateTime) {
-      const observation = buildFhirObservationFromCht(chtReport.patient_uuid, fhirEncounter, entry);
-      createFhirResource(observation);
-    }
+    const observation = buildFhirObservationFromCht(chtReport.patient_uuid, fhirEncounter, entry);
+    createFhirResource(observation);
   }
 
   return { status: 200, data: {} };
