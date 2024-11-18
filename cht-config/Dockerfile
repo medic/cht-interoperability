@@ -15,6 +15,6 @@ WORKDIR /scripts/cht-config
 
 COPY ./ ./
 
-RUN npm install && npm install -g cht-conf 
+RUN npm install --ignore-scripts && npm install -g --ignore-scripts cht-conf 
 
 CMD ["npm", "run", "deploy"]
