@@ -1,5 +1,4 @@
-import { getIdType, copyIdToNamedIdentifier, addSourceMeta } from '../utils/fhir';
-import { openMRSIdentifierType } from './openmrs';
+import { getIdType, copyIdToNamedIdentifier } from '../utils/fhir';
 
 export const chtDocumentIdentifierType: fhir4.CodeableConcept = {
   text: 'CHT Document ID'

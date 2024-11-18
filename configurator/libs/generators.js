@@ -94,7 +94,8 @@ async function generateHapiFhirChannel () {
   };
 }
 
-async function generateOpenMRSChannel (host, port, username, password, type) {
+async function generateOpenMRSChannel (config) {
+  const { host, port, username, password, type } = config;
   return {
     methods: [
       'GET',
