@@ -83,36 +83,18 @@ export async function compare(
   // get the key for each resource and create a Map
   const fhirIds = new Map(comparison.fhirResources.map(resource => [getKey(resource), resource]));
 
-  function isValidDate(resource: fhir4.Resource) {
-    // if lastUpdated is missing or invalid, cannot proceed, throw an error
-    if (!resource.meta?.lastUpdated) {
-      throw new Error("Last updated missing");
-    }
-    const lastUpdated = new Date(resource.meta.lastUpdated);
-    if (isNaN(lastUpdated.getTime()) || isNaN(startTime.getTime())) {
-      throw new Error("Invalid date format");
-    }
-
-    // don't sync resources created with 2 * SYNC_INTERVAL of start time
-    const syncWindow = (Number(SYNC_INTERVAL) * 1000) * 2
-    const diff = lastUpdated.getTime() - startTime.getTime();
-    return diff > syncWindow;
-  }
-
   comparison.openMRSResources.forEach((openMRSResource) => {
     const key = getKey(openMRSResource);
     if (fhirIds.has(key)) {
       results.toupdate.push(openMRSResource);
       fhirIds.delete(key);
-    } else if (isValidDate(openMRSResource)){
+    } else {
       results.incoming.push(openMRSResource);
     }
   });
 
   fhirIds.forEach((resource, key) => {
-    if (isValidDate(resource)) {
-      results.outgoing.push(resource);
-    }
+    results.outgoing.push(resource);
   });
 
   logger.info(`Comparing ${resourceType}`);
