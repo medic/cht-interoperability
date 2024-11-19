@@ -551,6 +551,32 @@
           "expr": "[ { \"type\": [ { \"text\": \"Community health worker\" } ] } ]"
         }
       }
+    },
+    "openmrs_height_weight": {
+      "relevant_to": "doc.type === 'data_record' && doc.form === 'height_weight'",
+      "destination": {
+        "base_url": "http://openhim-core:5001",
+        "path": "/mediator/cht/encounter",
+        "auth": {
+          "type": "basic",
+          "username": "interop-client",
+          "password_key": "openhim1"
+        }
+      },
+      "mapping": {
+        "observations.0.valueQuantity": {
+          "expr": "{ \"quantity\": doc.fields.height, \"unit\": \"cm\" }"
+        },
+        "observations.0.code": {
+          "expr": "\"5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
+        },
+        "observations.1.valueQuantity": {
+          "expr": "{ \"quantity\": doc.fields.weight, \"unit\": \"kg\" }"
+        },
+        "observations.1.code": {
+          "expr": "\"5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
+        }
+      }
     }
   },
   "forms": {
@@ -580,6 +606,66 @@
         },
         "set_task": true
       }
+    },
+    "height_weight": {
+      "meta": {
+        "code": "height_weight",
+        "translation_key": "forms.openmrs_height_weight.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "height": {
+          "labels": {
+            "short": {
+              "en": "Heght in cm"
+            }
+          },
+          "position": 0,
+          "type": "integer",
+          "required": true
+        },
+        "weight": {
+          "labels": {
+            "short": {
+              "en": "Weight in kg"
+            }
+          },
+          "position": 1,
+          "type": "integer",
+          "required": true
+        }
+      },
+      "public_form": true
+    },
+    "OPENMRS_INCOMING": {
+      "meta": {
+        "code": "openmrs_incoming",
+        "translation_key": "forms.openmrs_height_weight.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": {
+          "labels": {
+            "short": {
+              "en": "Heght in cm"
+            }
+          },
+          "position": 0,
+          "type": "integer",
+          "required": true
+        },
+        "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": {
+          "labels": {
+            "short": {
+              "en": "Weight in kg"
+            }
+          },
+          "position": 1,
+          "type": "integer",
+          "required": true
+        }
+      },
+      "public_form": true
     },
     "OPENMRS_PATIENT": {
       "meta": {

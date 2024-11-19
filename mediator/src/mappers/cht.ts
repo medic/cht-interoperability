@@ -171,9 +171,10 @@ export function buildFhirObservationFromCht(patient_id: string, encounter: fhir4
 export function buildChtRecordFromObservations(patient: fhir4.Patient, observations: fhir4.Observation[]) {
   const patientId = getIdType(patient, chtDocumentIdentifierType);
 
+  // TODO: remove reference to openmrs
   const record: any = {
     _meta: {
-      form: "openmrs_anc"
+      form: "openmrs_incoming"
     },
     patient_id: patientId
   }
