@@ -14,11 +14,19 @@ async function handleConfiguration () {
     ContactGroups: []
   };
 
+  const openMRSConfig = {
+    host: OPENMRS_HOST,
+    port: OPENMRS_PORT,
+    username: OPENMRS_USERNAME,
+    password: OPENMRS_PASSWORD,
+    protocol: OPENMRS_PROTOCOL
+  }
+
   metadata.Users.push(await generateUser(OPENHIM_USER_PASSWORD));
   metadata.Clients.push(await generateClient(OPENHIM_CLIENT_PASSWORD));
   metadata.Channels.push(await generateHapiFhirChannel());
   if (OPENMRS_HOST) {
-    metadata.Channels.push(await generateOpenMRSChannel(OPENMRS_HOST, OPENMRS_PORT, OPENMRS_USERNAME, OPENMRS_PASSWORD, OPENMRS_PROTOCOL));
+    metadata.Channels.push(await generateOpenMRSChannel(openMRSConfig));
   }
 
   const data = JSON.stringify(metadata);
