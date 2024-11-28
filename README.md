@@ -1,10 +1,8 @@
-# Infrastructure for Community of Practice (CoP) Interoperability Project
+# CHT Interoperability
 
 ## Overview
 
 This project implements a Loss to Follow Up (LTFU) workflow system for CHIS based on [OpenHIE LTFU Guide](https://wiki.ohie.org/display/CP/Use+Case+Summary%3A+Request+Community+Based+Follow-Up).
-
-A first version of the project can be found in the [chis-interoperability](https://github.com/medic/chis-interoperability) repository.
 
 #### Components
 
