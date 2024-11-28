@@ -10,7 +10,6 @@ import {
   replaceReference,
   updateFhirResource
 } from './fhir'
-import { SYNC_INTERVAL } from '../../config'
 import { getOpenMRSResourcesSince, createOpenMRSResource } from './openmrs'
 import { buildOpenMRSPatient, buildOpenMRSVisit, buildOpenMRSObservation, openMRSIdentifierType, openMRSSource } from '../mappers/openmrs'
 import { chtDocumentIdentifierType, chtSource } from '../mappers/cht'
