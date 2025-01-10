@@ -16,7 +16,7 @@
 		},
 		{
 			"key": "CHT_ADMIN_USER",
-			"value": "admin",
+			"value": "medic",
 			"type": "default",
 			"enabled": true
 		},
