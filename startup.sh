@@ -12,18 +12,21 @@ elif [ "$1" == "down" ]; then
 elif [ "$1" == "destroy" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.openmrs.yml down -v
 elif [ "$1" == "up-test" ]; then
+  docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -d --build
+elif [ "$1" == "up-openmrs" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.openmrs.yml up -d --build
 else 
   echo "Invalid option $1
   
   Help:
 
-  init      starts the docker containers and configures OpenHIM
-  up        starts the docker containers
-  up-dev    starts the docker containers with updated files.
-  up-test   starts the docker containers with updated files, including CHT Core
-  down      stops the docker containers
-  destroy   shutdown the docker containers and deletes volumes
+  init        starts the docker containers and configures OpenHIM
+  up          starts the docker containers
+  up-dev      starts the docker containers with updated files.
+  up-test     starts the docker containers with updated files, including CHT Core
+  up-openmrs  starts the docker containers with updated files, including CHT Core and OpenMRS
+  down        stops the docker containers
+  destroy     shutdown the docker containers and deletes volumes
   "
 fi
 
