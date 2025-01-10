@@ -553,7 +553,7 @@
       }
     },
     "openmrs_height_weight": {
-      "relevant_to": "doc.type === 'data_record' && doc.form === 'height_weight'",
+      "relevant_to": "doc.type === 'data_record' && doc.form === 'HEIGHT_WEIGHT'",
       "destination": {
         "base_url": "http://openhim-core:5001",
         "path": "/mediator/cht/encounter",
@@ -564,14 +564,19 @@
         }
       },
       "mapping": {
-        "observations.0.valueQuantity": {
-          "expr": "{ \"quantity\": doc.fields.height, \"unit\": \"cm\" }"
+        "id": "doc._id",
+        "patient_uuid": "doc.fields.patient_uuid",
+        "reported_date": "doc.reported_date",
+        "observations.0.valueQuantity.value": "doc.fields.height",
+        "observations.0.valueQuantity.unit": {
+          "expr": "\"cm\""
         },
         "observations.0.code": {
           "expr": "\"5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
         },
-        "observations.1.valueQuantity": {
-          "expr": "{ \"quantity\": doc.fields.weight, \"unit\": \"kg\" }"
+        "observations.1.valueQuantity.value": "doc.fields.weight",
+        "observations.1.valueQuantity.unit": {
+          "expr": "\"kg\""
         },
         "observations.1.code": {
           "expr": "\"5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
@@ -607,20 +612,37 @@
         "set_task": true
       }
     },
-    "height_weight": {
+    "HEIGHT_WEIGHT": {
       "meta": {
         "code": "height_weight",
         "translation_key": "forms.openmrs_height_weight.title",
         "icon": "medic-person"
       },
       "fields": {
+        "patient_uuid": {
+          "labels": {
+            "tiny": {
+              "en": "ID"
+            },
+            "short": {
+              "translation_key": "patient_id"
+            }
+          },
+          "position": 0,
+          "type": "string",
+          "length": [
+            1,
+            13
+          ],
+          "required": true
+        },
         "height": {
           "labels": {
             "short": {
               "en": "Heght in cm"
             }
           },
-          "position": 0,
+          "position": 1,
           "type": "integer",
           "required": true
         },
@@ -630,7 +652,7 @@
               "en": "Weight in kg"
             }
           },
-          "position": 1,
+          "position": 2,
           "type": "integer",
           "required": true
         }
