@@ -6,33 +6,51 @@ MEDIATORDIR="${BASEDIR}/mediator"
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 
-retry_startup() {
-  max_attempts=5
-  count=0
-  until ./startup.sh init || [ $count -eq $max_attempts ]; do
-    echo "Attempt $((count+1)) of $max_attempts to start containers failed, retrying in 30 seconds..."
-    count=$((count+1))
-    sleep 30
-  done
-
-  if [ $count -eq $max_attempts ]; then
-    echo "Failed to start containers after $max_attempts attempts."
-    exit 1
-  fi
-}
+export OPENMRS_HOST=openmrs
+export OPENMRS_USERNAME=admin
+export OPENMRS_PASSWORD=Admin123
 
 echo 'Cleanup from last test, in case of interruptions...'
 cd $BASEDIR
 ./startup.sh destroy
 
+echo 'Pulling Docker images with retry mechanism...'
+services=("haproxy" "healthcheck" "api" "sentinel" "nginx" "couchdb")
+max_retries=3
+retry_delay=10  # seconds
+
+# Retry pulling the images
+for service in "${services[@]}"; do
+  attempt=1
+  success=false
+  while [[ $attempt -le $max_retries ]]; do
+    echo "Pulling service: $service (Attempt $attempt of $max_retries)"
+
+    # Attempt to pull the image for the specific service
+    if docker compose -f ./docker/docker-compose.cht-core.yml pull $service; then
+      echo "$service pulled successfully!"
+      success=true
+      break
+    else
+      echo "Failed to pull $service. Retrying in $retry_delay seconds..."
+      sleep $retry_delay
+    fi
+    attempt=$(( attempt + 1 ))
+  done
+
+  # Check if we exhausted all retries without success
+  if [[ $success == false ]]; then
+    echo "ERROR: Failed to pull $service after $max_retries attempts."
+    exit 1  # Exit the script if pulling the image fails after retries
+  fi
+done
+
 echo 'Starting the interoperability containers...'
-cd $BASEDIR
-retry_startup
+./startup.sh up-test
 
 echo 'Waiting for configurator to finish...'
-docker container wait chis-interop-configurator-1
+docker container wait chis-interop-cht-configurator-1
 
-echo 'Executing mediator e2e tests...'
 cd $MEDIATORDIR
 export OPENHIM_API_URL='https://localhost:8080'
 export FHIR_URL='http://localhost:5001'
@@ -43,11 +61,21 @@ export FHIR_USERNAME='interop-client'
 export FHIR_PASSWORD='interop-password'
 export CHT_USERNAME='admin'
 export CHT_PASSWORD='password'
-npm test ltfu-flow.spec.ts
+export OPENMRS_CHANNEL_URL='http://localhost:5001/openmrs'
+export OPENMRS_CHANNEL_USERNAME='interop-client'
+export OPENMRS_CHANNEL_PASSWORD='interop-password'
+
+echo 'Waiting for OpenMRS to be ready'
+sleep 280
+echo 'Executing mediator e2e tests...'
+npm run test -t workflows.spec.ts
 
 echo 'Cleanup after test...'
 unset NODE_ENV
 unset NODE_TLS_REJECT_UNAUTHORIZED
+unset OPENMRS_HOST
+unset OPENMRS_USERNAME
+unset OPENMRS_PASSWORD
 unset OPENHIM_API_URL
 unset FHIR_URL
 unset CHT_URL
@@ -57,6 +85,8 @@ unset FHIR_USERNAME
 unset FHIR_PASSWORD
 unset CHT_USERNAME
 unset CHT_PASSWORD
+unset OPENMRS_CHANNEL_URL
+unset OPENMRS_CHANNEL_USERNAME
+unset OPENMRS_CHANNEL_PASSWORD
 cd $BASEDIR
 ./startup.sh destroy
-

@@ -1,0 +1,862 @@
+{
+	"info": {
+		"_postman_id": "961b51d8-e267-46d0-9dcc-0ae3349817e1",
+		"name": "OpenMRS Interop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39404962",
+		"_collection_link": "https://cht-ecosystem.postman.co/workspace/CHT-Ecosystem-Workspace~2c294298-272a-4a31-8c13-568b5d0706a4/collection/39404962-961b51d8-e267-46d0-9dcc-0ae3349817e1?action=share&source=collection_link&creator=39404962"
+	},
+	"item": [
+		{
+			"name": "Mediator Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Mediator response is success\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.eql('success');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/mediator/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenMRS Api Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"Mediator response is success\", () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.status).to.eql('active');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/fhir2/R4/metadata",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"fhir2",
+						"R4",
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createPatientIdentiferType",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENMRS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENMRS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"CHT Patient ID\",\n  \"description\": \"CHT Patient ID\",\n  \"required\": false,\n  \"locationBehavior\": \"NOT_USED\",\n  \"uniquenessBehavior\": \"Unique\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/rest/v1/patientidentifiertype",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"rest",
+						"v1",
+						"patientidentifiertype"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createDocumentIdentiferType",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENMRS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENMRS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"CHT Document ID\",\n  \"description\": \"CHT Document ID\",\n  \"required\": false,\n  \"locationBehavior\": \"NOT_USED\",\n  \"uniquenessBehavior\": \"Unique\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/rest/v1/patientidentifiertype",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"rest",
+						"v1",
+						"patientidentifiertype"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Create Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"cht_patient_id\", response.id);",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"CHT Patient creation is successful\", () => {",
+							"    pm.expect(response.ok).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{CHT_ADMIN_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{CHT_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Test\",\n  \"phone\": \"+2548277217095\",\n  \"date_of_birth\":\"1980-06-06\",\n  \"sex\":\"male\",\n  \"type\": \"person\",\n  \"role\": \"patient\",\n  \"contact_type\": \"patient\",\n  \"place\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/api/v1/people",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"api",
+						"v1",
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET FHIR Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"FHIR patient creation is successful\", () => {",
+							"    pm.expect(response.total).to.eql(1);",
+							"});",
+							"",
+							"//should be the same as cht_patient_id",
+							"pm.collectionVariables.set(\"fhir_patient_id\", response.entry[0].resource.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5001/fhir/Patient/?identifier={{cht_patient_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Patient",
+						""
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "{{cht_patient_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenMRS FHIR Sync Patient",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5001/mediator/openmrs/sync",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						"openmrs",
+						"sync"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET OpenMRS Patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"openmrs_patient_id\", response.entry[0].resource.id);",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"OpenMRS patient creation is successful\", () => {",
+							"    pm.expect(response.total).to.eql(1);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENMRS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENMRS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/fhir2/R4/Patient/?identifier={{cht_patient_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"fhir2",
+						"R4",
+						"Patient",
+						""
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "{{cht_patient_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CHT Create Report",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{CHT_ADMIN_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{CHT_ADMIN_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"_meta\": {\n        \"form\": \"HEIGHT_WEIGHT\"\n    },\n    \"patient_uuid\": \"{{cht_patient_id}}\",\n    \"height\": 172,\n    \"weight\": 65\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5988/api/v2/records",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5988",
+					"path": [
+						"api",
+						"v2",
+						"records"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET FHIR Encounter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"FHIR encounter creation is successful\", () => {",
+							"    pm.expect(response.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5001/fhir/Encounter/?subject=Patient/{{cht_patient_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Encounter",
+						""
+					],
+					"query": [
+						{
+							"key": "subject",
+							"value": "Patient/{{cht_patient_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET FHIR Observations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"FHIR observation creation is successful\", () => {",
+							"    // height weight form has 2 observations (height and weight)",
+							"    pm.expect(response.total).to.eql(2);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5001/fhir/Observation/?subject=Patient/{{cht_patient_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"fhir",
+						"Observation",
+						""
+					],
+					"query": [
+						{
+							"key": "subject",
+							"value": "Patient/{{cht_patient_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OpenMRS FHIR Sync Encounter",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENHIM_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENHIM_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:5001/mediator/openmrs/sync",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"mediator",
+						"openmrs",
+						"sync"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET OpenMRS Encounter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"OpenMRS encounter creation is successful\", () => {",
+							"    pm.expect(response.total).to.eql(1);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENMRS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENMRS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/fhir2/R4/Encounter",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"fhir2",
+						"R4",
+						"Encounter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET OpenMRS Observations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.expect(pm.response.code).to.eql(200);",
+							"});",
+							"",
+							"pm.test(\"OpenMRS Observation creation is successful\", () => {",
+							"    // height weight form has 2 observations (height and weight)",
+							"    pm.expect(response.total).to.eql(2);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{OPENMRS_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{OPENMRS_USER}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8090/openmrs/ws/fhir2/R4/Observation?subject={{openmrs_patient_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"openmrs",
+						"ws",
+						"fhir2",
+						"R4",
+						"Observation"
+					],
+					"query": [
+						{
+							"key": "subject",
+							"value": "{{openmrs_patient_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "patient",
+			"value": ""
+		},
+		{
+			"key": "place",
+			"value": ""
+		},
+		{
+			"key": "cht_patient_id",
+			"value": ""
+		},
+		{
+			"key": "fhir_patient_id",
+			"value": ""
+		},
+		{
+			"key": "openmrs_patient_id",
+			"value": ""
+		},
+		{
+			"value": ""
+		}
+	]
+}

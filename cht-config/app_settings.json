@@ -442,11 +442,11 @@
     "mark_for_outbound": true
   },
   "outbound": {
-    "FHIR_patient": {
-      "relevant_to": "doc.type === 'person' && doc.role == 'patient'",
+    "patient": {
+      "relevant_to": "doc.type === 'person' && doc.patient_id && doc.role === 'patient'",
       "destination": {
         "base_url": "http://openhim-core:5001",
-        "path": "/mediator/patient",
+        "path": "/mediator/cht/patient",
         "auth": {
           "type": "basic",
           "username": "interop-client",
@@ -454,19 +454,29 @@
         }
       },
       "mapping": {
-        "resourceType": {
-          "expr": "'Patient'"
-        },
-        "identifier": {
-          "expr": "[{ \"system\": \"cht\", \"use\": \"official\", \"value\": doc._id }]",
-          "optional": false
-        },
-        "name": {
-          "expr": "[ { \"use\":\"official\", \"family\": doc.name , \"given\": [ doc.short_name ] } ]",
-          "optional": false
-        },
-        "gender": "doc.sex",
-        "birthDate": "doc.date_of_birth"
+        "doc._id": "doc._id",
+        "doc.name": "doc.name",
+        "doc.phone": "doc.phone",
+        "doc.date_of_birth": "doc.date_of_birth",
+        "doc.sex": "doc.sex",
+        "doc.patient_id": "doc.patient_id"
+      }
+    },
+    "patient_id": {
+      "relevant_to": "doc.type === 'data_record' && doc.form === 'OPENMRS_PATIENT'",
+      "destination": {
+        "base_url": "http://openhim-core:5001",
+        "path": "/mediator/cht/patient_ids",
+        "auth": {
+          "type": "basic",
+          "username": "interop-client",
+          "password_key": "openhim1"
+        }
+      },
+      "mapping": {
+        "doc._id": "doc._id",
+        "doc.patient_id": "doc.patient_id",
+        "doc.external_id": "doc.fields.external_id"
       }
     },
     "FHIR_practitioner": {
@@ -541,6 +551,37 @@
           "expr": "[ { \"type\": [ { \"text\": \"Community health worker\" } ] } ]"
         }
       }
+    },
+    "openmrs_height_weight": {
+      "relevant_to": "doc.type === 'data_record' && doc.form === 'HEIGHT_WEIGHT'",
+      "destination": {
+        "base_url": "http://openhim-core:5001",
+        "path": "/mediator/cht/encounter",
+        "auth": {
+          "type": "basic",
+          "username": "interop-client",
+          "password_key": "openhim1"
+        }
+      },
+      "mapping": {
+        "id": "doc._id",
+        "patient_uuid": "doc.fields.patient_uuid",
+        "reported_date": "doc.reported_date",
+        "observations.0.valueQuantity.value": "doc.fields.height",
+        "observations.0.valueQuantity.unit": {
+          "expr": "\"cm\""
+        },
+        "observations.0.code": {
+          "expr": "\"5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
+        },
+        "observations.1.valueQuantity.value": "doc.fields.weight",
+        "observations.1.valueQuantity.unit": {
+          "expr": "\"kg\""
+        },
+        "observations.1.code": {
+          "expr": "\"5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\""
+        }
+      }
     }
   },
   "forms": {
@@ -570,6 +611,173 @@
         },
         "set_task": true
       }
+    },
+    "HEIGHT_WEIGHT": {
+      "meta": {
+        "code": "height_weight",
+        "translation_key": "forms.openmrs_height_weight.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "patient_uuid": {
+          "labels": {
+            "tiny": {
+              "en": "ID"
+            },
+            "short": {
+              "translation_key": "patient_id"
+            }
+          },
+          "position": 0,
+          "type": "string",
+          "length": [
+            1,
+            13
+          ],
+          "required": true
+        },
+        "height": {
+          "labels": {
+            "short": {
+              "en": "Heght in cm"
+            }
+          },
+          "position": 1,
+          "type": "integer",
+          "required": true
+        },
+        "weight": {
+          "labels": {
+            "short": {
+              "en": "Weight in kg"
+            }
+          },
+          "position": 2,
+          "type": "integer",
+          "required": true
+        }
+      },
+      "public_form": true
+    },
+    "OPENMRS_INCOMING": {
+      "meta": {
+        "code": "openmrs_incoming",
+        "translation_key": "forms.openmrs_height_weight.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": {
+          "labels": {
+            "short": {
+              "en": "Heght in cm"
+            }
+          },
+          "position": 0,
+          "type": "integer",
+          "required": true
+        },
+        "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": {
+          "labels": {
+            "short": {
+              "en": "Weight in kg"
+            }
+          },
+          "position": 1,
+          "type": "integer",
+          "required": true
+        }
+      },
+      "public_form": true
+    },
+    "OPENMRS_PATIENT": {
+      "meta": {
+        "code": "openmrs_patient",
+        "translation_key": "forms.n.title",
+        "icon": "medic-person"
+      },
+      "fields": {
+        "age_in_days": {
+          "labels": {
+            "tiny": {
+              "en": "Age in Days"
+            },
+            "short": {
+              "en": "Age in Days"
+            }
+          },
+          "position": 0,
+          "type": "integer",
+          "required": true
+        },
+        "patient_name": {
+          "labels": {
+            "tiny": {
+              "en": "patient_name"
+            },
+            "short": {
+              "en": "Patient Name"
+            }
+          },
+          "position": 1,
+          "type": "string",
+          "length": [
+            1,
+            40
+          ],
+          "required": true
+        },
+        "phone_number": {
+          "labels": {
+            "tiny": {
+              "en": "patient phone"
+            },
+            "short": {
+              "en": "patient Phone"
+            }
+          },
+          "position": 2,
+          "flags":{
+            "allow_duplicate": false
+          },
+          "type": "phone_number",
+          "required": true
+        },
+        "location_id": {
+          "labels": {
+            "tiny": {
+              "en": "location_id"
+            },
+            "short": {
+              "en": "location_id"
+            }
+          },
+          "position": 3,
+          "type": "string",
+          "length": [
+            1,
+            60
+          ],
+          "required": true
+        },
+        "external_id": {
+          "labels": {
+            "tiny": {
+              "en": "OpenMRS ID"
+            },
+            "short": {
+              "en": "OpenMRS ID"
+            }
+          },
+          "position": 4,
+          "type": "string",
+          "length": [
+            1,
+            60
+          ],
+          "required": true
+        }
+      },
+      "public_form": true
     }
   }
 }
