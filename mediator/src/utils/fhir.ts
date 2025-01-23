@@ -2,6 +2,7 @@ import { Fhir } from 'fhir';
 import { FHIR } from '../../config';
 import axios from 'axios';
 import { logger } from '../../logger';
+import { EventEmitter } from 'events'
 
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
@@ -14,6 +15,8 @@ const axiosOptions = {
 };
 
 const fhir = new Fhir();
+
+export const fhirEventEmitter = new EventEmitter();
 
 export function validateFhirResource(resourceType: string) {
   return function wrapper(data: any) {
@@ -161,6 +164,9 @@ export async function deleteFhirSubscription(id?: string) {
 export async function createFhirResource(doc: fhir4.Resource) {
   try {
     const res = await axios.post(`${FHIR.url}/${doc.resourceType}`, doc, axiosOptions);
+    if (res?.status === 201 || res?.status === 200) {
+      fhirEventEmitter.emit('resourceCreated', doc);
+    }
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
@@ -171,6 +177,9 @@ export async function createFhirResource(doc: fhir4.Resource) {
 export async function updateFhirResource(doc: fhir4.Resource) {
   try {
     const res = await axios.put(`${FHIR.url}/${doc.resourceType}/${doc.id}`, doc, axiosOptions); 
+    if (res?.status === 201 || res?.status === 200) {
+      fhirEventEmitter.emit('resourceUpdated', doc);
+    }
     return { status: res?.status, data: res?.data };
   } catch (error: any) {
     logger.error(error);
@@ -259,5 +268,53 @@ export async function getFhirResourceByIdentifier(identifierValue: string, resou
   } catch (error: any) {
     logger.error(error);
     return { status: error.response?.status, data: error.response?.data };
+  }
+}
+
+export async function getActiveSubscriptions(): Promise<fhir4.Subscription[]> {
+  try {
+    const res = await axios.get(
+      `${FHIR.url}/Subscription?status=active`,
+      axiosOptions
+    );
+    if (res.data.entry) {
+      return res.data.entry.map((entry: any) => entry.resource);
+    }
+    return [];
+  } catch (error: any) {
+    logger.error('Error fetching active subscriptions:', error);
+    return [];
+  }
+}
+
+export async function createSubscription(criteria: string, endpoint: string, headers?: string[]): Promise<fhir4.Subscription | null> {
+  try {
+    const subscription: fhir4.Subscription = {
+      resourceType: 'Subscription',
+      status: 'active',
+      reason: `Monitor resources matching: ${criteria}`,
+      criteria,
+      channel: {
+        type: 'rest-hook',
+        endpoint,
+        payload: 'application/fhir+json',
+        header: headers || ['Content-Type: application/fhir+json']
+      }
+    };
+
+    const res = await axios.post(
+      `${FHIR.url}/Subscription`,
+      subscription,
+      axiosOptions
+    );
+    
+    if (res.status === 201 || res.status === 200) {
+      logger.info(`Created subscription for criteria: ${criteria}`);
+      return res.data;
+    }
+    return null;
+  } catch (error: any) {
+    logger.error('Error creating subscription:', error);
+    return null;
   }
 }

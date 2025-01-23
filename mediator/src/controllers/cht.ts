@@ -6,6 +6,7 @@ import {
   replaceReference,
   updateFhirResource
 } from '../utils/fhir';
+import { chtEventEmitter, CHT_EVENTS } from '../utils/cht';
 import {
   buildFhirObservationFromCht,
   buildFhirEncounterFromCht,
@@ -29,7 +30,11 @@ export async function createPatient(chtPatientDoc: any) {
   }
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);
-  return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  const result = await updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  if (result.status === 200 || result.status === 201) {
+    chtEventEmitter.emit(CHT_EVENTS.PATIENT_CREATED, { patient: fhirPatient, result });
+  }
+  return result;
 }
 
 export async function updatePatientIds(chtFormDoc: any) {
@@ -83,5 +88,7 @@ export async function createEncounter(chtReport: any) {
     createFhirResource(observation);
   }
 
-  return { status: 200, data: {} };
+  const result = { status: 200, data: {} };
+  chtEventEmitter.emit(CHT_EVENTS.ENCOUNTER_CREATED, { encounter: fhirEncounter, result });
+  return result;
 }

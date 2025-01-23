@@ -127,7 +127,7 @@ async function sendPatientToFhir(patient: fhir4.Patient) {
   Send a patient from CHT to OpenMRS
   And update OpenMRS Id if successful
 */
-async function sendPatientToOpenMRS(patient: fhir4.Patient) {
+export async function sendPatientToOpenMRS(patient: fhir4.Patient) {
   logger.info(`Sending Patient ${patient.id} to OpenMRS`);
   const openMRSPatient = buildOpenMRSPatient(patient);
   addSourceMeta(openMRSPatient, chtSource);

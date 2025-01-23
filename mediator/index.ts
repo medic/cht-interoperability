@@ -11,7 +11,7 @@ import organizationRoutes from './src/routes/organization';
 import endpointRoutes from './src/routes/endpoint';
 import chtRoutes from './src/routes/cht';
 import openMRSRoutes from './src/routes/openmrs';
-import { registerMediatorCallback } from './src/utils/openhim';
+import { registerMediatorCallback, registerOpenMRSMediatorCallback } from './src/utils/openhim';
 import os from 'os';
 
 const {registerMediator} = require('openhim-mediator-utils');
@@ -41,14 +41,16 @@ app.use('/cht', chtRoutes);
 app.use('/openmrs', openMRSRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
+  app.listen(PORT, () => {
+    logger.info(`Server listening on port ${PORT}`);
+  });
   
   // TODO => inject the 'port' and 'http scheme' into 'mediatorConfig'  
   registerMediator(OPENHIM, mediatorConfig, registerMediatorCallback);
 
   // if OPENMRS is specified, register its mediator
   if (OPENMRS.url) {
-    registerMediator(OPENHIM, openMRSMediatorConfig, registerMediatorCallback);
+    registerMediator(OPENHIM, openMRSMediatorConfig, registerOpenMRSMediatorCallback);
   }
 }
 

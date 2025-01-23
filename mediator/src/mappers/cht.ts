@@ -1,4 +1,4 @@
-import { getIdType, copyIdToNamedIdentifier } from '../utils/fhir';
+import { getIdType, copyIdToNamedIdentifier, addSourceMeta } from '../utils/fhir';
 
 export const chtDocumentIdentifierType: fhir4.CodeableConcept = {
   text: 'CHT Document ID'
@@ -74,6 +74,7 @@ export function buildFhirPatientFromCht(chtPatient: any): fhir4.Patient {
   };
 
   copyIdToNamedIdentifier(patient, patient, chtDocumentIdentifierType);
+  addSourceMeta(patient, chtSource);
 
   return patient;
 }
@@ -98,6 +99,7 @@ export function buildFhirEncounterFromCht(chtReport: any): fhir4.Encounter {
   }
 
   copyIdToNamedIdentifier(encounter, encounter, chtDocumentIdentifierType);
+  addSourceMeta(encounter, chtSource);
 
   return encounter
 }
