@@ -103,31 +103,10 @@ export async function compare(
 }
 
 /*
-  Send a patient from OpenMRS in the FHIR server
-  And forward to CHT if successful
-*/
-async function sendPatientToFhir(patient: fhir4.Patient) {
-  // check if patient already exists
-  const openMRSPatient = await getFhirResourceByIdentifier(getIdType(patient, openMRSIdentifierType), 'Patient');
-  if (openMRSPatient.data?.total > 0) {
-    logger.error(`Patient with the same patient_id already exists`);
-    return { status: 200, data: { message: `Patient with the same ${openMRSIdentifierType} already exists`} };
-  }
-  logger.info(`Sending Patient ${patient.id} to FHIR`);
-  copyIdToNamedIdentifier(patient, patient, openMRSIdentifierType);
-  addSourceMeta(patient, openMRSSource);
-  const response = await updateFhirResource(patient);
-  if (response.status == 201) {
-    logger.info(`Sending Patient ${patient.id} to CHT`);
-    createChtPatient(response.data);
-  }
-}
-
-/*
   Send a patient from CHT to OpenMRS
   And update OpenMRS Id if successful
 */
-async function sendPatientToOpenMRS(patient: fhir4.Patient) {
+export async function sendPatientToOpenMRS(patient: fhir4.Patient) {
   logger.info(`Sending Patient ${patient.id} to OpenMRS`);
   const openMRSPatient = buildOpenMRSPatient(patient);
   addSourceMeta(openMRSPatient, chtSource);
@@ -149,16 +128,12 @@ export async function syncPatients(startTime: Date){
   const getKey = (fhirPatient: any) => { return getIdType(fhirPatient, openMRSIdentifierType) || fhirPatient.id };
   const results: ComparisonResult = await compare(getKey, 'Patient', startTime);
 
-  const incomingPromises = results.incoming.map(async (resource) => {
-    const patient = resource as fhir4.Patient;
-    return sendPatientToFhir(patient);
-  });
   const outgoingPromises = results.outgoing.map(async (resource) => {
     const patient = resource as fhir4.Patient;
     return sendPatientToOpenMRS(patient);
   });
 
-  await Promise.all([...incomingPromises, ...outgoingPromises]);
+  await Promise.all(outgoingPromises);
 }
 
 /*
@@ -197,14 +172,6 @@ export async function sendEncounterToOpenMRS(
 ) {
   if (encounter.meta?.source == openMRSSource) {
     logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
-    return
-  }
-
-  // don't send if identifier already exists
-  const identifier = getIdType(encounter, chtDocumentIdentifierType);
-  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
-  if (existingEncounter?.data?.total > 0) {
-    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
     return
   }
 
@@ -255,122 +222,6 @@ export async function sendObservationToFhir(observation: fhir4.Observation, pati
 }
 
 /*
-  Send an Encounter from OpenMRS to FHIR
-  Replaces the subject reference with an existing patient id from FHIR
-  If there are any observations, sends them to FHIR
-  If this encounter matches a CHT form, gathers observations
-  and sends them to CHT
-*/
-export async function sendEncounterToFhir(
-  encounter: fhir4.Encounter,
-  references: fhir4.Resource[]
-) {
-  if (isEncounterFromCht(encounter) || isEncounterIncomplete(encounter) || await isEncounterAlreadySent(encounter)) {
-    return;
-  }
-
-  logger.info(`Sending Encounter ${encounter.id} to FHIR`);
-
-  const observations = getObservations(encounter, references);
-  const patient = getPatient(encounter, references);
-
-  if (!await isPatientValid(patient, encounter)) {
-    return;
-  }
-
-  prepareEncounterForFhir(encounter, patient);
-
-  if (!await saveEncounterToFhir(encounter)) {
-    return;
-  }
-
-  observations.forEach(o => sendObservationToFhir(o, patient));
-  sendEncounterToCht(encounter, patient, observations);
-}
-
-function isEncounterFromCht(encounter: fhir4.Encounter): boolean {
-  if (encounter.meta?.source == chtSource) {
-    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
-    return true;
-  }
-  return false;
-}
-
-function isEncounterIncomplete(encounter: fhir4.Encounter): boolean {
-  if (!encounter.period?.end) {
-    logger.error(`Not sending encounter which is incomplete ${encounter.id}`);
-    return true;
-  }
-  return false;
-}
-
-async function isEncounterAlreadySent(encounter: fhir4.Encounter): Promise<boolean> {
-  const identifier = getIdType(encounter, openMRSIdentifierType);
-  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
-  if (existingEncounter?.data?.total > 0) {
-    logger.error(`Not re-sending encounter from openMRS ${encounter.id}`);
-    return true;
-  }
-  return false;
-}
-
-async function isPatientValid(patient: fhir4.Patient | undefined, encounter: fhir4.Encounter): Promise<boolean> {
-  if (!patient?.id) {
-    logger.error(`Patient ${encounter.subject!.reference} not found for ${encounter.id}`);
-    return false;
-  }
-
-  const patientResponse = await getFHIRPatientResource(patient.id);
-  if (patientResponse.status != 200) {
-    logger.error(`Error getting Patient ${patient.id}: ${patientResponse.status}`);
-    return false;
-  }
-
-  return true;
-}
-
-function prepareEncounterForFhir(encounter: fhir4.Encounter, patient: fhir4.Patient) {
-  const existingPatient = patient;
-  copyIdToNamedIdentifier(encounter, encounter, openMRSIdentifierType);
-  addSourceMeta(encounter, openMRSSource);
-
-  logger.info(`Replacing ${encounter.subject!.reference} with ${patient.id} for ${encounter.id}`);
-  replaceReference(encounter, 'subject', existingPatient);
-
-  delete encounter.participant;
-  delete encounter.location;
-}
-
-async function saveEncounterToFhir(encounter: fhir4.Encounter): Promise<boolean> {
-  const response = await updateFhirResource(encounter);
-  if (response.status != 201) {
-    logger.error(`Error saving encounter to fhir ${encounter.id}: ${response.status}`);
-    return false;
-  }
-  return true;
-}
-
-/*
-  Send an Encounter from OpenMRS to CHT
-*/
-export async function sendEncounterToCht(
-  encounter: fhir4.Encounter,
-  patient: fhir4.Patient,
-  observations: fhir4.Observation[]
-) {
-  logger.info(`Sending Encounter ${encounter.id} to CHT`);
-  const chtResponse = await chtRecordFromObservations(patient, observations);
-  if (chtResponse.status != 200) {
-    logger.error(`Error saving encounter to cht ${encounter.id}: ${chtResponse.status}`);
-    return
-  }
-
-  const chtId = chtResponse.data.id;
-  addId(encounter, chtDocumentIdentifierType, chtId);
-  await updateFhirResource(encounter);
-}
-
-/*
   Sync Encounters and Observations
   For incoming encounters, saves them to FHIR Server, then gathers related Observations
   And send to CHT the Encounter together with its observations
@@ -380,12 +231,6 @@ export async function sendEncounterToCht(
 export async function syncEncounters(startTime: Date){
   const getEncounterKey = (encounter: any) => { return getIdType(encounter, openMRSIdentifierType) || encounter.id };
   const encounters: ComparisonResult = await compare(getEncounterKey, 'Encounter', startTime);
-
-  // for incoming encounters, save them in order so that references are saved before
-  for (const resource of encounters.incoming) {
-    const encounter = resource as fhir4.Encounter;
-    await sendEncounterToFhir(encounter, encounters.references);
-  };
 
   const outgoingPromises = encounters.outgoing.map(async (resource) => {
     const encounter = resource as fhir4.Encounter;

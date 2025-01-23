@@ -1,6 +1,7 @@
 import { logger } from '../../logger';
-import { syncPatients, syncEncounters } from '../utils/openmrs_sync'
-import { SYNC_PERIOD } from '../../config'
+import { syncPatients, syncEncounters } from '../utils/openmrs_sync';
+import { addListeners, removeListeners } from '../utils/openmrs-listener';
+import { SYNC_PERIOD } from '../../config';
 
 export async function sync() {
   try {
@@ -14,5 +15,25 @@ export async function sync() {
   } catch(error: any) {
     logger.error(error);
     return { status: 500, data: { message: `Error during OpenMRS Sync`} };
+  }
+}
+
+export async function startListeners() {
+  try {
+    addListeners();
+    return { status: 200, data: { message: 'OpenMRS listeners started successfully' } };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: 500, data: { message: 'Error starting OpenMRS listeners' } };
+  }
+}
+
+export async function stopListeners() {
+  try {
+    removeListeners();
+    return { status: 200, data: { message: 'OpenMRS listeners stopped successfully' } };
+  } catch (error: any) {
+    logger.error(error);
+    return { status: 500, data: { message: 'Error stopping OpenMRS listeners' } };
   }
 }

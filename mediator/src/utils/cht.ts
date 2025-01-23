@@ -5,6 +5,14 @@ import https from 'https';
 import path from 'path';
 import { buildChtPatientFromFhir, buildChtRecordFromObservations } from '../mappers/cht';
 import { logger } from '../../logger';
+import { EventEmitter } from 'events';
+
+export const CHT_EVENTS = {
+  PATIENT_CREATED: 'patient:created',
+  ENCOUNTER_CREATED: 'encounter:created'
+} as const;
+
+export const chtEventEmitter = new EventEmitter();
 
 type CouchDBQuery = {
     selector: Record<string, any>;

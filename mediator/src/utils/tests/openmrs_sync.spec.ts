@@ -94,37 +94,6 @@ describe('OpenMRS Sync', () => {
   });
 
   describe('syncPatients', () => {
-    it('sends incoming Patients to FHIR and CHT', async () => {
-      const lastUpdated = new Date();
-      lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
-
-      const openMRSPatient = PatientFactory.build();
-      openMRSPatient.meta = { lastUpdated: lastUpdated };
-      jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-        data: [],
-        status: 200,
-      });
-      jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-        data: [openMRSPatient],
-        status: 200,
-      });
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValueOnce({
-        data: openMRSPatient,
-        status: 201
-      });
-      jest.spyOn(cht, 'createChtPatient')
-
-      const startTime = new Date();
-      startTime.setHours(startTime.getHours() - 1);
-      const comparison = await syncPatients(startTime);
-
-      expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
-      expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
-
-      expect(fhir.updateFhirResource).toHaveBeenCalledWith(openMRSPatient);
-      expect(cht.createChtPatient).toHaveBeenCalledWith(openMRSPatient);
-    });
-
     it('sends outgoing Patients to OpenMRS', async () => {
       const lastUpdated = new Date();
       lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
@@ -159,53 +128,6 @@ describe('OpenMRS Sync', () => {
     });
   });
   describe('syncEncounters', () => {
-    it('sends incoming Encounters to FHIR and CHT', async () => {
-      const lastUpdated = new Date();
-      lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
-
-      const openMRSPatient = PatientFactory.build();
-      openMRSPatient.meta = { lastUpdated: lastUpdated };
-      const openMRSEncounter = EncounterFactory.build();
-      openMRSEncounter.meta = { lastUpdated: lastUpdated };
-      openMRSEncounter.subject = {
-        reference: `Patient/${openMRSPatient.id}`
-      };
-      const openMRSObservation = ObservationFactory.build();
-      openMRSObservation.encounter = { reference: 'Encounter/' + openMRSEncounter.id }
-
-      jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-        data: [],
-        status: 200,
-      });
-
-      jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-        data: [openMRSEncounter, openMRSPatient, openMRSObservation],
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValueOnce({
-        data: { entry: [{ resource: openMRSPatient }] },
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValue({
-        data: [],
-        status: 201,
-      });
-
-      jest.spyOn(fhir, 'createFhirResource')
-
-      const startTime = new Date();
-      startTime.setHours(startTime.getHours() - 1);
-      const comparison = await syncEncounters(startTime);
-
-      expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
-      expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
-
-      expect(fhir.updateFhirResource).toHaveBeenCalledWith(openMRSEncounter);
-      expect(fhir.createFhirResource).toHaveBeenCalledWith(openMRSObservation);
-    });
-
     it('sends outgoing Encounters to OpenMRS', async () => {
       const lastUpdated = new Date();
       lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
@@ -256,56 +178,6 @@ describe('OpenMRS Sync', () => {
       );
 
       expect(openmrs.createOpenMRSResource).toHaveBeenCalledWith(fhirObservation);
-    });
-    it('does not send incoming Encounters to FHIR and CHT if OpenMRS identifier exists', async () => {
-      const lastUpdated = new Date();
-      lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
-
-      const openMRSPatient = PatientFactory.build();
-      openMRSPatient.meta = { lastUpdated: lastUpdated };
-      const openMRSEncounter = EncounterFactory.build();
-      openMRSEncounter.meta = { lastUpdated: lastUpdated };
-      openMRSEncounter.subject = {
-        reference: `Patient/${openMRSPatient.id}`
-      };
-      const openMRSObservation = ObservationFactory.build();
-      openMRSObservation.encounter = { reference: 'Encounter/' + openMRSEncounter.id }
-
-      jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-        data: [],
-        status: 200,
-      });
-
-      jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-        data: [openMRSEncounter, openMRSPatient, openMRSObservation],
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'getFHIRPatientResource').mockResolvedValueOnce({
-        data: { entry: [{ resource: openMRSPatient }] },
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'getFhirResourceByIdentifier').mockResolvedValue({
-        data: { total: 1, entry: [ { resource: openMRSPatient } ] },
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'updateFhirResource').mockResolvedValue({
-        data: [],
-        status: 201,
-      });
-
-      jest.spyOn(fhir, 'createFhirResource')
-
-      const startTime = new Date();
-      startTime.setHours(startTime.getHours() - 1);
-      const comparison = await syncEncounters(startTime);
-
-      expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
-      expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
-
-      expect(fhir.updateFhirResource).not.toHaveBeenCalled();
     });
 
     it('does not send outgoing Encounters to OpenMRS if identifier exists in FHIR', async () => {

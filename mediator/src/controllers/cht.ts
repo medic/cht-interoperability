@@ -6,6 +6,7 @@ import {
   replaceReference,
   updateFhirResource
 } from '../utils/fhir';
+import { chtEventEmitter, CHT_EVENTS } from '../utils/cht';
 import {
   buildFhirObservationFromCht,
   buildFhirEncounterFromCht,
@@ -29,7 +30,11 @@ export async function createPatient(chtPatientDoc: any) {
   }
 
   const fhirPatient = buildFhirPatientFromCht(chtPatientDoc.doc);
-  return updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  const result = await updateFhirResource({ ...fhirPatient, resourceType: 'Patient' });
+  if (result.status === 200 || result.status === 201) {
+    chtEventEmitter.emit(CHT_EVENTS.PATIENT_CREATED, fhirPatient);
+  }
+  return result;
 }
 
 export async function updatePatientIds(chtFormDoc: any) {
@@ -59,6 +64,7 @@ export async function updatePatientIds(chtFormDoc: any) {
 
 export async function createEncounter(chtReport: any) {
   const fhirEncounter = buildFhirEncounterFromCht(chtReport);
+  const references: fhir4.Resource[] = [];
 
   const patientResponse = await getFHIRPatientResource(chtReport.patient_uuid);
   if (patientResponse.status != 200){
@@ -70,6 +76,7 @@ export async function createEncounter(chtReport: any) {
   }
 
   const patient = patientResponse.data.entry[0].resource as fhir4.Patient;
+  references.push(patient);
   replaceReference(fhirEncounter, 'subject', patient);
   const response = await updateFhirResource(fhirEncounter);
 
@@ -80,8 +87,11 @@ export async function createEncounter(chtReport: any) {
 
   for (const entry of chtReport.observations) {
     const observation = buildFhirObservationFromCht(chtReport.patient_uuid, fhirEncounter, entry);
-    createFhirResource(observation);
+    await createFhirResource(observation);
+    references.push(observation);
   }
 
-  return { status: 200, data: {} };
+  const result = { status: 200, data: {} };
+  chtEventEmitter.emit(CHT_EVENTS.ENCOUNTER_CREATED, { encounter: fhirEncounter, references: references });
+  return result;
 }
