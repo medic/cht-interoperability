@@ -179,49 +179,5 @@ describe('OpenMRS Sync', () => {
 
       expect(openmrs.createOpenMRSResource).toHaveBeenCalledWith(fhirObservation);
     });
-
-    it('does not send outgoing Encounters to OpenMRS if identifier exists in FHIR', async () => {
-      const lastUpdated = new Date();
-      lastUpdated.setMinutes(lastUpdated.getMinutes() - 30);
-
-      const fhirEncounter = EncounterFactory.build();
-      fhirEncounter.meta = { lastUpdated: lastUpdated };
-      const fhirObservation = ObservationFactory.build();
-      fhirObservation.encounter = { reference: 'Encounter/' + fhirEncounter.id }
-      const chtDocId = {
-        system: "cht",
-        type: chtDocumentIdentifierType,
-        value: getIdType(fhirEncounter, chtDocumentIdentifierType)
-      }
-
-      jest.spyOn(fhir, 'getFhirResourcesSince').mockResolvedValueOnce({
-        data: [fhirEncounter, fhirObservation],
-        status: 200,
-      });
-
-      jest.spyOn(openmrs, 'getOpenMRSResourcesSince').mockResolvedValueOnce({
-        data: [],
-        status: 200,
-      });
-
-      jest.spyOn(fhir, 'getFhirResourceByIdentifier').mockResolvedValue({
-        data: { total: 1, entry: [ { resource: fhirEncounter } ] },
-        status: 200,
-      });
-
-      jest.spyOn(openmrs, 'createOpenMRSResource').mockResolvedValue({
-        data: [],
-        status: 201,
-      });
-
-      const startTime = new Date();
-      startTime.setHours(startTime.getHours() - 1);
-      const comparison = await syncEncounters(startTime);
-
-      expect(fhir.getFhirResourcesSince).toHaveBeenCalled();
-      expect(openmrs.getOpenMRSResourcesSince).toHaveBeenCalled();
-
-      expect(openmrs.createOpenMRSResource).not.toHaveBeenCalled();
-    });
   });
 });

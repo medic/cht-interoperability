@@ -46,7 +46,7 @@ for service in "${services[@]}"; do
 done
 
 echo 'Starting the interoperability containers...'
-./startup.sh up-test
+./startup.sh up-openmrs
 
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-cht-configurator-1
