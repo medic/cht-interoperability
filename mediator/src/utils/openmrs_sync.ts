@@ -200,14 +200,6 @@ export async function sendEncounterToOpenMRS(
     return
   }
 
-  // don't send if identifier already exists
-  const identifier = getIdType(encounter, chtDocumentIdentifierType);
-  const existingEncounter = await getFhirResourceByIdentifier(identifier, 'Encounter');
-  if (existingEncounter?.data?.total > 0) {
-    logger.error(`Not re-sending encounter from cht ${encounter.id}`);
-    return
-  }
-
   logger.info(`Sending Encounter ${encounter.id} to OpenMRS`);
 
   const patient = getPatient(encounter, references);
