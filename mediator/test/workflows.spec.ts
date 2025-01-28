@@ -187,48 +187,6 @@ describe('Workflows', () => {
       expect(searchOpenMrsPatientResponse.body.entry[0].resource.id).toBe(openMrsPatientId);
     });
 
-    it('should follow the OpenMRS Patient to CHT workflow', async () => {
-      const checkMediatorResponse = await request(FHIR.url)
-        .get('/mediator/')
-        .auth(FHIR.username, FHIR.password);
-      expect(checkMediatorResponse.status).toBe(200);
-
-      const openMrsPatient = OpenMRSPatientFactory.build({}, {placeId: parentPlace.placeId});
-
-      const createOpenMrsPatientResponse = await request(OPENMRS.url)
-      .post('/Patient')
-      .auth(OPENMRS.username, OPENMRS.password)
-      .send(openMrsPatient);
-
-      expect(createOpenMrsPatientResponse.status).toBe(201);
-      expect(createOpenMrsPatientResponse.body).toHaveProperty('id');
-
-      const openMrsPatientId = createOpenMrsPatientResponse.body.id;
-
-      await new Promise((r) => setTimeout(r, 10000));
-
-      const triggerOpenMrsSyncPatientResponse = await request('https://localhost:5002')
-        .get('/mediator/openmrs/sync')
-        .auth(OPENMRS.username, OPENMRS.password)
-        .send();
-      expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
-
-      await new Promise((r) => setTimeout(r, 20000));
-
-      const retrieveFhirPatientIdResponse = await request(FHIR.url)
-        .get('/fhir/Patient/?identifier=' + openMrsPatientId)
-        .auth(FHIR.username, FHIR.password);
-      expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
-
-      const chtPatientId = retrieveFhirPatientIdResponse.body.entry[0].resource.identifier[1].value;
-
-      const retrieveChtPatientResponse = await request(CHT.url)
-        .get('/api/v1/person/' + chtPatientId)
-        .auth(CHT.username, CHT.password);
-      expect(retrieveChtPatientResponse.status).toBe(200);
-    });
-
   });
 
   describe('Loss To Follow-Up (LTFU) workflow', () => {

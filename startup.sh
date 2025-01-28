@@ -12,12 +12,12 @@ elif [ "$1" == "down" ]; then
 elif [ "$1" == "destroy" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.openmrs.yml down -v
 elif [ "$1" == "up-test" ]; then
-  docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -d --build
+  docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.openmrs.yml up -d --build
 elif [ "$1" == "up-openmrs" ]; then
   docker compose -p chis-interop -f ./docker/docker-compose.yml -f ./docker/docker-compose.mediator.yml  -f ./docker/docker-compose.cht-core.yml -f ./docker/docker-compose.openmrs.yml up -d --build
-else 
+else
   echo "Invalid option $1
-  
+
   Help:
 
   init        starts the docker containers and configures OpenHIM
