@@ -84,3 +84,12 @@ export const TaskReportFactory = Factory.define('report')
     return [DocsFactory.build({}, { placeId, contactId, patientId })];
   })
   .attr('new_edits', false);
+
+  export const HeightWeightReportFactory = Factory.define('report')
+  .option('patientUuid')
+  .attr('_meta', { 'form': 'HEIGHT_WEIGHT' })
+  .attr('patient_uuid', ['patientUuid'], function (patientUuid) {
+    return patientUuid;
+  })
+  .attr('height', 172)
+  .attr('weight', 65);

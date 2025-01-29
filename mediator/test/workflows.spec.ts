@@ -1,14 +1,13 @@
 import request from 'supertest';
 import { OPENHIM, CHT, FHIR, OPENMRS } from '../config';
 import {
-  UserFactory, PatientFactory, TaskReportFactory, PlaceFactory
+  UserFactory, PatientFactory, TaskReportFactory, PlaceFactory, HeightWeightReportFactory,
 } from './cht-resource-factories';
 import {
   EndpointFactory as EndpointFactoryBase,
   OrganizationFactory as OrganizationFactoryBase,
   ServiceRequestFactory as ServiceRequestFactoryBase
 } from '../src/middlewares/schemas/tests/fhir-resource-factories';
-import { OpenMRSPatientFactory } from './openmrs-resource-factories';
 
 const { generateAuthHeaders } = require('../../configurator/libs/authentication');
 
@@ -23,6 +22,10 @@ const organizationIdentifier = 'test-org';
 const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system: 'official', value: organizationIdentifier }]);
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
+
+const OPENMRS_APP_URL = 'http://localhost:8090';
+const OPENMRS_APP_USER = 'admin';
+const OPENMRS_APP_PASSWORD = 'Admin123';
 
 const installMediatorConfiguration = async () => {
   const authHeaders = await generateAuthHeaders({
@@ -57,9 +60,9 @@ const createOpenMRSIdType = async (name: string) => {
     uniquenessBehavior: "Unique"
   }
   try {
-    const res = await request("http://localhost:8090")
+    const res = await request(OPENMRS_APP_URL)
       .post('/openmrs/ws/rest/v1/patientidentifiertype')
-      .auth('admin', 'Admin123')
+      .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD)
       .send(patientIdType)
     if (res.status !== 201) {
       console.error('Response:', res);
@@ -185,6 +188,49 @@ describe('Workflows', () => {
       expect(searchOpenMrsPatientResponse.status).toBe(200);
       expect(searchOpenMrsPatientResponse.body.total).toBe(1);
       expect(searchOpenMrsPatientResponse.body.entry[0].resource.id).toBe(openMrsPatientId);
+
+      const heightWeightReport = HeightWeightReportFactory.build({}, { patientUuid: patientId});
+
+      const submitHeightWeightReport = await request(CHT.url)
+        .post('/api/v2/records')
+        .auth(chwUserName, chwPassword)
+        .send(heightWeightReport);
+
+      expect(submitHeightWeightReport.status).toBe(200);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const retrieveFhirDbEncounter = await request(FHIR.url)
+        .get('/fhir/Encounter/?subject=Patient/' + patientId)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirDbEncounter.status).toBe(200);
+      expect(retrieveFhirDbEncounter.body.total).toBe(1);
+
+      const retrieveFhirDbObservation = await request(FHIR.url)
+        .get('/fhir/Observation/?subject=Patient/' + patientId)
+        .auth(FHIR.username, FHIR.password);
+
+      expect(retrieveFhirDbObservation.status).toBe(200);
+      expect(retrieveFhirDbObservation.body.total).toBe(2);
+
+      const triggerOpenMrsSyncEncounterResponse = await request(FHIR.url)
+        .get('/mediator/openmrs/sync')
+        .auth(FHIR.username, FHIR.password)
+        .send();
+      expect(triggerOpenMrsSyncEncounterResponse.status).toBe(200);
+
+      const retrieveOpenMrsEncounterResponse = await request(OPENMRS_APP_URL)
+        .get('/ws/fhir2/R4/Encounter')
+        .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD);
+      expect(retrieveOpenMrsEncounterResponse.status).toBe(200);
+      expect(retrieveOpenMrsEncounterResponse.body.total).toBe(1);
+
+      const retrieveOpenMrsObservationResponse = await request(OPENMRS_APP_URL)
+        .get('/ws/fhir2/R4/Observation')
+        .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD);
+      expect(retrieveOpenMrsObservationResponse.status).toBe(200);
+      expect(retrieveOpenMrsObservationResponse.body.total).toBe(2);
     });
 
   });
