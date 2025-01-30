@@ -23,7 +23,7 @@ const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
 
-const OPENMRS_APP_URL = 'http://localhost:8090';
+const OPENMRS_APP_URL = 'http://localhost:8090/openmrs';
 const OPENMRS_APP_USER = 'admin';
 const OPENMRS_APP_PASSWORD = 'Admin123';
 
@@ -219,6 +219,8 @@ describe('Workflows', () => {
         .auth(FHIR.username, FHIR.password)
         .send();
       expect(triggerOpenMrsSyncEncounterResponse.status).toBe(200);
+
+      await new Promise((r) => setTimeout(r, 2000));
 
       const retrieveOpenMrsEncounterResponse = await request(OPENMRS_APP_URL)
         .get('/ws/fhir2/R4/Encounter')
