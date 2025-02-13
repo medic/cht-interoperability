@@ -61,7 +61,7 @@ const createOpenMRSIdType = async (name: string) => {
   }
   try {
     const res = await request(OPENMRS_APP_URL)
-      .post('/openmrs/ws/rest/v1/patientidentifiertype')
+      .post('/ws/rest/v1/patientidentifiertype')
       .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD)
       .send(patientIdType)
     if (res.status !== 201) {
@@ -124,12 +124,13 @@ describe('Workflows', () => {
     await installMediatorConfiguration();
     await configureCHT();
     await new Promise((r) => setTimeout(r, 3000));
-    await createOpenMRSIdType('CHT Patient ID');
-    await createOpenMRSIdType('CHT Document ID');
   });
 
   describe('OpenMRS workflow', () => {
     it('should follow the CHT Patient to OpenMRS workflow', async () => {
+      await createOpenMRSIdType('CHT Patient ID');
+      await createOpenMRSIdType('CHT Document ID');
+
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
         .auth(FHIR.username, FHIR.password);
