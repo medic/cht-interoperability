@@ -1,13 +1,14 @@
 import request from 'supertest';
 import { OPENHIM, CHT, FHIR, OPENMRS } from '../config';
 import {
-  UserFactory, PatientFactory, TaskReportFactory
+  UserFactory, PatientFactory, TaskReportFactory, PlaceFactory, HeightWeightReportFactory,
 } from './cht-resource-factories';
 import {
   EndpointFactory as EndpointFactoryBase,
   OrganizationFactory as OrganizationFactoryBase,
   ServiceRequestFactory as ServiceRequestFactoryBase
 } from '../src/middlewares/schemas/tests/fhir-resource-factories';
+
 const { generateAuthHeaders } = require('../../configurator/libs/authentication');
 
 jest.setTimeout(50000);
@@ -21,6 +22,10 @@ const organizationIdentifier = 'test-org';
 const OrganizationFactory = OrganizationFactoryBase.attr('identifier', [{ system: 'official', value: organizationIdentifier }]);
 
 const ServiceRequestFactory = ServiceRequestFactoryBase.attr('status', 'active');
+
+const OPENMRS_APP_URL = 'http://localhost:8090/openmrs';
+const OPENMRS_APP_USER = 'admin';
+const OPENMRS_APP_PASSWORD = 'Admin123';
 
 const installMediatorConfiguration = async () => {
   const authHeaders = await generateAuthHeaders({
@@ -55,9 +60,9 @@ const createOpenMRSIdType = async (name: string) => {
     uniquenessBehavior: "Unique"
   }
   try {
-    const res = await request("http://localhost:8090")
-      .post('/openmrs/ws/rest/v1/patientidentifiertype')
-      .auth('admin', 'Admin123')
+    const res = await request(OPENMRS_APP_URL)
+      .post('/ws/rest/v1/patientidentifiertype')
+      .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD)
       .send(patientIdType)
     if (res.status !== 201) {
       console.error('Response:', res);
@@ -68,26 +73,28 @@ const createOpenMRSIdType = async (name: string) => {
   }
 };
 
-let placeId: string;
+const parentPlace = PlaceFactory.build();
 let chwUserName: string;
 let chwPassword: string;
 let contactId: string;
 let patientId: string;
+let parentPlaceId: string;
+let placeId: string;
+
 
 const configureCHT = async () => {
   const createPlaceResponse = await request(CHT.url)
     .post('/api/v1/places')
     .auth(CHT.username, CHT.password)
-    .send({ 'name': 'CHP Branch Two', 'type': 'district_hospital' });
+    .send(parentPlace);
 
   if (createPlaceResponse.status === 200 && createPlaceResponse.body.ok === true) {
-    placeId = createPlaceResponse.body.id;
+    parentPlaceId = createPlaceResponse.body.id;
   } else {
     throw new Error(`CHT place creation failed: Reason ${createPlaceResponse.status}`);
   }
 
-  const user = UserFactory.build({}, { placeId: placeId });
-
+  const user = UserFactory.build({}, { parentPlace: parentPlaceId });
   chwUserName = user.username;
   chwPassword = user.password;
 
@@ -100,6 +107,15 @@ const configureCHT = async () => {
   } else {
     throw new Error(`CHT user creation failed: Reason ${createUserResponse.status}`);
   }
+
+  const retrieveChtHealthCenterResponse = await request(CHT.url)
+        .get('/api/v2/users/maria')
+        .auth(CHT.username, CHT.password);
+  if (retrieveChtHealthCenterResponse.status === 200) {
+    placeId = retrieveChtHealthCenterResponse.body.place[0]._id;
+  } else {
+    throw new Error(`CHT health center retrieval failed: Reason ${retrieveChtHealthCenterResponse.status}`);
+  }
 };
 
 describe('Workflows', () => {
@@ -108,20 +124,20 @@ describe('Workflows', () => {
     await installMediatorConfiguration();
     await configureCHT();
     await new Promise((r) => setTimeout(r, 3000));
-    await createOpenMRSIdType('CHT Patient ID');
-    await createOpenMRSIdType('CHT Document ID');
   });
 
   describe('OpenMRS workflow', () => {
-    it('Should follow the CHT Patient to OpenMRS workflow', async () => {
+    it('should follow the CHT Patient to OpenMRS workflow', async () => {
+      await createOpenMRSIdType('CHT Patient ID');
+      await createOpenMRSIdType('CHT Document ID');
+
       const checkMediatorResponse = await request(FHIR.url)
         .get('/mediator/')
         .auth(FHIR.username, FHIR.password);
-
       expect(checkMediatorResponse.status).toBe(200);
       expect(checkMediatorResponse.body.status).toBe('success');
 
-      const patient = PatientFactory.build({}, { name: 'OpenMRS patient', placeId: placeId });
+      const patient = PatientFactory.build({name: 'CHTOpenMRS Patient', phone: '+2548277217095'}, { place: placeId });
 
       const createPatientResponse = await request(CHT.url)
         .post('/api/v1/people')
@@ -132,12 +148,11 @@ describe('Workflows', () => {
       expect(createPatientResponse.body.ok).toEqual(true);
       patientId = createPatientResponse.body.id;
 
-      await new Promise((r) => setTimeout(r, 5000));
+      await new Promise((r) => setTimeout(r, 10000));
 
       const retrieveFhirPatientIdResponse = await request(FHIR.url)
         .get('/fhir/Patient/?identifier=' + patientId)
         .auth(FHIR.username, FHIR.password);
-
       expect(retrieveFhirPatientIdResponse.status).toBe(200);
       expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
 
@@ -145,44 +160,82 @@ describe('Workflows', () => {
         .get('/mediator/openmrs/sync')
         .auth(FHIR.username, FHIR.password)
         .send();
-
       expect(triggerOpenMrsSyncPatientResponse.status).toBe(200);
 
-      await new Promise((r) => setTimeout(r, 5000));
+      await new Promise((r) => setTimeout(r, 10000));
 
       const retrieveOpenMrsPatientIdResponse = await request(OPENMRS.url)
         .get('/Patient/?identifier=' + patientId)
         .auth(OPENMRS.username, OPENMRS.password);
-
       expect(retrieveOpenMrsPatientIdResponse.status).toBe(200);
-      //this should work after fixing openmrs to have latest fhir omod and cht identifier defined.
       expect(retrieveOpenMrsPatientIdResponse.body.total).toBe(1);
 
-      //Validate HAPI updated ids
+      const openMrsPatientId = retrieveOpenMrsPatientIdResponse.body.entry[0].resource.id;
+      const retrieveUpdatedFhirPatientResponse = await request(FHIR.url)
+      .get(`/fhir/Patient/${patientId}`)
+      .auth(FHIR.username, FHIR.password);
+      expect(retrieveUpdatedFhirPatientResponse.status).toBe(200);
+      expect(retrieveUpdatedFhirPatientResponse.body.identifier).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+          value: openMrsPatientId,
+          })
+        ])
+      );
 
-    });
+      const searchOpenMrsPatientResponse = await request(OPENMRS.url)
+        .get(`/Patient/?given=CHTOpenMRS&family=Patient`)
+        .auth(OPENMRS.username, OPENMRS.password);
+      expect(searchOpenMrsPatientResponse.status).toBe(200);
+      expect(searchOpenMrsPatientResponse.body.total).toBe(1);
+      expect(searchOpenMrsPatientResponse.body.entry[0].resource.id).toBe(openMrsPatientId);
 
-    //skipping this test because is incomplete.
-    it.skip('Should follow the OpenMRS Patient to CHT workflow', async () => {
-      const checkMediatorResponse = await request(FHIR.url)
-        .get('/mediator/')
+      const heightWeightReport = HeightWeightReportFactory.build({}, { patientUuid: patientId});
+
+      const submitHeightWeightReport = await request(CHT.url)
+        .post('/api/v2/records')
+        .auth(chwUserName, chwPassword)
+        .send(heightWeightReport);
+
+      expect(submitHeightWeightReport.status).toBe(200);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const retrieveFhirDbEncounter = await request(FHIR.url)
+        .get('/fhir/Encounter/?subject=Patient/' + patientId)
         .auth(FHIR.username, FHIR.password);
 
-      expect(checkMediatorResponse.status).toBe(200);
+      expect(retrieveFhirDbEncounter.status).toBe(200);
+      expect(retrieveFhirDbEncounter.body.total).toBe(1);
 
-      //TODO: Create a patient using openMRS api
-
-      const retrieveFhirPatientIdResponse = await request(FHIR.url)
-        .get('/fhir/Patient/?identifier=' + patientId)
+      const retrieveFhirDbObservation = await request(FHIR.url)
+        .get('/fhir/Observation/?subject=Patient/' + patientId)
         .auth(FHIR.username, FHIR.password);
 
-      expect(retrieveFhirPatientIdResponse.status).toBe(200);
-      //expect(retrieveFhirPatientIdResponse.body.total).toBe(1);
+      expect(retrieveFhirDbObservation.status).toBe(200);
+      expect(retrieveFhirDbObservation.body.total).toBe(2);
 
-      //TODO: retrieve and validate patient from CHT api
-      //trigger openmrs sync
-      //validate id
+      const triggerOpenMrsSyncEncounterResponse = await request(FHIR.url)
+        .get('/mediator/openmrs/sync')
+        .auth(FHIR.username, FHIR.password)
+        .send();
+      expect(triggerOpenMrsSyncEncounterResponse.status).toBe(200);
+
+      await new Promise((r) => setTimeout(r, 2000));
+
+      const retrieveOpenMrsEncounterResponse = await request(OPENMRS_APP_URL)
+        .get('/ws/fhir2/R4/Encounter')
+        .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD);
+      expect(retrieveOpenMrsEncounterResponse.status).toBe(200);
+      expect(retrieveOpenMrsEncounterResponse.body.total).toBe(1);
+
+      const retrieveOpenMrsObservationResponse = await request(OPENMRS_APP_URL)
+        .get('/ws/fhir2/R4/Observation')
+        .auth(OPENMRS_APP_USER, OPENMRS_APP_PASSWORD);
+      expect(retrieveOpenMrsObservationResponse.status).toBe(200);
+      expect(retrieveOpenMrsObservationResponse.body.total).toBe(2);
     });
+
   });
 
   describe('Loss To Follow-Up (LTFU) workflow', () => {
@@ -231,7 +284,7 @@ describe('Workflows', () => {
       expect(retrieveOrganizationResponse.status).toBe(200);
       expect(retrieveOrganizationResponse.body.total).toBe(1);
 
-      const patient = PatientFactory.build({}, { name: 'LTFU patient', placeId: placeId });
+      const patient = PatientFactory.build({}, { name: 'LTFU patient', place: placeId });
 
       const createPatientResponse = await request(CHT.url)
         .post('/api/v1/people')
@@ -262,7 +315,7 @@ describe('Workflows', () => {
       expect(sendMediatorServiceRequestResponse.status).toBe(201);
       encounterUrl = sendMediatorServiceRequestResponse.body.criteria;
 
-      const taskReport = TaskReportFactory.build({}, { placeId, contactId, patientId });
+      const taskReport = TaskReportFactory.build({}, { placeId: placeId, contactId, patientId });
 
       const submitChtTaskResponse = await request(CHT.url)
         .post('/medic/_bulk_docs')

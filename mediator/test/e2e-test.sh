@@ -6,13 +6,14 @@ MEDIATORDIR="${BASEDIR}/mediator"
 export NODE_ENV=integration
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 
-export OPENMRS_HOST=openmrs
-export OPENMRS_USERNAME=admin
-export OPENMRS_PASSWORD=Admin123
-
 echo 'Cleanup from last test, in case of interruptions...'
 cd $BASEDIR
 ./startup.sh destroy
+
+
+export OPENMRS_HOST=openmrs
+export OPENMRS_USERNAME=admin
+export OPENMRS_PASSWORD=Admin123
 
 echo 'Pulling Docker images with retry mechanism...'
 services=("haproxy" "healthcheck" "api" "sentinel" "nginx" "couchdb")
@@ -46,10 +47,12 @@ for service in "${services[@]}"; do
 done
 
 echo 'Starting the interoperability containers...'
-./startup.sh up-openmrs
+./startup.sh up-test
 
 echo 'Waiting for configurator to finish...'
 docker container wait chis-interop-cht-configurator-1
+echo 'Waiting for OpenMRS to be ready'
+sleep 280
 
 cd $MEDIATORDIR
 export OPENHIM_API_URL='https://localhost:8080'
@@ -64,9 +67,6 @@ export CHT_PASSWORD='password'
 export OPENMRS_CHANNEL_URL='http://localhost:5001/openmrs'
 export OPENMRS_CHANNEL_USERNAME='interop-client'
 export OPENMRS_CHANNEL_PASSWORD='interop-password'
-
-echo 'Waiting for OpenMRS to be ready'
-sleep 280
 echo 'Executing mediator e2e tests...'
 npm run test -t workflows.spec.ts
 
