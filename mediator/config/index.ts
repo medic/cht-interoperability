@@ -22,6 +22,16 @@ export const CHT = {
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
 };
 
+export const OPENIMIS = {
+  baseUrl: getEnvironmentVariable('OPENIMIS_API_URL', 'http://localhost:5001'),
+  username: getEnvironmentVariable('OPENIMIS_USERNAME', 'admin'),
+  password: getEnvironmentVariable('OPENIMIS_PASSWORD', 'password'),
+  endpoints: {
+    login: '/api/api_fhir_r4/login/',
+    subscription: '/api/subscribe/'
+  },
+  chtCallbackEndpoint: getEnvironmentVariable('CHT_OPENIMIS_CALLBACK_ENDPOINT', '/api/openimis/callback'),
+};
 
 function getEnvironmentVariable(env: string, def: string) {
   if (process.env.NODE_ENV === 'test') {
