@@ -5,6 +5,27 @@ import { logger } from '../../logger';
 
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
 
+/**
+ * Interface for the Subscription Channel object.
+ */
+interface SubscriptionChannel {
+  type: string;
+  endpoint: string;
+  header: string[];
+}
+
+/**
+ * Interface for the FHIR Subscription resource.
+ */
+export interface Subscription {
+  resourceType: string;
+  status: string;
+  end?: string; // ISO 8601 format, e.g., "2029-12-31T23:59:59Z"
+  reason: string;
+  criteria: string;
+  channel: SubscriptionChannel;
+}
+
 const axiosOptions = {
   auth: {
     username: FHIR.username,
@@ -52,11 +73,11 @@ export function generateFHIRSubscriptionResource(
 }
 
 export async function createFHIRSubscriptionResource(
-  patientId: string,
-  callbackUrl: string
+  url: string,
+  subscriptionPayload: Subscription,
+  headers: Record<string, unknown> = axiosOptions,
 ) {
-  const res = generateFHIRSubscriptionResource(patientId, callbackUrl);
-  return await axios.post(`${FHIR.url}/Subscription`, res, axiosOptions);
+  return await axios.post(url, subscriptionPayload, headers);
 }
 
 export async function getFHIROrgEndpointResource(id: string) {

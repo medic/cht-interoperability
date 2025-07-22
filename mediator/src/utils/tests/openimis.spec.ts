@@ -1,5 +1,9 @@
-import { login, subscribe } from '../openimis';
+import { createFhirSubscriptionPayload, login } from '../openimis';
+import { createFHIRSubscriptionResource } from '../fhir';
+import { OPENIMIS } from '../../../config';
 
+// NOTE: these tests contain actual calls to DB and other endpoints
+// this will be mocked later on
 describe('OpenIMIS', () => {
   describe('login', () => {
     it('should login with correct credentials', async () => {
@@ -18,12 +22,22 @@ describe('OpenIMIS', () => {
 
   describe('subscribe', () => {
     it('should subscribe to Claim resource', async () => {
-      const res = await subscribe();
+      const url = `${OPENIMIS.baseUrl}${OPENIMIS.endpoints.subscription}`;
+      const payload = createFhirSubscriptionPayload(OPENIMIS.chtCallbackEndpoint, 'Claim', 'Notify on new Claims');
+      const loginRes = await login();
+      const token = loginRes?.token;
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'
+        }
+      };
+      const res = await createFHIRSubscriptionResource(url, payload, config);
+      const resData = await res.data;
 
       expect(res).toBeDefined();
-      expect(res?.resourceType).toEqual('Subscription');
-      expect(res?.id).toBeDefined();
-      expect(res?.criteria).toEqual('Claim');
+      expect(resData?.resourceType).toEqual('Subscription');
+      expect(resData?.id).toBeDefined();
+      expect(resData?.criteria).toEqual('Claim');
     });
   });
 });

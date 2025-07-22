@@ -58,12 +58,29 @@ describe('FHIR Utils', () => {
   describe('createFHIRSubscriptionResource', () => {
     it('generates a fhir resource with the \'callbackUrl\' and \'patientId\'', async () => {
       const patientId = 'patientId';
+      const url = 'url';
       const callbackUrl = 'callbackUrl';
       const mockRes = { status: 200, data: {} };
+      const payload = {
+        resourceType: 'Subscription',
+        id: patientId,
+        status: 'requested',
+        reason: 'Follow up request for patient',
+        criteria: `Encounter?identifier=${patientId}`,
+        channel: {
+          type: 'rest-hook',
+          endpoint: callbackUrl,
+          payload: 'application/fhir+json',
+          header: ['Content-Type: application/fhir+json'],
+        },
+      };
+      const header = {
+        'abc': 'def'
+      };
 
       mockAxios.post.mockResolvedValueOnce(mockRes);
 
-      const res = await createFHIRSubscriptionResource(patientId, callbackUrl);
+      const res = await createFHIRSubscriptionResource(url, payload, header);
 
       const postData: any = mockAxios.post.mock.calls[0][1];
 
