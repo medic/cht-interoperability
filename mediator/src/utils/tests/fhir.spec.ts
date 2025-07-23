@@ -9,6 +9,7 @@ import {
   getFHIRPatientResource,
 } from '../fhir';
 import axios from 'axios';
+import { Subscription } from 'fhir/r4';
 
 jest.mock('axios');
 jest.mock('../../../logger');
@@ -73,7 +74,7 @@ describe('FHIR Utils', () => {
           payload: 'application/fhir+json',
           header: ['Content-Type: application/fhir+json'],
         },
-      };
+      } as Subscription;
       const header = {
         'abc': 'def'
       };

@@ -1,30 +1,10 @@
 import { Fhir } from 'fhir';
+import { Subscription } from 'fhir/r4';
 import { FHIR } from '../../config';
 import axios from 'axios';
 import { logger } from '../../logger';
 
 export const VALID_GENDERS = ['male', 'female', 'other', 'unknown'] as const;
-
-/**
- * Interface for the Subscription Channel object.
- */
-interface SubscriptionChannel {
-  type: string;
-  endpoint: string;
-  header: string[];
-}
-
-/**
- * Interface for the FHIR Subscription resource.
- */
-export interface Subscription {
-  resourceType: string;
-  status: string;
-  end?: string; // ISO 8601 format, e.g., "2029-12-31T23:59:59Z"
-  reason: string;
-  criteria: string;
-  channel: SubscriptionChannel;
-}
 
 const axiosOptions = {
   auth: {
@@ -55,7 +35,7 @@ export function generateFHIRSubscriptionResource(
     );
   }
 
-  const FHIRSubscriptionResource = {
+  return {
     resourceType: 'Subscription',
     id: patientId,
     status: 'requested',
@@ -68,8 +48,6 @@ export function generateFHIRSubscriptionResource(
       header: ['Content-Type: application/fhir+json'],
     },
   };
-
-  return FHIRSubscriptionResource;
 }
 
 export async function createFHIRSubscriptionResource(

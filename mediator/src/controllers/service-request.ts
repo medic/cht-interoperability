@@ -9,6 +9,7 @@ import {
 } from '../utils/fhir';
 import { Response } from '../utils/request';
 import { FHIR } from '../../config';
+import { Subscription } from 'fhir/r4';
 
 export async function createServiceRequest(request: fhir4.ServiceRequest) {
   try {
@@ -21,7 +22,7 @@ export async function createServiceRequest(request: fhir4.ServiceRequest) {
 
     // Create a subscription for the Organization in FHIR to respond to an Encounter in the future
     const url = endpointRes.data.address;
-    const subscriptionPayload = generateFHIRSubscriptionResource(patientId, url);
+    const subscriptionPayload = generateFHIRSubscriptionResource(patientId, url) as Subscription;
     const subscriptionRes = await createFHIRSubscriptionResource(`${FHIR.url}/Subscription`, subscriptionPayload);
     
     const recordRes = await createChtRecord(patientId);

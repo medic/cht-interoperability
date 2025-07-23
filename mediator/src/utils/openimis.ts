@@ -1,6 +1,6 @@
 import { CHT, OPENIMIS } from '../../config';
 import axios from 'axios';
-import { Subscription } from './fhir';
+import { Subscription } from 'fhir/r4';
 
 interface LoginResponse {
   token: string;
