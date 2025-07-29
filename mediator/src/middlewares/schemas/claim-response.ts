@@ -1,25 +1,6 @@
 import joi from 'joi';
 
-export const VALID_SYSTEM =
-  'http://terminology.hl7.org/CodeSystem/endpoint-connection-type';
-export const VALID_CODE = 'hl7-fhir-rest';
-
-const EndpointCodingSchema = joi.object({
-  system: joi.string().valid(VALID_SYSTEM).required(),
-  code: joi.string().valid(VALID_CODE).required(),
-}).unknown(true);
-
-export const EndpointSchema = joi.object({
-  connectionType: EndpointCodingSchema.required(),
-  identifier: joi.array().items(joi.object({
-    system: joi.string().uri(),
-    value: joi.string(),
-  }).unknown(true)).min(1).required(),
-}).unknown(true);
-
-
 // --- General FHIR Data Type Schemas (Used within ClaimResponse) ---
-
 const CodingSchema = joi.object({
   system: joi.string().uri(),
   version: joi.string(),
