@@ -2,7 +2,7 @@ import { CHT, FHIR, OPENIMIS } from '../../config';
 import axios from 'axios';
 import { ClaimResponse, Subscription } from 'fhir/r4';
 import { logger } from '../../logger';
-import { createChtOpenImisRecord, pushRecordToChtApi } from './cht';
+import { createChtOpenImisRecord } from './cht';
 import { addOpenIMISId, getContactDocumentByPhone, PatientInfo } from './db';
 import NepaliDate from 'nepali-datetime';
 
@@ -25,6 +25,7 @@ export const login = async (username = '', password = ''): Promise<LoginResponse
 
     return response.data;
   } catch (error) {
+    logger.error('Error logging in to OpenIMIS:', error);
     return null;
   }
 };

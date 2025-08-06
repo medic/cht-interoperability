@@ -32,7 +32,7 @@ export async function createChtRecord(patientId: string) {
 }
 
 export async function createChtOpenImisRecord(record: Record<string, unknown>) {
- const options = {
+  const options = {
     httpsAgent: new https.Agent({
       rejectUnauthorized: false,
     }),

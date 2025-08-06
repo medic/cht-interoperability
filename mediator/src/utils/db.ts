@@ -32,6 +32,7 @@ async function getPatientDocumentByDocumentSearch(phone: string) {
     });
     return result.docs[0] || null;
   } catch (error) {
+    logger.error('Error while searching for patient document by phone:', error);
     return null;
   }
 }
