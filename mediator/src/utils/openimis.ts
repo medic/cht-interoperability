@@ -1,4 +1,4 @@
-import { CHT, OPENIMIS } from '../../config';
+import { CHT, OPENIMIS, FHIR } from '../../config';
 import axios from 'axios';
 import { ClaimResponse, Subscription } from 'fhir/r4';
 import { logger } from '../../logger';
@@ -54,13 +54,14 @@ export const createFhirSubscriptionPayload = (
     throw new Error('Invalid subscriber Endpoint');
   }
 
+  const basicAuthHeader = Buffer.from(`${FHIR.username}:${FHIR.password}`).toString('base64');
   // The header array contains a stringified JSON object.
   // Note: FHIR headers are typically key-value pairs, but the example shows a single stringified JSON.
   // We will adhere to the example's format.
   const headerObject = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Authorization': 'Basic aW50ZXJvcC1jbGllbnQ6aW50ZXJvcC1wYXNzd29yZA=='
+    'Authorization': `Basic ${basicAuthHeader}`
   };
   const headers: string[] = [JSON.stringify(headerObject)];
 
