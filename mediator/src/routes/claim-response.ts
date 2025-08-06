@@ -10,7 +10,7 @@ const resourceType = 'ClaimResponse';
 router.post(
   '/',
   requestHandler(async req => processClaimResponse({
-    ...req,
+    ...req.body,
     resourceType
   } as unknown as ClaimResponse))
 );
