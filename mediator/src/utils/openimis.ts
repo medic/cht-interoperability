@@ -1,8 +1,8 @@
-import { CHT, OPENIMIS, FHIR } from '../../config';
+import { CHT, FHIR, OPENIMIS } from '../../config';
 import axios from 'axios';
 import { ClaimResponse, Subscription } from 'fhir/r4';
 import { logger } from '../../logger';
-import { pushRecordToChtApi } from './cht';
+import { createChtOpenImisRecord, pushRecordToChtApi } from './cht';
 import { addOpenIMISId, getContactDocumentByPhone, PatientInfo } from './db';
 import NepaliDate from 'nepali-datetime';
 
@@ -95,10 +95,16 @@ export const createPerson = async (claimResponse: ClaimResponse, phone: string) 
   // TODO: use the patient ID from the claimResponse to fetch the patient details
   // from OpenIMIS API and create a person in CHT.
   // For now, we will generate a random phone number and create a patient in CHT
-  const createPatientMessage = `N 22 ${phone} ${generateRandomString(10)}`;
-  const createPatientResponse: any = await pushRecordToChtApi('+9779841171819', createPatientMessage);
-
-  return createPatientResponse;
+  const record = {
+    _meta: {
+      form: 'N',
+      from: '+9779841171819',
+    },
+    age_in_years: 22,
+    patient_phone: phone,
+    patient_name: generateRandomString(10)
+  };
+  return await createChtOpenImisRecord(record);
 };
 
 const generateRandomString = (
@@ -119,8 +125,20 @@ const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimI
     claimResponse.created,
     'YYYY-MM-DD'
   ).format('YYYY-MM-DD').split('-');
-  const claimMessage = `OP ${patient.patient_id} ${claimId} ${year} ${month} ${day}`;
-  await pushRecordToChtApi('+9779841171819', claimMessage);
+
+  const record = {
+    _meta: {
+      form: 'OP',
+      from: '+9779841171819',
+    },
+    patient_id: patient.patient_id,
+    op_claim_id: claimId,
+    lmp_year: year,
+    lmp_month: month,
+    lmp_day: day
+  };
+
+  return await createChtOpenImisRecord(record);
 };
 
 export const processClaimResponse = async (claimResponse: ClaimResponse) => {

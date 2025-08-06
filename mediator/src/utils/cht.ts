@@ -31,14 +31,8 @@ export async function createChtRecord(patientId: string) {
   return await axios.post(chtApiUrl, record, options);
 }
 
-export async function createChtOpenImisRecord(patientId: string) {
-  const record = {
-    _meta: {
-      form: 'interop_follow_up',
-    },
-    patient_uuid: patientId,
-  };
-  const options = {
+export async function createChtOpenImisRecord(record: Record<string, unknown>) {
+ const options = {
     httpsAgent: new https.Agent({
       rejectUnauthorized: false,
     }),
@@ -46,7 +40,18 @@ export async function createChtOpenImisRecord(patientId: string) {
 
   const chtApiUrl = generateChtRecordsApiUrl(CHT.url, CHT.username, CHT.password);
 
-  return await axios.post(chtApiUrl, record, options);
+  try {
+    const res = await axios.post(chtApiUrl, record, options);
+
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    logger.error('Error creating CHT record:', error);
+    return {
+      status: error.response?.status || 500,
+      errors: error.response?.data ||
+        { message: 'Internal Server Error' }
+    };
+  }
 }
 
 export const generateChtRecordsApiUrl = (chtUrl: string, username: string, password: string) => {
