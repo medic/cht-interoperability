@@ -122,10 +122,11 @@ const generateRandomString = (
 };
 
 const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimId: string | undefined) => {
-  const [year, month, day] = NepaliDate.parseEnglishDate(
+  const claimDate = NepaliDate.parseEnglishDate(
     claimResponse.created,
     'YYYY-MM-DD'
-  ).format('YYYY-MM-DD').split('-');
+  );
+  const [year, month, day] = claimDate.format('YYYY-MM-DD').split('-');
 
   const record = {
     _meta: {
@@ -136,7 +137,8 @@ const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimI
     op_claim_id: claimId,
     lmp_year: year,
     lmp_month: month,
-    lmp_day: day
+    lmp_day: day,
+    lmp_date: claimDate.getTime()
   };
 
   return await createChtOpenImisRecord(record);
