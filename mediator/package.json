@@ -28,6 +28,8 @@
     "fhir": "^4.11.2",
     "joi": "^17.7.0",
     "morgan": "^1.10.0",
+    "nano": "^10.1.4",
+    "nepali-datetime": "^1.4.1",
     "openhim-mediator-utils": "^0.2.4",
     "winston": "^3.8.2"
   },

@@ -23,12 +23,17 @@ describe('OpenIMIS', () => {
   describe('subscribe', () => {
     it('should subscribe to Claim resource', async () => {
       const url = `${OPENIMIS.baseUrl}${OPENIMIS.endpoints.subscription}`;
-      const payload = createFhirSubscriptionPayload(OPENIMIS.chtCallbackEndpoint, 'Claim', 'Notify on new Claims');
+      const payload = createFhirSubscriptionPayload(
+        OPENIMIS.chtCallbackEndpoint,
+        'Claim',
+        'Claim'
+      );
       const loginRes = await login();
       const token = loginRes?.token;
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       };
       const res = await createFHIRSubscriptionResource(url, payload, config);
