@@ -135,10 +135,10 @@ const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimI
     },
     patient_id: patient.patient_id,
     op_claim_id: claimId,
-    lmp_year: year,
-    lmp_month: month,
-    lmp_day: day,
-    lmp_date: claimDate.getTime()
+    op_year: year,
+    op_month: month,
+    op_day: day,
+    op_date: claimDate.getTime()
   };
 
   return await createChtOpenImisRecord(record);
