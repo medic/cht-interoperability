@@ -4,32 +4,30 @@ import { logger } from '../../logger';
 import { convertChtClaimToFhirCommunication } from '../mappers/openIMIS-interop/claims_communication_mapper';
 import axios from 'axios';
 import { login } from '../utils/openimis';
-import { Fhir } from 'fhir';
+import { OPENIMIS } from '../../config';
 
 const router = Router();
-const fhir = new Fhir();
 
 router.post('/', requestHandler(async req => {
   try {
     const chtFeedbackPayload = req.body;
-
-    console.log('Received CHT feedback payload:', chtFeedbackPayload);
+    logger.debug('Received CHT feedback payload:', chtFeedbackPayload);
 
     const communicationPayload = convertChtClaimToFhirCommunication(chtFeedbackPayload);
-    console.log('Converted FHIR Communication payload:', communicationPayload);
+    logger.debug('Converted CHT feedback to OpenIMIS communication payload:', communicationPayload);
 
     const loginRes = await login();
-    console.log('loginRes', loginRes);
     const token = loginRes?.token;
 
-    const res = await axios.post('https://openimis.s2.openimis.org/api/api_fhir_r4/Communication/', communicationPayload, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/fhir+json'
-      }
-    });
-
-    console.log('Response from OpenIMIS:', res);
+    const res = await axios.post(
+      `${OPENIMIS.baseUrl}${OPENIMIS.endpoints.communication}`,
+      communicationPayload, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    logger.debug('CHT feedback processed successfully:', res.data);
 
     return {
       status: res.status, data: {
@@ -38,6 +36,7 @@ router.post('/', requestHandler(async req => {
     };
   } catch (error) {
     logger.error('Error processing CHT feedback:', error);
+    
     return {
       status: 500, data: {
         message: 'Failed to process CHT feedback', error: error instanceof Error ? error.message : 'Unknown error'

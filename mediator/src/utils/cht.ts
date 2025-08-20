@@ -56,7 +56,7 @@ export async function createChtOpenImisRecord(record: Record<string, unknown>) {
 
 export const generateChtRecordsApiUrl = (chtUrl: string, username: string, password: string) => {
   const endpoint = generateBasicAuthUrl(chtUrl, username, password);
-  return path.join(endpoint, '/api/v2/records');
+  return `${endpoint}api/v2/records`;
 };
 
 export async function pushRecordToChtApi(from: string, message: string) {

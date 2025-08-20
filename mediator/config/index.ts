@@ -28,7 +28,8 @@ export const OPENIMIS = {
   password: getEnvironmentVariable('OPENIMIS_PASSWORD', 'password'),
   endpoints: {
     login: '/api/api_fhir_r4/login/',
-    subscription: '/api/api_fhir_r4/Subscription/'
+    subscription: '/api/api_fhir_r4/Subscription/',
+    communication: '/api/api_fhir_r4/Communication/',
   },
   chtCallbackEndpoint: getEnvironmentVariable('CHT_OPENIMIS_CALLBACK_ENDPOINT', '/api/openimis/callback'),
 };
