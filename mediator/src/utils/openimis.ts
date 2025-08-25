@@ -121,12 +121,19 @@ const generateRandomString = (
   return result;
 };
 
-const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimId: string | undefined) => {
+const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any) => {
+  // process claim date
   const claimDate = NepaliDate.parseEnglishDate(
     claimResponse.created,
     'YYYY-MM-DD'
   );
   const [year, month, day] = claimDate.format('YYYY-MM-DD').split('-');
+
+  // process claim identifier to get the code
+  const codeIdentifier = claimResponse?.identifier?.find(
+    (id) => id?.type?.coding?.[0]?.code === 'Code'
+  );
+  const claimId = codeIdentifier?.value;
 
   const record = {
     _meta: {
@@ -135,6 +142,7 @@ const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any, claimI
     },
     patient_id: patient.patient_id,
     op_claim_id: claimId,
+    op_claim_uuid: claimResponse.id,
     op_year: year,
     op_month: month,
     op_day: day,
@@ -157,12 +165,10 @@ export const processClaimResponse = async (claimResponse: ClaimResponse) => {
     };
   }
 
-  const claimId = claimResponse.id;
-
   const phone = '+9779808' + Math.floor(100000 + Math.random() * 900000);
   const createPatientResponse = await createPerson(claimResponse, phone);
 
-  if (createPatientResponse.errors && createPatientResponse.errors.length > 0) {
+  if (createPatientResponse.errors) {
     return {
       status: createPatientResponse.status,
       data: createPatientResponse.errors
@@ -177,7 +183,7 @@ export const processClaimResponse = async (claimResponse: ClaimResponse) => {
     
     const patient_info = { 'phone_number': patient.phone, 'openimis_id': openImisPatientId } as PatientInfo;
     await addOpenIMISId(patient_info);
-    await pushClaimToCht(claimResponse, patient, claimId);
+    await pushClaimToCht(claimResponse, patient);
 
     return {
       status: 201,
