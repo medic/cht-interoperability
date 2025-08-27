@@ -365,6 +365,39 @@ module.exports = [
         days: 7,
       }
     ]
+  },
+
+  {
+    name: 'claims_feedback.confirmation',
+    icon: 'icon-follow-up',
+    title: 'task.claims_feedback_confirmation.title',
+    appliesTo: 'reports',
+    appliesToType: ['OP'],
+    actions: [
+      {
+         form: 'claims_feedback',
+          modifyContent: function (content, contact, report) {
+            content.op_claim_id = getField(report,'op_claim_id') !== undefined ? getField(report, 'op_claim_id') : '';
+            content.op_claim_uuid = getField(report,'op_claim_uuid') !== undefined ? getField(report, 'op_claim_uuid') : '';
+            content.openimis_id = contact.contact.openimis_id !== undefined ? contact.contact.openimis_id : '';
+          }
+       },
+    ],
+    events: [
+      {
+        start: 21,
+        end: 14,
+        days: 1
+      }
+    ],
+    resolvedIf: function (contact, report, event, dueDate) {
+      return Utils.isFormSubmittedInWindow(
+        contact.reports,
+        'claims_feedback',
+        Utils.addDate(dueDate, -event.start).getTime(),
+        Utils.addDate(dueDate, event.end + 1).getTime()
+      );
+    }
   }
 ];
 

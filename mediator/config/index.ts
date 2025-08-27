@@ -18,6 +18,7 @@ export const FHIR = {
 
 export const CHT = {
   url: getEnvironmentVariable('CHT_URL', 'https://nginx'),
+  apiUrl: getEnvironmentVariable('CHT_API_URL', 'https://api:5988'),
   username: getEnvironmentVariable('CHT_USERNAME', 'admin'),
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
 };

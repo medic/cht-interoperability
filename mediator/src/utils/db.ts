@@ -3,10 +3,16 @@ import { CHT } from '../../config';
 import { logger } from '../../logger';
 
 // Extract base URL (remove trailing slash to avoid double slashes)
-const baseUrl = new URL(CHT.url);
+const baseUrl = new URL(CHT.apiUrl);
+
+const protocol = CHT.apiUrl.includes('https') ? 'https' : 'http';
 
 // Construct the full server URL
-const serverUrl = `https://${CHT.username}:${CHT.password}@${baseUrl.hostname}`;
+let serverUrl = `${protocol}://${CHT.username}:${CHT.password}@${baseUrl.hostname}`;
+
+if (baseUrl.port) {
+  serverUrl += `:${baseUrl.port}`;
+}
 
 // CouchDB database name
 const databaseName = 'medic';

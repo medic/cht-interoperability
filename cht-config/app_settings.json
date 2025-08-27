@@ -442,45 +442,6 @@
         "mark_for_outbound": true
     },
     "outbound": {
-        "claims_feedback": {
-            "relevant_to": "doc.form === 'claims_feedback'",
-            "destination": {
-                "base_url": "http://openhim-core:5001",
-                "path": "/mediator/cht/claims-feedback",
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json"
-                },
-                "auth": {
-                    "type": "basic",
-                    "username": "interop-client",
-                    "password_key": "interop-password"
-                }
-            },
-            "mapping": {
-                "care_rendered": {
-                    "expr": "doc.fields.claim_feedback_group.care_rendered"
-                },
-                "payment_asked": {
-                    "expr": "doc.fields.claim_feedback_group.payment_asked"
-                },
-                "drug_prescribed": {
-                    "expr": "doc.fields.claim_feedback_group.drug_prescribed"
-                },
-                "drug_received": {
-                    "expr": "doc.fields.claim_feedback_group.drug_received"
-                },
-                "assessment_rating": {
-                    "expr": "doc.fields.claim_feedback_group.assessment_rating"
-                },
-                "claimUUID": {
-                    "expr": "doc.fields.inputs.op_claim_id"
-                },
-                "insureeUUID": {
-                    "expr": "doc.fields.inputs.openimis_id"
-                }
-            }
-        },
         "FHIR_patient": {
             "relevant_to": "doc.type === 'person' && doc.role == 'patient'",
             "destination": {
@@ -580,6 +541,28 @@
                     "expr": "[ { \"type\": [ { \"text\": \"Community health worker\" } ] } ]"
                 }
             }
+        },
+        "claims_feedback": {
+            "relevant_to": "doc.form === 'claims_feedback'",
+            "destination": {
+                "base_url": "http://openhim-core:5001",
+                "path": "/mediator/claims-feedback",
+                "auth": {
+                    "type": "basic",
+                    "username": "interop-client",
+                    "password_key": "interop-openimis-password"
+                }
+            },
+            "mapping": {
+                "doc._id": "doc._id",
+                "care_rendered": "doc.fields.claim_feedback_group.care_rendered",
+                "payment_asked": "doc.fields.claim_feedback_group.payment_asked",
+                "drug_prescribed": "doc.fields.claim_feedback_group.drug_prescribed",
+                "drug_received": "doc.fields.claim_feedback_group.drug_received",
+                "assessment_rating": "doc.fields.claim_feedback_group.assessment_rating",
+                "claimUUID": "doc.fields.inputs.op_claim_uuid",
+                "insureeUUID": "doc.fields.inputs.openimis_id"
+            }
         }
     },
     "forms": {
@@ -609,6 +592,111 @@
                 },
                 "set_task": true
             }
+        },
+        "OP": {
+            "meta": {
+                "code": "OP",
+                "translation_key": "forms.op.title",
+                "icon": "icon-follow-up"
+            },
+            "fields": {
+                "patient_id": {
+                    "labels": {
+                        "tiny": {
+                            "en": "patient_id"
+                        },
+                        "short": {
+                            "en": "Patient Id"
+                        }
+                    },
+                    "position": 0,
+                    "type": "string",
+                    "length": [
+                        5,
+                        13
+                    ],
+                    "required": true
+                },
+                "op_claim_id": {
+                    "labels": {
+                        "tiny": {
+                            "en": "openImis Claim Id"
+                        },
+                        "short": {
+                            "en": "openImis Claim Id"
+                        }
+                    },
+                    "position": 1,
+                    "type": "string",
+                    "required": true
+                },
+                "op_claim_uuid": {
+                    "labels": {
+                        "tiny": {
+                            "en": "openImis Claim UUID"
+                        },
+                        "short": {
+                            "en": "openImis Claim UUID"
+                        }
+                    },
+                    "position": 2,
+                    "type": "string",
+                    "required": true
+                },
+                "op_year": {
+                    "labels": {
+                        "tiny": {
+                            "en": "OP_Y"
+                        },
+                        "short": {
+                            "en": "OP Year"
+                        }
+                    },
+                    "position": 3,
+                    "type": "bsYear",
+                    "required": true
+                },
+                "op_month": {
+                    "labels": {
+                        "tiny": {
+                            "en": "OP_M"
+                        },
+                        "short": {
+                            "en": "OP Month"
+                        }
+                    },
+                    "position": 4,
+                    "type": "bsMonth",
+                    "required": true
+                },
+                "op_day": {
+                    "labels": {
+                        "tiny": {
+                            "en": "OP_D"
+                        },
+                        "short": {
+                            "en": "OP Day"
+                        }
+                    },
+                    "position": 5,
+                    "type": "bsDay",
+                    "required": true
+                },
+                "op_date": {
+                    "labels": {
+                        "tiny": {
+                            "en": "OP_DATE"
+                        },
+                        "short": {
+                            "en": "OP Date"
+                        }
+                    },
+                    "position": 6,
+                    "type": "bsAggreDate",
+                    "required": false
+                }
+            },
+            "public_form": true
         }
     }
 }

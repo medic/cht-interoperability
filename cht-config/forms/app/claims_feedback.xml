@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms">
+  <h:head>
+    <h:title>Claim Feedback</h:title>
+    <model>
+      <itext>
+        <translation lang="en">
+          <text id="/claims_feedback/claim_feedback_group/assessment_rating:label">
+            <value>On a scale of 1-5 (1=Very Poor, 5=Excellent), how would you rate the overall service received?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered/no:label">
+            <value>No</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered/yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered:label">
+            <value>Was the care/service indicated in the claim (e.g., diagnosis, treatment) actually rendered?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed/no:label">
+            <value>No</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed/yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed:label">
+            <value>If applicable, was the drug indicated in the claim prescribed to the insuree?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received/no:label">
+            <value>No</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received/yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received:label">
+            <value>If applicable, was the drug indicated in the claim actually received by the insuree?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/openimis_claim_id_note:label">
+            <value>Provided openIMIS claim ID : <output value=" /claims_feedback/inputs/op_claim_id "/></value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/openimis_id_note:label">
+            <value>Provided openIMIS ID <output value=" /claims_feedback/inputs/openimis_id "/></value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked/no:label">
+            <value>No</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked/yes:label">
+            <value>Yes</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked:label">
+            <value>Was any additional payment asked from the insuree beyond what was covered by the insurance?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group:label">
+            <value>Claim Feedback for Insurer</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/_id:label">
+            <value>What is the patient's name?</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/date_of_birth:label">
+            <value>Date of Birth</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/first_name:label">
+            <value>Short Name</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/name:label">
+            <value>Name</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/_id:label">
+            <value>FCHV Area</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/_id:label">
+            <value>Health Facility</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/parent/_id:label">
+            <value>Municipality</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/parent/parent/_id:label">
+            <value>District</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/patient_id:label">
+            <value>Patient ID</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/sex:label">
+            <value>Sex</value>
+          </text>
+          <text id="/claims_feedback/inputs/source:label">
+            <value>Source</value>
+          </text>
+          <text id="/claims_feedback/inputs/source_id:label">
+            <value>Source ID</value>
+          </text>
+          <text id="/claims_feedback/inputs:label">
+            <value>Patient</value>
+          </text>
+        </translation>
+        <translation lang="ne">
+          <text id="/claims_feedback/claim_feedback_group/assessment_rating:label">
+            <value>१-५ को स्केलमा (१=धेरै खराब, ५=उत्कृष्ट), प्राप्त समग्र सेवालाई तपाईं कसरी मूल्याङ्कन गर्नुहुन्छ?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered/no:label">
+            <value>होईन</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered/yes:label">
+            <value>हो</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/care_rendered:label">
+            <value>दावीमा उल्लेख गरिएको हेरचाह/सेवा (जस्तै: निदान, उपचार) साँच्चै प्रदान गरिएको थियो?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed/no:label">
+            <value>होईन</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed/yes:label">
+            <value>हो</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_prescribed:label">
+            <value>यदि लागू हुन्छ भने, दावीमा उल्लेख गरिएको औषधि बिमित व्यक्तिलाई सिफारिस गरिएको थियो?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received/no:label">
+            <value>होईन</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received/yes:label">
+            <value>हो</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/drug_received:label">
+            <value>यदि लागू हुन्छ भने, दावीमा उल्लेख गरिएको औषधि बिमित व्यक्तिले साँच्चै प्राप्त गरेको थियो?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/openimis_claim_id_note:label">
+            <value>Provided openIMIS claim ID: <output value=" /claims_feedback/inputs/op_claim_id "/></value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/openimis_id_note:label">
+            <value>Provided openIMIS ID : <output value=" /claims_feedback/inputs/openimis_id "/></value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked/no:label">
+            <value>होईन</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked/yes:label">
+            <value>हो</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group/payment_asked:label">
+            <value>बिमाले कभर गरेको भन्दा बढी कुनै थप भुक्तानी बिमित व्यक्तिबाट मागिएको थियो?</value>
+          </text>
+          <text id="/claims_feedback/claim_feedback_group:label">
+            <value>बिमित व्यक्तिको प्रतिक्रिया</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/_id:label">
+            <value>What is the patient's name?</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/date_of_birth:label">
+            <value>Date of Birth</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/first_name:label">
+            <value>Short Name</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/name:label">
+            <value>Name</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/_id:label">
+            <value>FCHV Area</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/_id:label">
+            <value>Health Facility</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/parent/_id:label">
+            <value>Municipality</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/parent/parent/parent/parent/_id:label">
+            <value>District</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/patient_id:label">
+            <value>Patient ID</value>
+          </text>
+          <text id="/claims_feedback/inputs/contact/sex:label">
+            <value>Sex</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <claims_feedback id="claims_feedback" prefix="J1!claims_feedback!" delimiter="#" version="2025-08-27 11:29:10">
+          <inputs>
+            <meta>
+              <location>
+                <lat/>
+                <long/>
+                <error/>
+                <message/>
+              </location>
+            </meta>
+            <source>user</source>
+            <source_id/>
+            <op_claim_id/>
+            <openimis_id/>
+            <op_claim_uuid/>
+            <contact>
+              <_id/>
+              <name/>
+              <first_name/>
+              <patient_id>0</patient_id>
+              <date_of_birth/>
+              <sex/>
+              <parent>
+                <_id/>
+                <parent>
+                  <_id/>
+                  <parent>
+                    <_id/>
+                    <parent>
+                      <_id/>
+                    </parent>
+                  </parent>
+                </parent>
+              </parent>
+            </contact>
+          </inputs>
+          <patient_age_in_years/>
+          <patient_uuid tag="hidden"/>
+          <patient_id tag="hidden"/>
+          <patient_name tag="hidden"/>
+          <context_vars tag="hidden"/>
+          <claim_feedback_group>
+            <openimis_id_note/>
+            <openimis_claim_id_note/>
+            <care_rendered tag="hidden"/>
+            <payment_asked/>
+            <drug_prescribed/>
+            <drug_received/>
+            <assessment_rating/>
+          </claim_feedback_group>
+          <meta tag="hidden">
+            <instanceID/>
+          </meta>
+        </claims_feedback>
+      </instance>
+      <instance id="contact-summary"/>
+      <bind nodeset="/claims_feedback/inputs" relevant="./source = 'user'"/>
+      <bind nodeset="/claims_feedback/inputs/source" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/source_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/op_claim_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/openimis_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/op_claim_uuid" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/_id" type="db:person"/>
+      <bind nodeset="/claims_feedback/inputs/contact/name" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/first_name" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/patient_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/date_of_birth" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/sex" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/parent/_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/parent/parent/_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/parent/parent/parent/_id" type="string"/>
+      <bind nodeset="/claims_feedback/inputs/contact/parent/parent/parent/parent/_id" type="string"/>
+      <bind nodeset="/claims_feedback/patient_age_in_years" type="string" calculate="floor( difference-in-months( ../inputs/contact/date_of_birth, today() ) div 12 )"/>
+      <bind nodeset="/claims_feedback/patient_uuid" type="string" calculate="../inputs/contact/_id"/>
+      <bind nodeset="/claims_feedback/patient_id" type="string" calculate="../inputs/contact/patient_id" required="true()"/>
+      <bind nodeset="/claims_feedback/patient_name" type="string" calculate="../inputs/contact/name"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/openimis_id_note" readonly="true()" type="string"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/openimis_claim_id_note" readonly="true()" type="string"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/care_rendered" type="select1" required="true()"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/payment_asked" type="select1" required="true()"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/drug_prescribed" type="select1" required="true()"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/drug_received" type="select1" required="true()"/>
+      <bind nodeset="/claims_feedback/claim_feedback_group/assessment_rating" type="int" required="true()"/>
+      <bind nodeset="/claims_feedback/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:', uuid())"/>
+    </model>
+  </h:head>
+  <h:body class="pages">
+    <group appearance="field-list" ref="/claims_feedback/inputs">
+      <label ref="jr:itext('/claims_feedback/inputs:label')"/>
+      <group ref="/claims_feedback/inputs/contact">
+        <input appearance="db-object" ref="/claims_feedback/inputs/contact/_id">
+          <label ref="jr:itext('/claims_feedback/inputs/contact/_id:label')"/>
+        </input>
+        <group ref="/claims_feedback/inputs/contact/parent">
+          <input ref="/claims_feedback/inputs/contact/parent/_id">
+            <label ref="jr:itext('/claims_feedback/inputs/contact/parent/_id:label')"/>
+          </input>
+          <group ref="/claims_feedback/inputs/contact/parent/parent">
+            <input ref="/claims_feedback/inputs/contact/parent/parent/_id">
+              <label ref="jr:itext('/claims_feedback/inputs/contact/parent/parent/_id:label')"/>
+            </input>
+            <group ref="/claims_feedback/inputs/contact/parent/parent/parent">
+              <input ref="/claims_feedback/inputs/contact/parent/parent/parent/_id">
+                <label ref="jr:itext('/claims_feedback/inputs/contact/parent/parent/parent/_id:label')"/>
+              </input>
+              <group ref="/claims_feedback/inputs/contact/parent/parent/parent/parent">
+                <input ref="/claims_feedback/inputs/contact/parent/parent/parent/parent/_id">
+                  <label ref="jr:itext('/claims_feedback/inputs/contact/parent/parent/parent/parent/_id:label')"/>
+                </input>
+              </group>
+            </group>
+          </group>
+        </group>
+      </group>
+    </group>
+    <group ref="/claims_feedback/context_vars"/>
+    <group appearance="field-list" ref="/claims_feedback/claim_feedback_group">
+      <label ref="jr:itext('/claims_feedback/claim_feedback_group:label')"/>
+      <input ref="/claims_feedback/claim_feedback_group/openimis_id_note">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/openimis_id_note:label')"/>
+      </input>
+      <input ref="/claims_feedback/claim_feedback_group/openimis_claim_id_note">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/openimis_claim_id_note:label')"/>
+      </input>
+      <select1 ref="/claims_feedback/claim_feedback_group/care_rendered">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/care_rendered:label')"/>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/care_rendered/yes:label')"/>
+          <value>yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/care_rendered/no:label')"/>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 ref="/claims_feedback/claim_feedback_group/payment_asked">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/payment_asked:label')"/>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/payment_asked/yes:label')"/>
+          <value>yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/payment_asked/no:label')"/>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 ref="/claims_feedback/claim_feedback_group/drug_prescribed">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_prescribed:label')"/>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_prescribed/yes:label')"/>
+          <value>yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_prescribed/no:label')"/>
+          <value>no</value>
+        </item>
+      </select1>
+      <select1 ref="/claims_feedback/claim_feedback_group/drug_received">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_received:label')"/>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_received/yes:label')"/>
+          <value>yes</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/claims_feedback/claim_feedback_group/drug_received/no:label')"/>
+          <value>no</value>
+        </item>
+      </select1>
+      <input ref="/claims_feedback/claim_feedback_group/assessment_rating">
+        <label ref="jr:itext('/claims_feedback/claim_feedback_group/assessment_rating:label')"/>
+      </input>
+    </group>
+  </h:body>
+</h:html>
