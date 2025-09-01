@@ -1,7 +1,8 @@
 const crypto = require('crypto');
 const {
-  OPENHIM_API_USERNAME, OPENHIM_API_PASSWORD,
-  OPENHIM_API_HOSTNAME, OPENHIM_API_PORT
+  OPENHIM_API_USERNAME,
+  OPENHIM_API_PASSWORD,
+  OPENHIM_API_URL,
 } = require('../config');
 const {fetch} = require('../utils');
 
@@ -44,7 +45,7 @@ const generateAuthHeaders = async (options) => {
 
 function generateApiOptions (endpoint) {
   return {
-    apiURL: `https://${OPENHIM_API_HOSTNAME}:${OPENHIM_API_PORT}`,
+    apiURL: OPENHIM_API_URL,
     apiEndpoint: endpoint,
     username: OPENHIM_API_USERNAME,
     password: OPENHIM_API_PASSWORD,

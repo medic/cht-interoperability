@@ -1,32 +1,43 @@
 import * as dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
 
-export const PORT = process.env.PORT || 6000;
+const isDocker = process.env.DOCKER_ENV === 'true';
+
+if (!isDocker) {
+  const envPath = path.resolve(__dirname, '../../.env');
+  const res = dotenv.config({
+    path: envPath
+  });
+  if (res.error) {
+    throw new Error(`Error loading .env file at ${envPath}: ${res.error}`);
+  }
+}
+
+export const PORT = getEnvironmentVariable('PORT');
 
 export const OPENHIM = {
-  username: getEnvironmentVariable('OPENHIM_USERNAME', 'interop@openhim.org'),
-  password: getEnvironmentVariable('OPENHIM_PASSWORD', 'interop-password'),
-  apiURL: getEnvironmentVariable('OPENHIM_API_URL', 'https://openhim-core:8080'),
+  username: getEnvironmentVariable('OPENHIM_USERNAME'),
+  password: getEnvironmentVariable('OPENHIM_PASSWORD'),
+  apiURL: getEnvironmentVariable('OPENHIM_API_URL'),
   trustSelfSigned: true,
 };
 
 export const FHIR = {
-  url: getEnvironmentVariable('FHIR_URL', 'http://openhim-core:5001/fhir'),
-  username: getEnvironmentVariable('FHIR_USERNAME', 'interop-client'),
-  password: getEnvironmentVariable('FHIR_PASSWORD', 'interop-password'),
+  url: getEnvironmentVariable('FHIR_URL'),
+  username: getEnvironmentVariable('FHIR_USERNAME'),
+  password: getEnvironmentVariable('FHIR_PASSWORD'),
 };
 
 export const CHT = {
-  url: getEnvironmentVariable('CHT_URL', 'https://nginx'),
-  username: getEnvironmentVariable('CHT_USERNAME', 'admin'),
-  password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
+  url: getEnvironmentVariable('CHT_URL'),
+  username: getEnvironmentVariable('CHT_USERNAME'),
+  password: getEnvironmentVariable('CHT_PASSWORD'),
 };
 
-
-function getEnvironmentVariable(env: string, def: string) {
-  if (process.env.NODE_ENV === 'test') {
-    return def;
+function getEnvironmentVariable(env: string) {
+  const value = process.env[env];
+  if (typeof value === 'undefined' || value === '') {
+    throw new Error(`Missing required environment variable: ${env}`);
   }
-  
-  return process.env[env] || def;
+  return value;
 }
