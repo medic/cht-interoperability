@@ -7,7 +7,7 @@ services:
     ports:
       - "6000:6000"
     env_file:
-      - ../.env
+      - ../mediator/.env
     environment:
       - DOCKER_ENV=true
     depends_on:
@@ -15,13 +15,13 @@ services:
     restart: 'unless-stopped'
     networks:
       - cht-net
-    
+
   configurator:
     build:
       context: ../
       dockerfile: ./configurator/Dockerfile
     env_file:
-      - ../.env
+      - ../configurator/.env
     environment:
       - DOCKER_ENV=true
     networks:

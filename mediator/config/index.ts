@@ -2,9 +2,10 @@ import * as dotenv from 'dotenv';
 import path from 'path';
 
 const isDocker = process.env.DOCKER_ENV === 'true';
+const isTest = process.env.NODE_ENV === 'integration';
 
-if (!isDocker) {
-  const envPath = path.resolve(__dirname, '../../.env');
+if (!isDocker && !isTest) {
+  const envPath = path.resolve(__dirname, '../.env');
   const res = dotenv.config({
     path: envPath
   });

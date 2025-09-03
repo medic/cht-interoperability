@@ -2,9 +2,10 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 const isDocker = process.env.DOCKER_ENV === 'true';
+const isTest = process.env.NODE_ENV === 'integration';
 
-if (!isDocker) {
-  const envPath = path.resolve(__dirname, '../../.env');
+if (!isDocker && !isTest) {
+  const envPath = path.resolve(__dirname, '../.env');
   const res = dotenv.config({ path: envPath });
 
   if (res.error) {
@@ -23,8 +24,8 @@ const getEnv = (key) => {
 };
 
 const OPENHIM_API_URL = getEnv('OPENHIM_API_URL');
-const OPENHIM_API_USERNAME = getEnv('OPENHIM_ROOT_USERNAME');
-const OPENHIM_API_PASSWORD = getEnv('OPENHIM_ROOT_PASSWORD');
+const OPENHIM_API_USERNAME = getEnv('OPENHIM_USERNAME');
+const OPENHIM_API_PASSWORD = getEnv('OPENHIM_PASSWORD');
 const OPENHIM_CLIENT_PASSWORD = getEnv('OPENHIM_CLIENT_PASSWORD');
 const OPENHIM_USER_PASSWORD = getEnv('OPENHIM_USER_PASSWORD');
 

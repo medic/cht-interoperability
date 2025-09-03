@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-
 jest.mock('dotenv', () => ({
   config: jest.fn(() => {
     // Set the environment variables you need for your tests
