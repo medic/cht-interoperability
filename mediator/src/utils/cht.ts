@@ -2,7 +2,6 @@ import axios from 'axios';
 import { CHT } from '../../config';
 import { generateBasicAuthUrl } from './url';
 import https from 'https';
-import path from 'path';
 import qs from 'qs';
 import { logger } from '../../logger';
 

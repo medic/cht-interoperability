@@ -5,6 +5,7 @@ import { logger } from '../../logger';
 import { createChtOpenImisRecord } from './cht';
 import { addOpenIMISId, getContactDocumentByPhone, PatientInfo } from './db';
 import NepaliDate from 'nepali-datetime';
+const faker = require('faker');
 
 interface LoginResponse {
   token: string;
@@ -101,24 +102,16 @@ export const createPerson = async (claimResponse: ClaimResponse, phone: string) 
       form: 'N',
       from: '+9779841171819',
     },
-    age_in_years: 22,
+    age_in_years: faker.datatype.number({ min: 1, max: 100 }),
     patient_phone: phone,
-    patient_name: generateRandomString(10)
+    patient_name: await generateRandomName()
   };
   return await createChtOpenImisRecord(record);
 };
 
-const generateRandomString = (
-  length = 10,
-  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-): string => {
-  let result = '';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-
-  return result;
+const generateRandomName = async (
+): Promise<string> => {
+  return `${faker.name.firstName()} ${faker.name.lastName()}`;
 };
 
 const pushClaimToCht = async (claimResponse: ClaimResponse, patient: any) => {
