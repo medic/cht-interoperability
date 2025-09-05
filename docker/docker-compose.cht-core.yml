@@ -1,6 +1,6 @@
 services:
   haproxy:
-    image: public.ecr.aws/medic/cht-haproxy:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-haproxy:4.21.0
     restart: always
     hostname: haproxy
     environment:
@@ -24,7 +24,7 @@ services:
 
 
   healthcheck:
-    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.21.0
     restart: always
     environment:
       - "COUCHDB_SERVERS=${COUCHDB_SERVERS:-couchdb}"
@@ -39,7 +39,7 @@ services:
       - cht-net
 
   api:
-    image: public.ecr.aws/medic/cht-api:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-api:4.21.0
     restart: always
     depends_on:
       - haproxy
@@ -60,7 +60,7 @@ services:
       - cht-net
 
   sentinel:
-    image: public.ecr.aws/medic/cht-sentinel:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-sentinel:4.21.0
     restart: always
     depends_on:
       - haproxy
@@ -76,7 +76,7 @@ services:
       - cht-net
 
   nginx:
-    image: public.ecr.aws/medic/cht-nginx:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-nginx:4.21.0
     restart: always
     depends_on:
       - api
