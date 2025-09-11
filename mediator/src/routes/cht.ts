@@ -27,7 +27,9 @@ router.post('/', requestHandler(async req => {
           'Content-Type': 'application/json'
         }
       });
-    logger.debug('CHT feedback processed successfully:', res.data);
+    logger.debug('CHT feedback processed successfully:');
+    logger.debug(`Status: ${res.status} - ${res.statusText}`);
+    logger.debug(`Data: ${res.data}`);
 
     return {
       status: res.status, data: {
