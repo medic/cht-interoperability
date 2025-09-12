@@ -29,7 +29,7 @@ router.post('/', requestHandler(async req => {
       });
     logger.debug('CHT feedback processed successfully:');
     logger.debug(`Status: ${res.status} - ${res.statusText}`);
-    logger.debug(`Data: ${res.data}`);
+    logger.debug(`Data: ${JSON.stringify(res.data)}`);
 
     return {
       status: res.status, data: {
