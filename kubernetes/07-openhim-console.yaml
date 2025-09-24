@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openhim-console
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openhim-console
+  template:
+    metadata:
+      labels:
+        app: openhim-console
+    spec:
+      containers:
+      - name: openhim-console
+        image: jembi/openhim-console:1.14.4
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: console-config
+          mountPath: /usr/share/nginx/html/config/default.json
+          subPath: default.json
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      volumes:
+      - name: console-config
+        configMap:
+          name: openhim-console-config
+      initContainers:
+      - name: wait-for-openhim-core
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z openhim-core 8080; do echo waiting for openhim-core; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-console
+  namespace: health-interop
+spec:
+  selector:
+    app: openhim-console
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Expose OpenHIM Console externally
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-console-external
+  namespace: health-interop
+spec:
+  type: NodePort
+  selector:
+    app: openhim-console
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30900

@@ -1,0 +1,172 @@
+# Configurator - runs as a Job to set up initial configuration
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configurator
+  namespace: health-interop
+spec:
+  template:
+    spec:
+      containers:
+      - name: configurator
+        image: configurator:local
+        imagePullPolicy: Never
+        env:
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-user
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-password
+        - name: OPENHIM_API_HOSTNAME
+          value: "openhim-core"
+        - name: OPENHIM_API_PORT
+          value: "8080"
+        - name: OPENHIM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: openhim-credentials
+              key: openhim-password
+        - name: OPENHIM_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: openhim-credentials
+              key: openhim-username
+        - name: OPENHIM_CLIENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: openhim-credentials
+              key: openhim-client-password
+        - name: OPENHIM_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: openhim-credentials
+              key: openhim-user-password
+      initContainers:
+      - name: wait-for-openhim-core
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z openhim-core 8080; do echo waiting for openhim-core; sleep 5; done']
+      restartPolicy: OnFailure
+  backoffLimit: 3
+---
+# Mediator Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediator
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediator
+  template:
+    metadata:
+      labels:
+        app: mediator
+    spec:
+      containers:
+      - name: mediator
+        image: mediator:local
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 6000
+        env:
+        - name: OPENHIM_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: openhim-username
+        - name: OPENHIM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: openhim-password
+        - name: OPENHIM_API_URL
+          value: "https://openhim-core:8080"
+        - name: PORT
+          value: "6000"
+        - name: FHIR_URL
+          value: "http://openhim-core:5001/fhir"
+        - name: FHIR_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: fhir-username
+        - name: FHIR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: fhir-password
+        - name: CHT_URL
+          value: "https://nginx"
+        - name: CHT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: cht-username
+        - name: CHT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: cht-password
+        - name: OPENIMIS_API_URL
+          value: "https://openimis.s2.openimis.org"
+        - name: OPENIMIS_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: openimis-username
+        - name: OPENIMIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mediator-credentials
+              key: openimis-password
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 6000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 6000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+      initContainers:
+      - name: wait-for-configurator
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Configurator job completed, starting mediator"; sleep 5']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediator
+  namespace: health-interop
+spec:
+  selector:
+    app: mediator
+  ports:
+  - port: 6000
+    targetPort: 6000
+---
+# Expose Mediator externally for testing
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediator-external
+  namespace: health-interop
+spec:
+  type: NodePort
+  selector:
+    app: mediator
+  ports:
+  - port: 6000
+    targetPort: 6000
+    nodePort: 30600

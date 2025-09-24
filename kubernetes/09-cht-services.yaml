@@ -1,0 +1,311 @@
+# HAProxy for CouchDB load balancing
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      hostname: localhost
+      containers:
+      - name: haproxy
+        image: public.ecr.aws/medic/cht-haproxy:4.1.0-alpha
+        env:
+        - name: HAPROXY_IP
+          value: "0.0.0.0"
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-user
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-password
+        - name: COUCHDB_SERVERS
+          value: "couchdb"
+        - name: HAPROXY_PORT
+          value: "5984"
+        - name: HEALTHCHECK_ADDR
+          value: "healthcheck"
+        ports:
+        - containerPort: 5984
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+  namespace: health-interop
+spec:
+  selector:
+    app: haproxy
+  ports:
+  - port: 5984
+    targetPort: 5984
+---
+# CHT HAProxy Healthcheck
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcheck
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthcheck
+  template:
+    metadata:
+      labels:
+        app: healthcheck
+    spec:
+      containers:
+      - name: healthcheck
+        image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.1.0-alpha
+        env:
+        - name: COUCHDB_SERVERS
+          value: "couchdb"
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-user
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-password
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthcheck
+  namespace: health-interop
+spec:
+  selector:
+    app: healthcheck
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# CHT API
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: public.ecr.aws/medic/cht-api:4.1.0-alpha
+        env:
+        - name: COUCH_URL
+          value: "http://admin:password@haproxy:5984/medic"
+        - name: BUILDS_URL
+          value: "https://staging.dev.medicmobile.org/_couch/builds_4"
+        - name: UPGRADE_SERVICE_URL
+          value: "http://localhost:5100"
+        - name: HOST
+          value: "0.0.0.0"
+        - name: HOSTNAME
+          value: "0.0.0.0"
+        - name: API_HOST
+          value: "0.0.0.0"
+        - name: BIND_ADDRESS
+          value: "0.0.0.0"
+        - name: API_PORT
+          value: "5988"
+        - name: PORT
+          value: "5988"
+        ports:
+        - containerPort: 5988
+        readinessProbe:
+          httpGet:
+            path: /api/info
+            port: 5988
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/info
+            port: 5988
+          initialDelaySeconds: 60
+          periodSeconds: 30
+      initContainers:
+      - name: wait-for-haproxy
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z haproxy 5984; do echo waiting for haproxy; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: health-interop
+spec:
+  selector:
+    app: api
+  ports:
+  - port: 5988
+    targetPort: 5988
+---
+# CHT Sentinel
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentinel
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentinel
+  template:
+    metadata:
+      labels:
+        app: sentinel
+    spec:
+      containers:
+      - name: sentinel
+        image: public.ecr.aws/medic/cht-sentinel:4.1.0-alpha
+        env:
+        - name: COUCH_URL
+          value: "http://admin:password@haproxy:5984/medic"
+        - name: API_HOST
+          value: "api"
+      initContainers:
+      - name: wait-for-haproxy
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z haproxy 5984; do echo waiting for haproxy; sleep 2; done']
+      restartPolicy: Always
+---
+# CHT Nginx
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: public.ecr.aws/medic/cht-nginx:4.1.0-alpha
+        env:
+        - name: API_HOST
+          value: "api"
+        - name: API_PORT
+          value: "5988"
+        - name: CERTIFICATE_MODE
+          value: "SELF_SIGNED"
+        - name: SSL_CERT_FILE_PATH
+          value: "/etc/nginx/private/cert.pem"
+        - name: SSL_KEY_FILE_PATH
+          value: "/etc/nginx/private/key.pem"
+        - name: COMMON_NAME
+          value: "test-nginx.dev.medicmobile.org"
+        - name: EMAIL
+          value: "domains@medic.org"
+        - name: COUNTRY
+          value: "US"
+        - name: STATE
+          value: "California"
+        - name: LOCALITY
+          value: "San_Francisco"
+        - name: ORGANISATION
+          value: "medic"
+        - name: DEPARTMENT
+          value: "Information_Security"
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        volumeMounts:
+        - name: cht-ssl-storage
+          mountPath: /etc/nginx/private/
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 40
+          periodSeconds: 30
+      volumes:
+      - name: cht-ssl-storage
+        persistentVolumeClaim:
+          claimName: cht-ssl
+      initContainers:
+      - name: wait-for-api
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z api 5988; do echo waiting for api; sleep 2; done']
+      - name: wait-for-haproxy
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z haproxy 5984; do echo waiting for haproxy; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: health-interop
+spec:
+  selector:
+    app: nginx
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+---
+# Expose CHT Nginx externally
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-external
+  namespace: health-interop
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+  - name: https
+    port: 443
+    targetPort: 443
+    nodePort: 30443

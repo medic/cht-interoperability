@@ -1,0 +1,166 @@
+# MongoDB for OpenHIM
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:4.2
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: mongo-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: health-interop
+spec:
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+# PostgreSQL for HAPI FHIR
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hapi-db
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hapi-db
+  template:
+    metadata:
+      labels:
+        app: hapi-db
+    spec:
+      containers:
+      - name: hapi-db
+        image: postgres:14.1
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-db
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: hapi-db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: hapi-db-storage
+        persistentVolumeClaim:
+          claimName: hapi-db-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hapi-db
+  namespace: health-interop
+spec:
+  selector:
+    app: hapi-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+# CouchDB for CHT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb
+  namespace: health-interop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couchdb
+  template:
+    metadata:
+      labels:
+        app: couchdb
+    spec:
+      containers:
+      - name: couchdb
+        image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
+        env:
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-user
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-password
+        - name: COUCHDB_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-secret
+        - name: COUCHDB_UUID
+          value: "CC0C3BA1-88EE-4AE3-BFD3-6E0EE56ED534"
+        - name: SVC_NAME
+          value: "couchdb"
+        - name: COUCHDB_LOG_LEVEL
+          value: "error"
+        ports:
+        - containerPort: 5984
+        volumeMounts:
+        - name: couchdb-data-storage
+          mountPath: /opt/couchdb/data
+        - name: cht-credentials-storage
+          mountPath: /opt/couchdb/etc/local.d/
+      volumes:
+      - name: couchdb-data-storage
+        persistentVolumeClaim:
+          claimName: couchdb-data
+      - name: cht-credentials-storage
+        persistentVolumeClaim:
+          claimName: cht-credentials
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb
+  namespace: health-interop
+spec:
+  selector:
+    app: couchdb
+  ports:
+  - port: 5984
+    targetPort: 5984
