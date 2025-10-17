@@ -1,41 +1,150 @@
 #!/bin/bash
 
-# Delete the previous cluster
-kind delete cluster --name health-interop
+set -e # Exit on any error
 
-# Create a fresh cluster
-kind create cluster --name health-interop
+echo "🚀 CHT Interoperability Stack Deployment"
+echo ""
 
-# Reload your custom images
-kind load docker-image configurator:local --name health-interop
-kind load docker-image mediator:local --name health-interop
+# Check if cluster exists
+CLUSTER_EXISTS=$(kind get clusters | grep -w "cht-interop" || echo "")
 
-# Deploy everything again (in order)
-kubectl apply -f kubernetes/01-namespace.yaml
-kubectl apply -f kubernetes/02-configmap.yaml
-kubectl apply -f kubernetes/03-secrets.yaml
-kubectl apply -f kubernetes/04-persistent-volumes.yaml
-kubectl apply -f kubernetes/05-databases.yaml
+if [ -n "$CLUSTER_EXISTS" ]; then
+  echo "⚠️  KIND cluster 'cht-interop' already exists."
+  read -p "Do you want to delete and recreate it? (y/N): " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Deleting existing KIND cluster..."
+    kind delete cluster --name cht-interop
+    CREATE_CLUSTER=true
+  else
+    echo "Keeping existing cluster..."
+    CREATE_CLUSTER=false
+  fi
+else
+  echo "No existing cluster found."
+  CREATE_CLUSTER=true
+fi
 
-# Wait for databases to be ready, then continue
-kubectl get pods -n health-interop -w
+# Create cluster if needed
+if [ "$CREATE_CLUSTER" = true ]; then
+  echo "Creating fresh KIND cluster..."
+  kind create cluster --name cht-interop
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to create KIND cluster"
+    exit 1
+  fi
+fi
 
-# Once databases are running, deploy the rest
-kubectl apply -f kubernetes/06-openhim-core.yaml
-kubectl apply -f kubernetes/07-openhim-console.yaml
-kubectl apply -f kubernetes/08-hapi-fhir.yaml
-kubectl apply -f kubernetes/09-cht-services.yaml
-kubectl apply -f kubernetes/10-mediator-services.yaml
+# Build and load custom images
+echo ""
+echo "Building and loading custom images..."
 
-# OpenHIM Core - Management API (HTTPS)
-kubectl port-forward svc/openhim-core 8080:8080 -n health-interop &
+# Build configurator
+if [ -d "./configurator" ]; then
+  echo "Building configurator image..."
+  docker build -f configurator/Dockerfile -t configurator:local .
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to build configurator image"
+    exit 1
+  fi
+  kind load docker-image configurator:local --name cht-interop
+else
+  echo "⚠️  Configurator directory not found, skipping build"
+fi
 
-# OpenHIM Core - HTTP Router (routes to mediators)
-kubectl port-forward svc/openhim-core 5001:5001 -n health-interop &
+# Build mediator
+if [ -d "./mediator" ]; then
+  echo "Building mediator image..."
+  docker build -t mediator:local ./mediator
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to build mediator image"
+    exit 1
+  fi
+  kind load docker-image mediator:local --name cht-interop
+else
+  echo "⚠️  Mediator directory not found, skipping build"
+fi
 
-# OpenHIM Console - Management interface
-kubectl port-forward svc/openhim-console 9000:80 -n health-interop &
+# Check if Helm release exists
+RELEASE_EXISTS=$(helm list -n cht-interop | grep -w "cht-interop" || echo "")
 
-# CHT - Community Health Toolkit (via Nginx)
-kubectl port-forward svc/nginx 8081:80 -n health-interop &
-kubectl port-forward svc/nginx 8444:443 -n health-interop &
+if [ -n "$RELEASE_EXISTS" ]; then
+  echo ""
+  echo "Helm release 'cht-interop' already exists."
+  read -p "Do you want to upgrade it? (Y/n): " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    echo "Upgrading Helm release..."
+    helm upgrade cht-interop ./charts
+    if [ $? -ne 0 ]; then
+      echo "❌ Failed to upgrade Helm release"
+      exit 1
+    fi
+  else
+    echo "Skipping Helm deployment..."
+  fi
+else
+  # Deploy using Helm
+  echo ""
+  echo "Deploying with Helm..."
+  helm install cht-interop ./charts
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to install Helm release"
+    exit 1
+  fi
+fi
+
+# Wait for pods to be ready
+echo ""
+echo "Waiting for pods to be ready..."
+echo "You can monitor progress with: kubectl get pods -n cht-interop -w"
+echo "Or use K9s: k9s --context kind-cht-interop"
+
+# Wait for critical services with timeout
+echo ""
+echo "Waiting for databases to be ready..."
+kubectl wait --for=condition=ready pod -l app=mongo -n cht-interop --timeout=300s || echo "⚠️  MongoDB not ready yet"
+kubectl wait --for=condition=ready pod -l app=couchdb -n cht-interop --timeout=300s || echo "⚠️  CouchDB not ready yet"
+kubectl wait --for=condition=ready pod -l app=hapi-db -n cht-interop --timeout=300s || echo "⚠️  PostgreSQL not ready yet"
+
+echo "Waiting for OpenHIM Core to be ready..."
+kubectl wait --for=condition=ready pod -l app=openhim-core -n cht-interop --timeout=300s || echo "⚠️  OpenHIM Core not ready yet"
+
+echo ""
+echo "✅ Deployment complete!"
+
+# Setup port forwarding
+echo ""
+echo "Setting up port forwarding..."
+
+# Kill any existing port forwards
+pkill -f "kubectl port-forward.*cht-interop" 2>/dev/null || true
+
+kubectl port-forward svc/openhim-core 8080:8080 -n cht-interop >/dev/null 2>&1 &
+kubectl port-forward svc/openhim-core 5001:5001 -n cht-interop >/dev/null 2>&1 &
+kubectl port-forward svc/openhim-console 9000:80 -n cht-interop >/dev/null 2>&1 &
+kubectl port-forward svc/api 5988:5988 -n cht-interop >/dev/null 2>&1 &
+kubectl port-forward svc/mediator 6000:6000 -n cht-interop >/dev/null 2>&1 &
+
+sleep 2 # Give port forwards time to establish
+
+echo ""
+echo "🎉 CHT Interoperability Stack is ready!"
+echo ""
+echo "📍 Access services at:"
+echo "   OpenHIM Console: http://localhost:9000"
+echo "   OpenHIM Core API: https://localhost:8080"
+echo "   OpenHIM Router: http://localhost:5001"
+echo "   CHT API: http://localhost:5988"
+echo "   Mediator: http://localhost:6000"
+echo ""
+echo "🔑 Default credentials:"
+echo "   OpenHIM: root@openhim.org / openhim-password"
+echo ""
+echo "🛠️  Useful commands:"
+echo "   View pods: kubectl get pods -n cht-interop"
+echo "   View logs: kubectl logs <pod-name> -n cht-interop"
+echo "   Use K9s: k9s --context kind-cht-interop"
+echo "   Stop port forwards: pkill -f 'kubectl port-forward'"
+echo "   Helm status: helm status cht-interop -n cht-interop"
+echo ""

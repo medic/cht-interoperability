@@ -2,15 +2,21 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: openhim-console-config
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 data:
   default.json: |
     {
         "version": "1.10.0",
         "minimumCoreVersion": "3.4.0",
+{{- if eq .Values.cluster_type "eks" }}
         "protocol": "https",
-        "host": "localhost",
-        "port": 8080,
+        "host": "{{ .Values.ingress.openhimCoreHost }}",
+        "port": 443,
+{{- else }}
+        "protocol": "{{ .Values.openhim.console.config.protocol }}",
+        "host": "{{ .Values.openhim.console.config.host }}",
+        "port": {{ .Values.openhim.console.config.port }},
+{{- end }}
         "title": "Admin Console",
         "footerTitle": "OpenHIM Administration Console",
         "footerPoweredBy": "<a href='http://openhim.org/' target='_blank'>Powered by OpenHIM</a>",

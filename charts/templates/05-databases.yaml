@@ -1,9 +1,9 @@
-# MongoDB for OpenHIM
+# MongoDBefor OpenHIM
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 1
   selector:
@@ -16,7 +16,14 @@ spec:
     spec:
       containers:
       - name: mongo
-        image: mongo:4.2
+        image: {{ .Values.mongodb.image }}
+        resources:
+          requests:
+            memory: {{ .Values.mongodb.resources.requests.memory | quote }}
+            cpu: {{ .Values.mongodb.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.mongodb.resources.limits.memory | quote }}
+            cpu: {{ .Values.mongodb.resources.limits.cpu | quote }}
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -31,7 +38,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mongo
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: mongo
@@ -44,7 +51,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hapi-db
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 1
   selector:
@@ -57,7 +64,14 @@ spec:
     spec:
       containers:
       - name: hapi-db
-        image: postgres:14.1
+        image: {{ .Values.postgresql.image }}
+        resources:
+          requests:
+            memory: {{ .Values.postgresql.resources.requests.memory | quote }}
+            cpu: {{ .Values.postgresql.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.postgresql.resources.limits.memory | quote }}
+            cpu: {{ .Values.postgresql.resources.limits.cpu | quote }}
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -74,6 +88,8 @@ spec:
             secretKeyRef:
               name: database-credentials
               key: postgres-db
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         ports:
         - containerPort: 5432
         volumeMounts:
@@ -88,7 +104,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hapi-db
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: hapi-db
@@ -101,7 +117,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: couchdb
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 1
   selector:
@@ -114,7 +130,14 @@ spec:
     spec:
       containers:
       - name: couchdb
-        image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
+        image: {{ .Values.couchdb.image }}
+        resources:
+          requests:
+            memory: {{ .Values.couchdb.resources.requests.memory | quote }}
+            cpu: {{ .Values.couchdb.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.couchdb.resources.limits.memory | quote }}
+            cpu: {{ .Values.couchdb.resources.limits.cpu | quote }}
         env:
         - name: COUCHDB_USER
           valueFrom:
@@ -132,7 +155,7 @@ spec:
               name: database-credentials
               key: couchdb-secret
         - name: COUCHDB_UUID
-          value: "CC0C3BA1-88EE-4AE3-BFD3-6E0EE56ED534"
+          value: {{ .Values.couchdb.credentials.uuid | quote }}
         - name: SVC_NAME
           value: "couchdb"
         - name: COUCHDB_LOG_LEVEL
@@ -157,7 +180,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: couchdb
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: couchdb

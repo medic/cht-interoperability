@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openhim-core
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.openhim.core.replicas }}
   selector:
     matchLabels:
       app: openhim-core
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: openhim-core
-        image: jembi/openhim-core:7
+        image: {{ .Values.openhim.core.image }}
         env:
         - name: mongo_url
           value: "mongodb://mongo/openhim"
@@ -57,7 +57,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: openhim-core
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: openhim-core
@@ -85,11 +85,12 @@ spec:
     targetPort: 7788
 ---
 # Expose OpenHIM Core API externally
+{{- if ne .Values.cluster_type "eks" }}
 apiVersion: v1
 kind: Service
 metadata:
   name: openhim-core-external
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   type: NodePort
   selector:
@@ -98,12 +99,11 @@ spec:
   - name: api
     port: 8080
     targetPort: 8080
-    nodePort: 30080
+    nodePort: {{ .Values.services.nodePort.openhimCore | default 30081 }}
   - name: router-http
     port: 5000
     targetPort: 5000
-    nodePort: 30000
   - name: router-https
     port: 5001
     targetPort: 5001
-    nodePort: 30001
+{{- end }}

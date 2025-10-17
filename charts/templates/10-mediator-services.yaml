@@ -3,14 +3,14 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: configurator
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   template:
     spec:
       containers:
       - name: configurator
-        image: configurator:local
-        imagePullPolicy: Never
+        image: {{ .Values.configurator.image }}
+        imagePullPolicy: {{ .Values.configurator.imagePullPolicy }}
         env:
         - name: COUCHDB_USER
           valueFrom:
@@ -58,9 +58,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mediator
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.mediator.replicas }}
   selector:
     matchLabels:
       app: mediator
@@ -71,8 +71,8 @@ spec:
     spec:
       containers:
       - name: mediator
-        image: mediator:local
-        imagePullPolicy: Never
+        image: {{ .Values.mediator.image }}
+        imagePullPolicy: {{ .Values.mediator.imagePullPolicy }}
         ports:
         - containerPort: 6000
         env:
@@ -148,7 +148,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mediator
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: mediator
@@ -156,12 +156,13 @@ spec:
   - port: 6000
     targetPort: 6000
 ---
-# Expose Mediator externally for testing
+# Expose Mediator externally for testing (only for KIND)
+{{- if ne .Values.cluster_type "eks" }}
 apiVersion: v1
 kind: Service
 metadata:
   name: mediator-external
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   type: NodePort
   selector:
@@ -169,4 +170,5 @@ spec:
   ports:
   - port: 6000
     targetPort: 6000
-    nodePort: 30600
+    nodePort: {{ .Values.services.nodePort.mediator }}
+{{- end }}

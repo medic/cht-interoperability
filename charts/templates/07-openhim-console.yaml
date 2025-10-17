@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: openhim-console
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.openhim.console.replicas }}
   selector:
     matchLabels:
       app: openhim-console
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: openhim-console
-        image: jembi/openhim-console:1.14.4
+        image: {{ .Values.openhim.console.image }}
         ports:
         - containerPort: 80
         volumeMounts:
@@ -48,7 +48,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: openhim-console
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     app: openhim-console
@@ -56,12 +56,13 @@ spec:
   - port: 80
     targetPort: 80
 ---
-# Expose OpenHIM Console externally
+# Expose OpenHIM Console externally (only for KIND)
+{{- if ne .Values.cluster_type "eks" }}
 apiVersion: v1
 kind: Service
 metadata:
   name: openhim-console-external
-  namespace: health-interop
+  namespace: {{ .Values.global.namespace }}
 spec:
   type: NodePort
   selector:
@@ -69,4 +70,5 @@ spec:
   ports:
   - port: 80
     targetPort: 80
-    nodePort: 30900
+    nodePort: {{ .Values.services.nodePort.console }}
+{{- end }}
