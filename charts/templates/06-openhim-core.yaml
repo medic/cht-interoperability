@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openhim-core
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.openhim.core.replicas }}
+  selector:
+    matchLabels:
+      app: openhim-core
+  template:
+    metadata:
+      labels:
+        app: openhim-core
+    spec:
+      containers:
+      - name: openhim-core
+        image: {{ .Values.openhim.core.image }}
+        env:
+        - name: mongo_url
+          value: "mongodb://mongo/openhim"
+        - name: mongo_atnaUrl
+          value: "mongodb://mongo/openhim"
+        ports:
+        - containerPort: 8080
+        - containerPort: 5000
+        - containerPort: 5001
+        - containerPort: 5050
+        - containerPort: 5051
+        - containerPort: 5052
+        - containerPort: 7788
+        readinessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+            scheme: HTTPS
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 10
+          failureThreshold: 5
+        livenessProbe:
+          httpGet:
+            path: /heartbeat
+            port: 8080
+            scheme: HTTPS
+          initialDelaySeconds: 120
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+      initContainers:
+      - name: wait-for-mongo
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z mongo 27017; do echo waiting for mongo; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-core
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: openhim-core
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+  - name: router-http
+    port: 5000
+    targetPort: 5000
+  - name: router-https
+    port: 5001
+    targetPort: 5001
+  - name: router-tcp
+    port: 5050
+    targetPort: 5050
+  - name: router-tls
+    port: 5051
+    targetPort: 5051
+  - name: router-polling
+    port: 5052
+    targetPort: 5052
+  - name: tcp-adapter
+    port: 7788
+    targetPort: 7788
+---
+# Expose OpenHIM Core API externally
+{{- if ne .Values.cluster_type "eks" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-core-external
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: openhim-core
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+    nodePort: {{ .Values.services.nodePort.openhimCore | default 30081 }}
+  - name: router-http
+    port: 5000
+    targetPort: 5000
+  - name: router-https
+    port: 5001
+    targetPort: 5001
+{{- end }}

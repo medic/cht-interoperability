@@ -1,0 +1,37 @@
+{{- if eq .Values.cluster_type "eks" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openhim-core-ingress
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    # ALB Configuration
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: {{ .Values.ingress.annotations.tags }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.annotations.groupname }}
+    alb.ingress.kubernetes.io/target-type: ip
+    
+    # Backend uses HTTPS (OpenHIM Core uses self-signed cert)
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/backend-protocol-version: HTTP1
+    alb.ingress.kubernetes.io/healthcheck-path: /heartbeat
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
+    
+    # SSL/TLS Configuration
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.annotations.certificate }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ .Values.ingress.openhimCoreHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: openhim-core
+                port:
+                  number: 8080
+{{- end }}

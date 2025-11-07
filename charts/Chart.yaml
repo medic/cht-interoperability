@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cht-interop
+description: A Helm chart for CHT Interoperability Stack
+type: application
+version: 1.0.0
+appVersion: "1.0"
+keywords:
+  - health
+  - interoperability
+  - openhim
+  - cht
+  - fhir

@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hapi-fhir
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.hapiFhir.replicas }}
+  selector:
+    matchLabels:
+      app: hapi-fhir
+  template:
+    metadata:
+      labels:
+        app: hapi-fhir
+    spec:
+      containers:
+      - name: hapi-fhir
+        image: {{ .Values.hapiFhir.image }}
+        env:
+        - name: spring.datasource.url
+          value: "jdbc:postgresql://hapi-db:5432/hapi"
+        - name: spring.datasource.username
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-user
+        - name: spring.datasource.password
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-password
+        - name: spring.datasource.driverClassName
+          value: "org.postgresql.Driver"
+        - name: spring.jpa.properties.hibernate.dialect
+          value: "org.hibernate.dialect.PostgreSQL95Dialect"
+        - name: hapi.fhir.allow_external_references
+          value: "true"
+        - name: hapi.fhir.bulk_export_enabled
+          value: "true"
+        - name: hapi.fhir.subscription.resthook_enabled
+          value: "true"
+        - name: JAVA_TOOL_OPTIONS
+          value: "-Xmx2g"
+        - name: CATALINA_OPTS
+          value: "-Xmx2g"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "3Gi"
+            cpu: "1000m"
+        readinessProbe:
+          httpGet:
+            path: /fhir/metadata
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /fhir/metadata
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 60
+          timeoutSeconds: 10
+      initContainers:
+      - name: wait-for-hapi-db
+        image: postgres:14.1
+        command: ['sh', '-c', 'until pg_isready -h hapi-db -p 5432; do echo waiting for database; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hapi-fhir
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: hapi-fhir
+  ports:
+  - port: 8080
+    targetPort: 8080

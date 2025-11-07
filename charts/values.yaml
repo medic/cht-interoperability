@@ -1,0 +1,119 @@
+createNamespace: true  # For template/01-namespace.yaml
+cluster_type: "kind"   # Default to KIND
+
+# Default values for health-interop
+global:
+  namespace: cht-interop
+
+# Database configurations
+couchdb:
+  image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
+  storage: 10Gi
+  credentials:
+    username: admin
+    password: password
+    secret: secret
+    uuid: CC0C3BA1-88EE-4AE3-BFD3-6E0EE56ED534
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+mongodb:
+  image: mongo:4.2
+  storage: 5Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+postgresql:
+  image: postgres:14.1
+  storage: 5Gi
+  credentials:
+    username: admin
+    password: instant101
+    database: hapi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# OpenHIM configuration
+openhim:
+  core:
+    image: jembi/openhim-core:7
+    replicas: 1
+  console:
+    image: jembi/openhim-console:1.14.4
+    replicas: 1
+    config:
+      protocol: https
+      host: localhost
+      port: 8080
+
+# CHT configuration
+cht:
+  api:
+    image: public.ecr.aws/medic/cht-api:4.1.0-alpha
+    replicas: 1
+  nginx:
+    image: public.ecr.aws/medic/cht-nginx:4.1.0-alpha
+    replicas: 1
+  haproxy:
+    image: public.ecr.aws/medic/cht-haproxy:4.1.0-alpha
+    replicas: 1
+  sentinel:
+    image: public.ecr.aws/medic/cht-sentinel:4.1.0-alpha
+    replicas: 1
+  healthcheck:
+    image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.1.0-alpha
+    replicas: 1
+
+# HAPI FHIR configuration
+hapiFhir:
+  image: hapiproject/hapi:v5.5.1
+  replicas: 1
+
+# Mediator configuration
+mediator:
+  image: mediator:local
+  imagePullPolicy: Never
+  replicas: 1
+  credentials:
+    openhimUsername: interop@openhim.org
+    openhimPassword: interop-password
+    fhirUsername: interop-client
+    fhirPassword: interop-password
+    chtUsername: admin
+    chtPassword: password
+
+# Configurator configuration
+configurator:
+  image: configurator:local
+  imagePullPolicy: Never
+
+# Storage configuration
+persistence:
+  storageClass: standard
+  chtCredentials: 1Gi
+  chtSsl: 1Gi
+
+# Service configuration
+services:
+  nodePort:
+    nginx: 30080
+    nginxHttps: 30443
+    console: 30900
+    mediator: 30600
+    openhimCore: 30081
+

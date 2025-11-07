@@ -1,0 +1,189 @@
+# MongoDBefor OpenHIM
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: {{ .Values.mongodb.image }}
+        resources:
+          requests:
+            memory: {{ .Values.mongodb.resources.requests.memory | quote }}
+            cpu: {{ .Values.mongodb.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.mongodb.resources.limits.memory | quote }}
+            cpu: {{ .Values.mongodb.resources.limits.cpu | quote }}
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-storage
+        persistentVolumeClaim:
+          claimName: mongo-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+# PostgreSQL for HAPI FHIR
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hapi-db
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hapi-db
+  template:
+    metadata:
+      labels:
+        app: hapi-db
+    spec:
+      containers:
+      - name: hapi-db
+        image: {{ .Values.postgresql.image }}
+        resources:
+          requests:
+            memory: {{ .Values.postgresql.resources.requests.memory | quote }}
+            cpu: {{ .Values.postgresql.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.postgresql.resources.limits.memory | quote }}
+            cpu: {{ .Values.postgresql.resources.limits.cpu | quote }}
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: postgres-db
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: hapi-db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: hapi-db-storage
+        persistentVolumeClaim:
+          claimName: hapi-db-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hapi-db
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: hapi-db
+  ports:
+  - port: 5432
+    targetPort: 5432
+---
+# CouchDB for CHT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couchdb
+  template:
+    metadata:
+      labels:
+        app: couchdb
+    spec:
+      containers:
+      - name: couchdb
+        image: {{ .Values.couchdb.image }}
+        resources:
+          requests:
+            memory: {{ .Values.couchdb.resources.requests.memory | quote }}
+            cpu: {{ .Values.couchdb.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.couchdb.resources.limits.memory | quote }}
+            cpu: {{ .Values.couchdb.resources.limits.cpu | quote }}
+        env:
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-user
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-password
+        - name: COUCHDB_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: database-credentials
+              key: couchdb-secret
+        - name: COUCHDB_UUID
+          value: {{ .Values.couchdb.credentials.uuid | quote }}
+        - name: SVC_NAME
+          value: "couchdb"
+        - name: COUCHDB_LOG_LEVEL
+          value: "error"
+        ports:
+        - containerPort: 5984
+        volumeMounts:
+        - name: couchdb-data-storage
+          mountPath: /opt/couchdb/data
+        - name: cht-credentials-storage
+          mountPath: /opt/couchdb/etc/local.d/
+      volumes:
+      - name: couchdb-data-storage
+        persistentVolumeClaim:
+          claimName: couchdb-data
+      - name: cht-credentials-storage
+        persistentVolumeClaim:
+          claimName: cht-credentials
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: couchdb
+  ports:
+  - port: 5984
+    targetPort: 5984

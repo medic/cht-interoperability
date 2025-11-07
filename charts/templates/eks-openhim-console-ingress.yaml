@@ -1,0 +1,36 @@
+{{- if eq .Values.cluster_type "eks" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openhim-console-ingress
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    # ALB Configuration
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: {{ .Values.ingress.annotations.tags }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.annotations.groupname }}
+    alb.ingress.kubernetes.io/target-type: ip
+    
+    # Backend uses HTTP
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    
+    # SSL/TLS Configuration
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.annotations.certificate }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+spec:
+  ingressClassName: alb
+  rules:
+    - host: {{ .Values.ingress.openhimConsoleHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: openhim-console
+                port:
+                  number: 80
+{{- end }}

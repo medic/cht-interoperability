@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openhim-console
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.openhim.console.replicas }}
+  selector:
+    matchLabels:
+      app: openhim-console
+  template:
+    metadata:
+      labels:
+        app: openhim-console
+    spec:
+      containers:
+      - name: openhim-console
+        image: {{ .Values.openhim.console.image }}
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: console-config
+          mountPath: /usr/share/nginx/html/config/default.json
+          subPath: default.json
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+      volumes:
+      - name: console-config
+        configMap:
+          name: openhim-console-config
+      initContainers:
+      - name: wait-for-openhim-core
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z openhim-core 8080; do echo waiting for openhim-core; sleep 2; done']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-console
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: openhim-console
+  ports:
+  - port: 80
+    targetPort: 80
+---
+# Expose OpenHIM Console externally (only for KIND)
+{{- if ne .Values.cluster_type "eks" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: openhim-console-external
+  namespace: {{ .Values.global.namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: openhim-console
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: {{ .Values.services.nodePort.console }}
+{{- end }}
