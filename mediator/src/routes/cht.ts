@@ -11,13 +11,16 @@ const router = Router();
 router.post('/', requestHandler(async req => {
   try {
     const chtFeedbackPayload = req.body;
-    logger.debug('Received CHT feedback payload:', chtFeedbackPayload);
+    logger.debug('Received CHT feedback payload:');
+    logger.debug(chtFeedbackPayload);
 
     const communicationPayload = convertChtClaimToFhirCommunication(chtFeedbackPayload);
-    logger.debug('Converted CHT feedback to OpenIMIS communication payload:', communicationPayload);
+    logger.debug('Converted CHT feedback to OpenIMIS communication payload:');
+    logger.debug(communicationPayload);
 
     const loginRes = await login();
     const token = loginRes?.token;
+    logger.debug('Successfully logged in');
 
     const res = await axios.post(
       `${OPENIMIS.baseUrl}${OPENIMIS.endpoints.communication}`,
@@ -37,7 +40,8 @@ router.post('/', requestHandler(async req => {
       }
     };
   } catch (error) {
-    logger.error('Error processing CHT feedback:', error);
+    logger.error('Error processing CHT feedback:');
+    logger.error(error);
     
     return {
       status: 500, data: {
