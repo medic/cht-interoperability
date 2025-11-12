@@ -1,0 +1,1298 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms">
+  <h:head>
+    <h:title>New Area</h:title>
+    <model>
+      <itext>
+        <translation lang="en">
+          <text id="/data/g40_clinic/external_id:label">
+            <value>External ID</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated/false:label">
+            <value>No, I want to name it manually</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated/true:label">
+            <value>Yes</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated:label">
+            <value>Would you like to name the place after the primary contact: &quot;<output value=" /data/init/generated_name_translation "/>&quot;?</value>
+          </text>
+          <text id="/data/g40_clinic/name:label">
+            <value>Name</value>
+          </text>
+          <text id="/data/g40_clinic/notes:label">
+            <value>Notes</value>
+          </text>
+          <text id="/data/g40_clinic:hint">
+            <value>mandatory</value>
+          </text>
+          <text id="/data/contact/basic_training/false:label">
+            <value>Not Received</value>
+          </text>
+          <text id="/data/contact/basic_training/true:label">
+            <value>Received</value>
+          </text>
+          <text id="/data/contact/basic_training:label">
+            <value>Received Basic FCHV Training?</value>
+          </text>
+          <text id="/data/contact/caste_code/brahmin_chhetri:label">
+            <value>Brahmin/Chhetri</value>
+          </text>
+          <text id="/data/contact/caste_code/dalit:label">
+            <value>Dalit</value>
+          </text>
+          <text id="/data/contact/caste_code/janajati:label">
+            <value>Janajati</value>
+          </text>
+          <text id="/data/contact/caste_code/madhesi:label">
+            <value>Madhesi</value>
+          </text>
+          <text id="/data/contact/caste_code/muslim:label">
+            <value>Muslim</value>
+          </text>
+          <text id="/data/contact/caste_code/other:label">
+            <value>Other</value>
+          </text>
+          <text id="/data/contact/caste_code/unknown:label">
+            <value>Unknown</value>
+          </text>
+          <text id="/data/contact/caste_code:hint">
+            <value>Select all caste codes that apply. Only select "unknown" if you do not know the caste code or "other" if none of the listed caste codes apply.</value>
+          </text>
+          <text id="/data/contact/caste_code:jr:constraintMsg">
+            <value>Please either select a "caste code" and/or "other", OR select "unknown"</value>
+          </text>
+          <text id="/data/contact/caste_code:label">
+            <value>Caste Code</value>
+          </text>
+          <text id="/data/contact/date_of_birth:label">
+            <value>Date of Birth in Bikram Sambat</value>
+          </text>
+          <text id="/data/contact/external_id:label">
+            <value>External ID</value>
+          </text>
+          <text id="/data/contact/fchv_id_number:jr:constraintMsg">
+            <value>Must be a number</value>
+          </text>
+          <text id="/data/contact/fchv_id_number:label">
+            <value>FCHV ID Number</value>
+          </text>
+          <text id="/data/contact/first_name:jr:constraintMsg">
+            <value>Must be 30 letters or less</value>
+          </text>
+          <text id="/data/contact/first_name:label">
+            <value>First Name</value>
+          </text>
+          <text id="/data/contact/last_name:jr:constraintMsg">
+            <value>Must be 30 letters or less</value>
+          </text>
+          <text id="/data/contact/last_name:label">
+            <value>Last Name</value>
+          </text>
+          <text id="/data/contact/level_of_education/bachelors_or_higher:label">
+            <value>Bachelors or higher</value>
+          </text>
+          <text id="/data/contact/level_of_education/grade_1_to_8:label">
+            <value>Primary (Grade 1 to 8)</value>
+          </text>
+          <text id="/data/contact/level_of_education/grade_9_to_12:label">
+            <value>Secondary (Grade 9 - 12)</value>
+          </text>
+          <text id="/data/contact/level_of_education/no_formal_education:label">
+            <value>No formal education</value>
+          </text>
+          <text id="/data/contact/level_of_education:hint">
+            <value>Select one below</value>
+          </text>
+          <text id="/data/contact/level_of_education:label">
+            <value>Level of Education Completed</value>
+          </text>
+          <text id="/data/contact/literate/false:label">
+            <value>No</value>
+          </text>
+          <text id="/data/contact/literate/true:label">
+            <value>Yes</value>
+          </text>
+          <text id="/data/contact/literate/unknown:label">
+            <value>Unknown</value>
+          </text>
+          <text id="/data/contact/literate:label">
+            <value>Literate?</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:hint">
+            <value>For unknown day, type "१"; for unknown month, select "बैशाख"</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:jr:constraintMsg">
+            <value>Date cannot be older than 2047 BS</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:label">
+            <value>Date of Most Recent FCHV Refresher Training, if applicable</value>
+          </text>
+          <text id="/data/contact/notes:hint">
+            <value>100 characters</value>
+          </text>
+          <text id="/data/contact/notes:jr:constraintMsg">
+            <value>Please limit to 100 characters</value>
+          </text>
+          <text id="/data/contact/notes:label">
+            <value>Notes</value>
+          </text>
+          <text id="/data/contact/phone:hint">
+            <value>Include Nepali country code (+977) before phone number.</value>
+          </text>
+          <text id="/data/contact/phone:jr:constraintMsg">
+            <value>Please enter a valid local number, or use the standard international format, which includes a plus sign (+) and country code. For example: +9779841239876</value>
+          </text>
+          <text id="/data/contact/phone:label">
+            <value>mHealth Phone Number</value>
+          </text>
+          <text id="/data/contact/phone_alternate:jr:constraintMsg">
+            <value>Please enter a valid local number, or use the standard international format, which includes a plus sign (+) and country code. For example: +9779841111111</value>
+          </text>
+          <text id="/data/contact/phone_alternate:label">
+            <value>Alternate Phone Number</value>
+          </text>
+          <text id="/data/contact/role:hint">
+            <value>Select the role that best suits this person</value>
+          </text>
+          <text id="/data/contact/role:label">
+            <value>Role</value>
+          </text>
+          <text id="/data/contact/sex/female:label">
+            <value>Female</value>
+          </text>
+          <text id="/data/contact/sex/male:label">
+            <value>Male</value>
+          </text>
+          <text id="/data/contact/sex:label">
+            <value>Sex</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:hint">
+            <value>yyyy format</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:jr:constraintMsg">
+            <value>Year must be equal to or after the FCHV program launch date of 2044 BS, as well as after the FCHV's date of birth.</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:label">
+            <value>Starting Year as FCHV in Bikram Sambat</value>
+          </text>
+          <text id="/data/contact/training_date:hint">
+            <value>For unknown day, type "१"; for unknown month, select "बैशाख"</value>
+          </text>
+          <text id="/data/contact/training_date:jr:constraintMsg">
+            <value>Date must be equal to or after the starting year of FCHV</value>
+          </text>
+          <text id="/data/contact/training_date:label">
+            <value>Date of Basic FCHV training</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:hint">
+            <value>yyyy format</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:jr:constraintMsg">
+            <value>Age must be between 10 and 100 years old.</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:label">
+            <value>Year of Birth in Bikram Sambat</value>
+          </text>
+          <text id="/data/contact:label">
+            <value>New Person</value>
+          </text>
+          <text id="/data/init/create_new_person:label">
+            <value>Set the Primary Contact</value>
+          </text>
+          <text id="/data/init/custom_place_name:hint">
+            <value>Enter the name of this place</value>
+          </text>
+          <text id="/data/init/custom_place_name:label">
+            <value><output value=" /data/init/custom_place_name_label "/></value>
+          </text>
+          <text id="/data/init/custom_place_name_label_translator/name:label">
+            <value>Name</value>
+          </text>
+          <text id="/data/init/generated_name/g10_district:label">
+            <value><output value=" /data/init/contact_name "/>'s District</value>
+          </text>
+          <text id="/data/init/generated_name/g20_municipality:label">
+            <value><output value=" /data/init/contact_name "/>'s Municipality</value>
+          </text>
+          <text id="/data/init/generated_name/g30_health_center:label">
+            <value><output value=" /data/init/contact_name "/>'s Health Center</value>
+          </text>
+          <text id="/data/init/generated_name/g40_clinic:label">
+            <value><output value=" /data/init/contact_name "/>'s Area</value>
+          </text>
+          <text id="/data/init/place_type/g10_district:label">
+            <value>District</value>
+          </text>
+          <text id="/data/init/place_type/g20_municipality:label">
+            <value>Municipality</value>
+          </text>
+          <text id="/data/init/place_type/g30_health_center:label">
+            <value>Health Center</value>
+          </text>
+          <text id="/data/init/place_type/g40_clinic:label">
+            <value>Area</value>
+          </text>
+          <text id="/data/init/select_person:hint">
+            <value>Select the Primary Contact</value>
+          </text>
+          <text id="/data/inputs/user/contact_id:label">
+            <value>Contact ID of the logged in user</value>
+          </text>
+          <text id="/data/inputs/user/facility_id:label">
+            <value>Place ID of the logged in user</value>
+          </text>
+          <text id="/data/inputs/user/name:label">
+            <value>Name of the logged in user</value>
+          </text>
+          <text id="static_instance-caste_code-0">
+            <value>Dalit</value>
+          </text>
+          <text id="static_instance-caste_code-1">
+            <value>Janajati</value>
+          </text>
+          <text id="static_instance-caste_code-2">
+            <value>Madhesi</value>
+          </text>
+          <text id="static_instance-caste_code-3">
+            <value>Muslim</value>
+          </text>
+          <text id="static_instance-caste_code-4">
+            <value>Brahmin/Chhetri</value>
+          </text>
+          <text id="static_instance-caste_code-5">
+            <value>Other</value>
+          </text>
+          <text id="static_instance-caste_code-6">
+            <value>Unknown</value>
+          </text>
+          <text id="static_instance-contact-0">
+            <value>Create a new person</value>
+          </text>
+          <text id="static_instance-contact-1">
+            <value>Select an existing person</value>
+          </text>
+          <text id="static_instance-contact-2">
+            <value>Skip this step</value>
+          </text>
+          <text id="static_instance-generated_name-0">
+            <value><output value=" /data/init/contact_name "/>'s District</value>
+          </text>
+          <text id="static_instance-generated_name-1">
+            <value><output value=" /data/init/contact_name "/>'s Municipality</value>
+          </text>
+          <text id="static_instance-generated_name-2">
+            <value><output value=" /data/init/contact_name "/>'s Health Center</value>
+          </text>
+          <text id="static_instance-generated_name-3">
+            <value><output value=" /data/init/contact_name "/>'s Area</value>
+          </text>
+          <text id="static_instance-level_of_education-0">
+            <value>Bachelors or higher</value>
+          </text>
+          <text id="static_instance-level_of_education-1">
+            <value>Secondary (Grade 9 - 12)</value>
+          </text>
+          <text id="static_instance-level_of_education-2">
+            <value>Primary (Grade 1 to 8)</value>
+          </text>
+          <text id="static_instance-level_of_education-3">
+            <value>No formal education</value>
+          </text>
+          <text id="static_instance-male_female-0">
+            <value>Female</value>
+          </text>
+          <text id="static_instance-male_female-1">
+            <value>Male</value>
+          </text>
+          <text id="static_instance-place_type-0">
+            <value>District</value>
+          </text>
+          <text id="static_instance-place_type-1">
+            <value>Municipality</value>
+          </text>
+          <text id="static_instance-place_type-2">
+            <value>Health Center</value>
+          </text>
+          <text id="static_instance-place_type-3">
+            <value>Area</value>
+          </text>
+          <text id="static_instance-received_or_not-0">
+            <value>Received</value>
+          </text>
+          <text id="static_instance-received_or_not-1">
+            <value>Not Received</value>
+          </text>
+          <text id="static_instance-roles-0">
+            <value>FCHV</value>
+          </text>
+          <text id="static_instance-roles-1">
+            <value>Client</value>
+          </text>
+          <text id="static_instance-roles-2">
+            <value>Other (HF Staff, HF incharge)</value>
+          </text>
+          <text id="static_instance-translate_name_label-0">
+            <value>Name</value>
+          </text>
+          <text id="static_instance-yes_no-0">
+            <value>Yes</value>
+          </text>
+          <text id="static_instance-yes_no-1">
+            <value>No</value>
+          </text>
+          <text id="static_instance-yes_no_generated_name-0">
+            <value>Yes</value>
+          </text>
+          <text id="static_instance-yes_no_generated_name-1">
+            <value>No, I want to name it manually</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-0">
+            <value>Yes</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-1">
+            <value>No</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-2">
+            <value>Unknown</value>
+          </text>
+        </translation>
+        <translation lang="ne">
+          <text id="/data/g40_clinic/external_id:label">
+            <value>बाहिरि ID</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated/false:label">
+            <value>होइन, म आफैँ नाम दिन चाहन्छु</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated/true:label">
+            <value>हो</value>
+          </text>
+          <text id="/data/g40_clinic/is_name_generated:label">
+            <value>के तपाइ यस स्थानको प्राथमिक सम्पर्क नाम दिन चाहनु हुन्छ?:<output value=" /data/init/generated_name_translation "/></value>
+          </text>
+          <text id="/data/g40_clinic/name:label">
+            <value>नाम</value>
+          </text>
+          <text id="/data/g40_clinic/notes:label">
+            <value>टिप्पणी</value>
+          </text>
+          <text id="/data/g40_clinic/parent:label">
+            <value>-</value>
+          </text>
+          <text id="/data/g40_clinic/type:label">
+            <value>-</value>
+          </text>
+          <text id="/data/g40_clinic:hint">
+            <value>जरुरी</value>
+          </text>
+          <text id="/data/contact/basic_training/false:label">
+            <value>नपाएको</value>
+          </text>
+          <text id="/data/contact/basic_training/true:label">
+            <value>पाएको</value>
+          </text>
+          <text id="/data/contact/basic_training:label">
+            <value>म. स्वा. स्व. से. को आधारभूत तालिम पाउनुभयो?</value>
+          </text>
+          <text id="/data/contact/caste_code/brahmin_chhetri:label">
+            <value>ब्राह्मण/क्षेत्री</value>
+          </text>
+          <text id="/data/contact/caste_code/dalit:label">
+            <value>दलित</value>
+          </text>
+          <text id="/data/contact/caste_code/janajati:label">
+            <value>जनजाति</value>
+          </text>
+          <text id="/data/contact/caste_code/madhesi:label">
+            <value>मधेशी</value>
+          </text>
+          <text id="/data/contact/caste_code/muslim:label">
+            <value>मुस्लिम</value>
+          </text>
+          <text id="/data/contact/caste_code/other:label">
+            <value>अन्य</value>
+          </text>
+          <text id="/data/contact/caste_code/unknown:label">
+            <value>थाहा नभएको</value>
+          </text>
+          <text id="/data/contact/caste_code:hint">
+            <value>मिल्ने जति सबै जाति कोड छान्नुहोस्। जाति कोड थाहा नभएमा "थाहा नभएको" या दिइएको मध्य नपरेमा "अन्य" छान्नुहोला ।</value>
+          </text>
+          <text id="/data/contact/caste_code:jr:constraintMsg">
+            <value>यदि कुनै पनि जाति कोड वा "अन्य" छान्नुभएमा "थाहा नभएको" छान्न मिल्दैन।</value>
+          </text>
+          <text id="/data/contact/caste_code:label">
+            <value>जाति कोड</value>
+          </text>
+          <text id="/data/contact/date_of_birth:label">
+            <value>जन्म मिति (वि. स.)</value>
+          </text>
+          <text id="/data/contact/external_id:label">
+            <value>बाहिरी ID</value>
+          </text>
+          <text id="/data/contact/fchv_id_number:jr:constraintMsg">
+            <value>अंकमा लेख्नु अनिवार्य छ ।</value>
+          </text>
+          <text id="/data/contact/fchv_id_number:label">
+            <value>म. स्वा. स्व. से. परिचय पत्र नम्बर</value>
+          </text>
+          <text id="/data/contact/first_name:jr:constraintMsg">
+            <value>नाम ३० अक्षर वा सो भन्दा कम हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/first_name:label">
+            <value>नाम</value>
+          </text>
+          <text id="/data/contact/last_name:jr:constraintMsg">
+            <value>थर ३० अक्षर वा सो भन्दा कम हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/last_name:label">
+            <value>थर</value>
+          </text>
+          <text id="/data/contact/level_of_education/bachelors_or_higher:label">
+            <value>स्नातक वा सो भन्दा माथि</value>
+          </text>
+          <text id="/data/contact/level_of_education/grade_1_to_8:label">
+            <value>आधारभूत शिक्षा (कक्षा १-८ )</value>
+          </text>
+          <text id="/data/contact/level_of_education/grade_9_to_12:label">
+            <value>माध्यमिक शिक्षा (कक्षा ९ -१२)</value>
+          </text>
+          <text id="/data/contact/level_of_education/no_formal_education:label">
+            <value>कुनै औपचारिक शिक्षा नलिएको</value>
+          </text>
+          <text id="/data/contact/level_of_education:hint">
+            <value>एउटा छान्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/level_of_education:label">
+            <value>पूरा गरेको शैक्षिक तह</value>
+          </text>
+          <text id="/data/contact/literate/false:label">
+            <value>होइन</value>
+          </text>
+          <text id="/data/contact/literate/true:label">
+            <value>हो</value>
+          </text>
+          <text id="/data/contact/literate/unknown:label">
+            <value>थाहा नभएको</value>
+          </text>
+          <text id="/data/contact/literate:label">
+            <value>साक्षर ?</value>
+          </text>
+          <text id="/data/contact/meta:label">
+            <value>-</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:hint">
+            <value>दिन थाहा नभए "१" र महिना थाहा नभए "बैशाख" लेख्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:jr:constraintMsg">
+            <value>मिति म. स्वा. स्व. से. को आधारभूत तालिम पुनार्ताजगी सुरु भएको वर्ष (वि.स. 2047) वा त्यसपछि हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/most_recent_fchv_training:label">
+            <value>पछिल्लो पटक म. स्वा. स्व. से. को पुनर्ताजगी तालिम लिएको मिति (यदि लिएको भए मात्रै)</value>
+          </text>
+          <text id="/data/contact/notes:hint">
+            <value>१०० अक्षर नबढाई लेख्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/notes:jr:constraintMsg">
+            <value>कृपया १०० अक्षर मा सिमित गर्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/notes:label">
+            <value>टिप्पणी</value>
+          </text>
+          <text id="/data/contact/parent:label">
+            <value>-</value>
+          </text>
+          <text id="/data/contact/phone:hint">
+            <value>फोन नम्बरको अगाडि नेपालको राष्ट्रिय कोड (+977) राख्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/phone:jr:constraintMsg">
+            <value>कृपया वैधानिक स्थानीय नम्बर वा अन्तर्राष्ट्रिय नमुना अनुसार (+) र देशको कोड समेत लेख्नुहोस् I उदाहरणको लागि +9779841239876</value>
+          </text>
+          <text id="/data/contact/phone:label">
+            <value>मोबाइल स्वास्थ्यको फोन नम्बर</value>
+          </text>
+          <text id="/data/contact/phone_alternate:jr:constraintMsg">
+            <value>कृपया वैधानिक स्थानीय नम्बर वा अन्तर्राष्ट्रिय नमुना अनुसार (+) र देशको कोड समेत लेख्नुहोस् I उदाहरणको लागि +9779841239876</value>
+          </text>
+          <text id="/data/contact/phone_alternate:label">
+            <value>वैकल्पिक फोन नम्बर</value>
+          </text>
+          <text id="/data/contact/role:hint">
+            <value>यो व्यक्तिलाई सबैभन्दा मिल्ने भूमिका छान्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/role:label">
+            <value>भूमिका</value>
+          </text>
+          <text id="/data/contact/sex/female:label">
+            <value>महिला</value>
+          </text>
+          <text id="/data/contact/sex/male:label">
+            <value>पुरुष</value>
+          </text>
+          <text id="/data/contact/sex:label">
+            <value>लिंग</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:hint">
+            <value>४ अंकमा लेख्नुहोस्, उदाहरण: 2044</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:jr:constraintMsg">
+            <value>वर्ष राख्दा म. स्वा. स्व. से. कार्यक्रम लागु भएको वर्ष (वि.स. 2044) वा त्यो भन्दा पछि हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/start_date_as_fchv:label">
+            <value>म. स्वा. स्व. से. को काम सुरु गरेको वर्ष (वि. स.)</value>
+          </text>
+          <text id="/data/contact/training_date:hint">
+            <value>दिन थाहा नभए "१" र महिना थाहा नभए "बैशाख" लेख्नुहोस् ।</value>
+          </text>
+          <text id="/data/contact/training_date:jr:constraintMsg">
+            <value>मिति म. स्वा. स्व. से. को काम सुरु गरेको वर्ष वा त्यसपछि हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/training_date:label">
+            <value>म. स्वा. स्व. से. को आधारभूत तालिम लिएको मिति</value>
+          </text>
+          <text id="/data/contact/type:label">
+            <value>-</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:hint">
+            <value>४ अंकमा लेख्नुहोस्, उदाहरण: 2044</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:jr:constraintMsg">
+            <value>उमेर १० देखि १०० वर्ष सम्म हुनुपर्छ।</value>
+          </text>
+          <text id="/data/contact/year_of_birth_in_bikram_sambat:label">
+            <value>जन्म वर्ष (वि. स.)</value>
+          </text>
+          <text id="/data/contact:label">
+            <value>नया व्यक्ति</value>
+          </text>
+          <text id="/data/init/create_new_person:label">
+            <value>प्राथमिक सम्पर्क व्यक्ति</value>
+          </text>
+          <text id="/data/init/custom_place_name:hint">
+            <value>यस स्थानको नाम लेख्नुहोस्</value>
+          </text>
+          <text id="/data/init/custom_place_name:label">
+            <value><output value=" /data/init/custom_place_name_label "/></value>
+          </text>
+          <text id="/data/init/custom_place_name_label_translator/name:label">
+            <value>नाम</value>
+          </text>
+          <text id="/data/init/generated_name/g10_district:label">
+            <value><output value=" /data/init/contact_name "/>को जिल्ला</value>
+          </text>
+          <text id="/data/init/generated_name/g20_municipality:label">
+            <value><output value=" /data/init/contact_name "/>को नगरपालिका</value>
+          </text>
+          <text id="/data/init/generated_name/g30_health_center:label">
+            <value><output value=" /data/init/contact_name "/>को स्वास्थ्य केन्द्र</value>
+          </text>
+          <text id="/data/init/generated_name/g40_clinic:label">
+            <value><output value=" /data/init/contact_name "/>को क्षेत्र</value>
+          </text>
+          <text id="/data/init/name:label">
+            <value>-</value>
+          </text>
+          <text id="/data/init/place_type/g10_district:label">
+            <value>जिल्ला</value>
+          </text>
+          <text id="/data/init/place_type/g20_municipality:label">
+            <value>नगरपालिका</value>
+          </text>
+          <text id="/data/init/place_type/g30_health_center:label">
+            <value>स्वास्थ्य केन्द्र</value>
+          </text>
+          <text id="/data/init/place_type/g40_clinic:label">
+            <value>क्षेत्र</value>
+          </text>
+          <text id="/data/init/select_person:hint">
+            <value>प्राथमिक सम्पर्क व्यक्ति छान्नुहोस्</value>
+          </text>
+          <text id="/data/inputs/user/contact_id:label">
+            <value>लग इन गरेको प्रयोगकर्ताको सम्पर्क ID</value>
+          </text>
+          <text id="/data/inputs/user/facility_id:label">
+            <value>लग इन गरेको प्रयोगकर्ताको स्थानको ID</value>
+          </text>
+          <text id="/data/inputs/user/name:label">
+            <value>लग इन गरेको प्रयोगकर्ताको नाम</value>
+          </text>
+          <text id="static_instance-caste_code-0">
+            <value>दलित</value>
+          </text>
+          <text id="static_instance-caste_code-1">
+            <value>जनजाति</value>
+          </text>
+          <text id="static_instance-caste_code-2">
+            <value>मधेशी</value>
+          </text>
+          <text id="static_instance-caste_code-3">
+            <value>मुस्लिम</value>
+          </text>
+          <text id="static_instance-caste_code-4">
+            <value>ब्राह्मण/क्षेत्री</value>
+          </text>
+          <text id="static_instance-caste_code-5">
+            <value>अन्य</value>
+          </text>
+          <text id="static_instance-caste_code-6">
+            <value>थाहा नभएको</value>
+          </text>
+          <text id="static_instance-contact-0">
+            <value>नयाँ व्यक्ति बनाउनुहोस्</value>
+          </text>
+          <text id="static_instance-contact-1">
+            <value>व्यक्ति छान्नुहोस्</value>
+          </text>
+          <text id="static_instance-contact-2">
+            <value>यो चरण छोड्नुहोस्</value>
+          </text>
+          <text id="static_instance-generated_name-0">
+            <value><output value=" /data/init/contact_name "/>को जिल्ला</value>
+          </text>
+          <text id="static_instance-generated_name-1">
+            <value><output value=" /data/init/contact_name "/>को नगरपालिका</value>
+          </text>
+          <text id="static_instance-generated_name-2">
+            <value><output value=" /data/init/contact_name "/>को स्वास्थ्य केन्द्र</value>
+          </text>
+          <text id="static_instance-generated_name-3">
+            <value><output value=" /data/init/contact_name "/>को क्षेत्र</value>
+          </text>
+          <text id="static_instance-level_of_education-0">
+            <value>स्नातक वा सो भन्दा माथि</value>
+          </text>
+          <text id="static_instance-level_of_education-1">
+            <value>माध्यमिक शिक्षा (कक्षा ९ -१२)</value>
+          </text>
+          <text id="static_instance-level_of_education-2">
+            <value>आधारभूत शिक्षा (कक्षा १-८ )</value>
+          </text>
+          <text id="static_instance-level_of_education-3">
+            <value>कुनै औपचारिक शिक्षा नलिएको</value>
+          </text>
+          <text id="static_instance-male_female-0">
+            <value>महिला</value>
+          </text>
+          <text id="static_instance-male_female-1">
+            <value>पुरुष</value>
+          </text>
+          <text id="static_instance-place_type-0">
+            <value>जिल्ला</value>
+          </text>
+          <text id="static_instance-place_type-1">
+            <value>नगरपालिका</value>
+          </text>
+          <text id="static_instance-place_type-2">
+            <value>स्वास्थ्य केन्द्र</value>
+          </text>
+          <text id="static_instance-place_type-3">
+            <value>क्षेत्र</value>
+          </text>
+          <text id="static_instance-received_or_not-0">
+            <value>पाएको</value>
+          </text>
+          <text id="static_instance-received_or_not-1">
+            <value>नपाएको</value>
+          </text>
+          <text id="static_instance-roles-0">
+            <value>महिला स्वास्थ्य स्वयंसेविका</value>
+          </text>
+          <text id="static_instance-roles-1">
+            <value>सेवाग्राही</value>
+          </text>
+          <text id="static_instance-roles-2">
+            <value>अन्य (स्वास्थ्य संस्थाका इन्चार्ज, स्वास्थ्य कर्मी, नगर/गाउँ पालिका स्वास्थ्य संयोजक आदि)</value>
+          </text>
+          <text id="static_instance-translate_name_label-0">
+            <value>नाम</value>
+          </text>
+          <text id="static_instance-yes_no-0">
+            <value>हो</value>
+          </text>
+          <text id="static_instance-yes_no-1">
+            <value>होइन</value>
+          </text>
+          <text id="static_instance-yes_no_generated_name-0">
+            <value>हो</value>
+          </text>
+          <text id="static_instance-yes_no_generated_name-1">
+            <value>होइन, म आफैँ नाम दिन चाहन्छु</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-0">
+            <value>हो</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-1">
+            <value>होइन</value>
+          </text>
+          <text id="static_instance-yes_no_unknown-2">
+            <value>थाहा नभएको</value>
+          </text>
+        </translation>
+      </itext>
+      <instance>
+        <data id="contact:g40_clinic:create" prefix="J1!contact:g40_clinic:create!" delimiter="#" version="2024-05-09 13-30">
+          <inputs>
+            <meta>
+              <location>
+                <lat/>
+                <long/>
+                <error/>
+                <message/>
+              </location>
+            </meta>
+            <user>
+              <contact_id/>
+              <facility_id/>
+              <name/>
+            </user>
+          </inputs>
+          <g40_clinic>
+            <parent>PARENT</parent>
+            <type/>
+            <is_name_generated>true</is_name_generated>
+            <name/>
+            <external_id/>
+            <notes/>
+            <contact/>
+            <geolocation/>
+            <meta tag="hidden">
+              <created_by/>
+              <created_by_person_uuid/>
+              <created_by_place_uuid/>
+            </meta>
+          </g40_clinic>
+          <init>
+            <create_new_person/>
+            <select_person/>
+            <name/>
+            <contact_name/>
+            <custom_place_name_label_translator/>
+            <custom_place_name_label/>
+            <custom_place_name/>
+            <place_type>g40_clinic</place_type>
+            <place_type_translation/>
+            <generated_name>g40_clinic</generated_name>
+            <generated_name_translation/>
+          </init>
+          <contact>
+            <parent>PARENT</parent>
+            <type>person</type>
+            <role/>
+            <first_name/>
+            <last_name/>
+            <name/>
+            <phone>+977</phone>
+            <phone_alternate/>
+            <sex/>
+            <caste_code/>
+            <year_of_birth_in_bikram_sambat/>
+            <year_of_birth_approx/>
+            <date_of_birth/>
+            <fchv_id_number/>
+            <start_date_as_fchv/>
+            <start_date_as_fchv_ad/>
+            <literate/>
+            <level_of_education/>
+            <basic_training/>
+            <training_date/>
+            <most_recent_fchv_training/>
+            <external_id/>
+            <notes/>
+            <meta tag="hidden">
+              <created_by/>
+              <created_by_person_uuid/>
+              <created_by_place_uuid/>
+            </meta>
+          </contact>
+          <meta tag="hidden">
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="yes_no">
+        <root>
+          <item>
+            <itextId>static_instance-yes_no-0</itextId>
+            <name>true</name>
+          </item>
+          <item>
+            <itextId>static_instance-yes_no-1</itextId>
+            <name>false</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="yes_no_unknown">
+        <root>
+          <item>
+            <itextId>static_instance-yes_no_unknown-0</itextId>
+            <name>true</name>
+          </item>
+          <item>
+            <itextId>static_instance-yes_no_unknown-1</itextId>
+            <name>false</name>
+          </item>
+          <item>
+            <itextId>static_instance-yes_no_unknown-2</itextId>
+            <name>unknown</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="male_female">
+        <root>
+          <item>
+            <itextId>static_instance-male_female-0</itextId>
+            <name>female</name>
+          </item>
+          <item>
+            <itextId>static_instance-male_female-1</itextId>
+            <name>male</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="contact">
+        <root>
+          <item>
+            <itextId>static_instance-contact-0</itextId>
+            <name>new_person</name>
+          </item>
+          <item>
+            <itextId>static_instance-contact-1</itextId>
+            <name>old_person</name>
+          </item>
+          <item>
+            <itextId>static_instance-contact-2</itextId>
+            <name>none</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="roles">
+        <root>
+          <item>
+            <itextId>static_instance-roles-0</itextId>
+            <name>chw</name>
+          </item>
+          <item>
+            <itextId>static_instance-roles-1</itextId>
+            <name>patient</name>
+          </item>
+          <item>
+            <itextId>static_instance-roles-2</itextId>
+            <name>other</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="yes_no_generated_name">
+        <root>
+          <item>
+            <itextId>static_instance-yes_no_generated_name-0</itextId>
+            <name>true</name>
+          </item>
+          <item>
+            <itextId>static_instance-yes_no_generated_name-1</itextId>
+            <name>false</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="place_type">
+        <root>
+          <item>
+            <itextId>static_instance-place_type-0</itextId>
+            <name>g10_district</name>
+          </item>
+          <item>
+            <itextId>static_instance-place_type-1</itextId>
+            <name>g20_municipality</name>
+          </item>
+          <item>
+            <itextId>static_instance-place_type-2</itextId>
+            <name>g30_health_center</name>
+          </item>
+          <item>
+            <itextId>static_instance-place_type-3</itextId>
+            <name>g40_clinic</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="caste_code">
+        <root>
+          <item>
+            <itextId>static_instance-caste_code-0</itextId>
+            <name>dalit</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-1</itextId>
+            <name>janajati</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-2</itextId>
+            <name>madhesi</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-3</itextId>
+            <name>muslim</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-4</itextId>
+            <name>brahmin_chhetri</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-5</itextId>
+            <name>other</name>
+          </item>
+          <item>
+            <itextId>static_instance-caste_code-6</itextId>
+            <name>unknown</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="level_of_education">
+        <root>
+          <item>
+            <itextId>static_instance-level_of_education-0</itextId>
+            <name>bachelors_or_higher</name>
+          </item>
+          <item>
+            <itextId>static_instance-level_of_education-1</itextId>
+            <name>grade_9_to_12</name>
+          </item>
+          <item>
+            <itextId>static_instance-level_of_education-2</itextId>
+            <name>grade_1_to_8</name>
+          </item>
+          <item>
+            <itextId>static_instance-level_of_education-3</itextId>
+            <name>no_formal_education</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="received_or_not">
+        <root>
+          <item>
+            <itextId>static_instance-received_or_not-0</itextId>
+            <name>true</name>
+          </item>
+          <item>
+            <itextId>static_instance-received_or_not-1</itextId>
+            <name>false</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="generated_name">
+        <root>
+          <item>
+            <itextId>static_instance-generated_name-0</itextId>
+            <name>g10_district</name>
+          </item>
+          <item>
+            <itextId>static_instance-generated_name-1</itextId>
+            <name>g20_municipality</name>
+          </item>
+          <item>
+            <itextId>static_instance-generated_name-2</itextId>
+            <name>g30_health_center</name>
+          </item>
+          <item>
+            <itextId>static_instance-generated_name-3</itextId>
+            <name>g40_clinic</name>
+          </item>
+        </root>
+      </instance>
+      <instance id="translate_name_label">
+        <root>
+          <item>
+            <itextId>static_instance-translate_name_label-0</itextId>
+            <name>name</name>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/inputs" relevant="false()"/>
+      <bind nodeset="/data/inputs/user/contact_id" type="string"/>
+      <bind nodeset="/data/inputs/user/facility_id" type="string"/>
+      <bind nodeset="/data/inputs/user/name" type="string"/>
+      <bind nodeset="/data/init/create_new_person" type="select1" required="true()" relevant=" /data/init/place_type  != 'g40_clinic'"/>
+      <bind nodeset="/data/init/select_person" type="db:person" required="true()" relevant="selected( /data/init/create_new_person ,'old_person')"/>
+      <bind nodeset="/data/init/name" type="string"/>
+      <bind nodeset="/data/init/contact_name" type="string" calculate="coalesce(../name, ../../contact/name)"/>
+      <bind nodeset="/data/init/custom_place_name_label_translator" type="select1" calculate="&quot;name&quot;" relevant="selected( /data/init/create_new_person ,'none')"/>
+      <bind nodeset="/data/init/custom_place_name_label" type="string" calculate="jr:choice-name( /data/init/custom_place_name_label_translator ,' /data/init/custom_place_name_label_translator ')"/>
+      <bind nodeset="/data/init/custom_place_name" type="string" required="true()" relevant="selected( /data/init/create_new_person ,'none') or not(selected( /data/g40_clinic/is_name_generated , 'true'))"/>
+      <bind nodeset="/data/init/place_type" type="select1"/>
+      <bind nodeset="/data/init/place_type_translation" type="string" calculate="jr:choice-name( /data/init/place_type ,' /data/init/place_type ')"/>
+      <bind nodeset="/data/init/generated_name" type="select1"/>
+      <bind nodeset="/data/init/generated_name_translation" type="string" calculate="jr:choice-name( /data/init/generated_name ,' /data/init/generated_name ')"/>
+      <bind nodeset="/data/contact" relevant="selected( /data/init/create_new_person ,'new_person') or  /data/init/place_type  = 'g40_clinic'"/>
+      <bind nodeset="/data/contact/parent" type="string"/>
+      <bind nodeset="/data/contact/type" type="string"/>
+      <bind nodeset="/data/contact/role" type="select1" required="true()" calculate="if( /data/init/place_type  = 'g40_clinic', 'chw')"/>
+      <bind nodeset="/data/contact/first_name" type="string" required="true()" constraint="string-length(.)&lt;=30 and regex(.,'^([^0-9]*)$')" jr:constraintMsg="jr:itext('/data/contact/first_name:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/last_name" type="string" required="true()" constraint="string-length(.)&lt;=30 and regex(.,'^([^0-9]*)$')" jr:constraintMsg="jr:itext('/data/contact/last_name:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/name" type="string" calculate="concat( /data/contact/first_name , ' ',  /data/contact/last_name )"/>
+      <bind nodeset="/data/contact/phone" type="tel" required="true()" constraint="true()" jr:constraintMsg="jr:itext('/data/contact/phone:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/phone_alternate" type="tel" constraint="true()" jr:constraintMsg="jr:itext('/data/contact/phone_alternate:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/sex" type="select1" required=" /data/contact/role  = 'patient'" relevant=" /data/contact/role  != 'chw'"/>
+      <bind nodeset="/data/contact/caste_code" type="select" relevant=" /data/contact/role  = 'chw'" constraint="not(selected(., 'unknown') and (selected(., 'dalit') or selected(., 'janajati') or selected(., 'madhesi')or selected(., 'muslim')or selected(., 'brahmin_chettri') or selected(., 'other') ))" jr:constraintMsg="jr:itext('/data/contact/caste_code:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/year_of_birth_in_bikram_sambat" type="string" relevant=" /data/contact/role  = 'chw'" constraint="regex(.,'^[0-9]{4}$') and (int(format-date(today(),'%Y')) + 57 - 100) &lt;= . and (int(format-date(today(),'%Y')) + 57 - 10) &gt;= ." jr:constraintMsg="jr:itext('/data/contact/year_of_birth_in_bikram_sambat:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/year_of_birth_approx" type="string" calculate="int( /data/contact/year_of_birth_in_bikram_sambat ) - 57" relevant=" /data/contact/role  = 'chw' and  /data/contact/year_of_birth_in_bikram_sambat  != ''"/>
+      <bind nodeset="/data/contact/date_of_birth" type="date" relevant=" /data/contact/role  != 'chw'"/>
+      <bind nodeset="/data/contact/fchv_id_number" type="string" relevant=" /data/contact/role  = 'chw'" constraint="regex(.,'^[0-9]*$')" jr:constraintMsg="jr:itext('/data/contact/fchv_id_number:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/start_date_as_fchv" type="string" relevant=" /data/contact/role  = 'chw'" constraint="regex(.,'^[0-9]{4}$') and int(.)&gt;= 2044 and int(format-date(today(),'%Y')) + 57 &gt;= int(.) and int(.) &gt; int( /data/contact/year_of_birth_in_bikram_sambat  ) + 9" jr:constraintMsg="jr:itext('/data/contact/start_date_as_fchv:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/start_date_as_fchv_ad" type="string" calculate="int( /data/contact/start_date_as_fchv ) - 57" relevant=" /data/contact/role  = 'chw'"/>
+      <bind nodeset="/data/contact/literate" type="select1" relevant=" /data/contact/role  = 'chw'"/>
+      <bind nodeset="/data/contact/level_of_education" type="select1" relevant=" /data/contact/role  = 'chw' and  /data/contact/literate ='true'"/>
+      <bind nodeset="/data/contact/basic_training" type="select1" relevant=" /data/contact/role  = 'chw'"/>
+      <bind nodeset="/data/contact/training_date" type="date" relevant=" /data/contact/role  = 'chw' and  /data/contact/basic_training ='true'" constraint="int(format-date(.,'%Y')) &gt;= 1987 and int(format-date(.,'%Y')) &gt; int(int( /data/contact/year_of_birth_in_bikram_sambat  - 57)) and int(format-date(.,'%Y')) &gt;= int(int( /data/contact/start_date_as_fchv  - 57)) and . &lt; today()" jr:constraintMsg="jr:itext('/data/contact/training_date:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/most_recent_fchv_training" type="date" relevant=" /data/contact/role  = 'chw' and  /data/contact/basic_training ='true'" constraint="int(format-date(.,'%Y')) &gt;= 1990 and int(format-date(.,'%Y')) &gt; int(int( /data/contact/year_of_birth_in_bikram_sambat  - 57)) and int(format-date(.,'%Y')) &gt;= int(int( /data/contact/start_date_as_fchv  - 57)) and . &lt; today() and . &gt;  /data/contact/training_date " jr:constraintMsg="jr:itext('/data/contact/most_recent_fchv_training:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/external_id" type="string"/>
+      <bind nodeset="/data/contact/notes" type="string" constraint="string-length(.)&lt;=100" jr:constraintMsg="jr:itext('/data/contact/notes:jr:constraintMsg')"/>
+      <bind nodeset="/data/contact/meta/created_by" type="string" calculate="../../../inputs/user/name"/>
+      <bind nodeset="/data/contact/meta/created_by_person_uuid" type="string" calculate="../../../inputs/user/contact_id"/>
+      <bind nodeset="/data/contact/meta/created_by_place_uuid" type="string" calculate="../../../inputs/user/facility_id"/>
+      <bind nodeset="/data/g40_clinic/parent" type="string"/>
+      <bind nodeset="/data/g40_clinic/type" type="string"/>
+      <bind nodeset="/data/g40_clinic/is_name_generated" type="select1" required="true()" relevant="not(selected( /data/init/create_new_person ,'none')) and  /data/init/place_type  = 'g40_clinic'"/>
+      <bind nodeset="/data/g40_clinic/name" type="string" required="true()" calculate="if(  /data/g40_clinic/is_name_generated  = 'true',  /data/init/generated_name_translation ,  /data/init/custom_place_name )"/>
+      <bind nodeset="/data/g40_clinic/external_id" type="string" relevant="false()"/>
+      <bind nodeset="/data/g40_clinic/notes" type="string"/>
+      <bind nodeset="/data/g40_clinic/contact" type="string" calculate="if(selected( /data/init/create_new_person ,'none'), &quot;&quot;, coalesce( /data/init/select_person ,&quot;NEW&quot;))"/>
+      <bind nodeset="/data/g40_clinic/geolocation" type="string" calculate="concat(../../inputs/meta/location/lat, concat(' ', ../../inputs/meta/location/long))"/>
+      <bind nodeset="/data/g40_clinic/meta/created_by" type="string" calculate="../../../inputs/user/name"/>
+      <bind nodeset="/data/g40_clinic/meta/created_by_person_uuid" type="string" calculate="../../../inputs/user/contact_id"/>
+      <bind nodeset="/data/g40_clinic/meta/created_by_place_uuid" type="string" calculate="../../../inputs/user/facility_id"/>
+      <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:', uuid())"/>
+    </model>
+  </h:head>
+  <h:body class="pages">
+    <group ref="/data/inputs">
+      <group ref="/data/inputs/user">
+        <input ref="/data/inputs/user/contact_id">
+          <label ref="jr:itext('/data/inputs/user/contact_id:label')"/>
+        </input>
+        <input ref="/data/inputs/user/facility_id">
+          <label ref="jr:itext('/data/inputs/user/facility_id:label')"/>
+        </input>
+        <input ref="/data/inputs/user/name">
+          <label ref="jr:itext('/data/inputs/user/name:label')"/>
+        </input>
+      </group>
+    </group>
+    <group appearance="field-list" ref="/data/init">
+      <select1 appearance="columns-pack" ref="/data/init/create_new_person">
+        <label ref="jr:itext('/data/init/create_new_person:label')"/>
+        <itemset nodeset="instance('contact')/root/item[( /data/init/place_type  = 'g40_clinic' and name = 'new_person') or ( /data/init/place_type  != 'g40_clinic' and name != ' ')]">
+          <value ref="name"/>
+          <label ref="jr:itext(itextId)"/>
+        </itemset>
+      </select1>
+      <input appearance="db-object" ref="/data/init/select_person"/>
+      <select1 appearance="hidden" ref="/data/init/custom_place_name_label_translator">
+        <item>
+          <label ref="jr:itext('/data/init/custom_place_name_label_translator/name:label')"/>
+          <value>name</value>
+        </item>
+      </select1>
+      <select1 appearance="hidden" ref="/data/init/place_type">
+        <item>
+          <label ref="jr:itext('/data/init/place_type/g10_district:label')"/>
+          <value>g10_district</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/place_type/g20_municipality:label')"/>
+          <value>g20_municipality</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/place_type/g30_health_center:label')"/>
+          <value>g30_health_center</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/place_type/g40_clinic:label')"/>
+          <value>g40_clinic</value>
+        </item>
+      </select1>
+      <select1 appearance="hidden" ref="/data/init/generated_name">
+        <item>
+          <label ref="jr:itext('/data/init/generated_name/g10_district:label')"/>
+          <value>g10_district</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/generated_name/g20_municipality:label')"/>
+          <value>g20_municipality</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/generated_name/g30_health_center:label')"/>
+          <value>g30_health_center</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/init/generated_name/g40_clinic:label')"/>
+          <value>g40_clinic</value>
+        </item>
+      </select1>
+      <group appearance="field-list" ref="/data/contact">
+        <label ref="jr:itext('/data/contact:label')"/>
+        <select1 appearance="columns" ref="/data/contact/role">
+          <label ref="jr:itext('/data/contact/role:label')"/>
+          <hint ref="jr:itext('/data/contact/role:hint')"/>
+          <itemset nodeset="instance('roles')/root/item[( /data/init/place_type  = 'g40_clinic' and name = 'chw') or ( /data/init/place_type  != 'g40_clinic' and name != ' ')]">
+            <value ref="name"/>
+            <label ref="jr:itext(itextId)"/>
+          </itemset>
+        </select1>
+        <input ref="/data/contact/first_name">
+          <label ref="jr:itext('/data/contact/first_name:label')"/>
+        </input>
+        <input ref="/data/contact/last_name">
+          <label ref="jr:itext('/data/contact/last_name:label')"/>
+        </input>
+        <input ref="/data/contact/phone">
+          <label ref="jr:itext('/data/contact/phone:label')"/>
+          <hint ref="jr:itext('/data/contact/phone:hint')"/>
+        </input>
+        <input ref="/data/contact/phone_alternate">
+          <label ref="jr:itext('/data/contact/phone_alternate:label')"/>
+        </input>
+        <select1 appearance="columns" ref="/data/contact/sex">
+          <label ref="jr:itext('/data/contact/sex:label')"/>
+          <item>
+            <label ref="jr:itext('/data/contact/sex/female:label')"/>
+            <value>female</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/sex/male:label')"/>
+            <value>male</value>
+          </item>
+        </select1>
+        <select appearance="columns" ref="/data/contact/caste_code">
+          <label ref="jr:itext('/data/contact/caste_code:label')"/>
+          <hint ref="jr:itext('/data/contact/caste_code:hint')"/>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/dalit:label')"/>
+            <value>dalit</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/janajati:label')"/>
+            <value>janajati</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/madhesi:label')"/>
+            <value>madhesi</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/muslim:label')"/>
+            <value>muslim</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/brahmin_chhetri:label')"/>
+            <value>brahmin_chhetri</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/other:label')"/>
+            <value>other</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/caste_code/unknown:label')"/>
+            <value>unknown</value>
+          </item>
+        </select>
+        <input appearance="numbers" ref="/data/contact/year_of_birth_in_bikram_sambat">
+          <label ref="jr:itext('/data/contact/year_of_birth_in_bikram_sambat:label')"/>
+          <hint ref="jr:itext('/data/contact/year_of_birth_in_bikram_sambat:hint')"/>
+        </input>
+        <input appearance="bikram-sambat" ref="/data/contact/date_of_birth">
+          <label ref="jr:itext('/data/contact/date_of_birth:label')"/>
+        </input>
+        <input appearance="numbers" ref="/data/contact/fchv_id_number">
+          <label ref="jr:itext('/data/contact/fchv_id_number:label')"/>
+        </input>
+        <input appearance="numbers" ref="/data/contact/start_date_as_fchv">
+          <label ref="jr:itext('/data/contact/start_date_as_fchv:label')"/>
+          <hint ref="jr:itext('/data/contact/start_date_as_fchv:hint')"/>
+        </input>
+        <select1 appearance="columns" ref="/data/contact/literate">
+          <label ref="jr:itext('/data/contact/literate:label')"/>
+          <item>
+            <label ref="jr:itext('/data/contact/literate/true:label')"/>
+            <value>true</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/literate/false:label')"/>
+            <value>false</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/literate/unknown:label')"/>
+            <value>unknown</value>
+          </item>
+        </select1>
+        <select1 appearance="minimal" ref="/data/contact/level_of_education">
+          <label ref="jr:itext('/data/contact/level_of_education:label')"/>
+          <hint ref="jr:itext('/data/contact/level_of_education:hint')"/>
+          <item>
+            <label ref="jr:itext('/data/contact/level_of_education/bachelors_or_higher:label')"/>
+            <value>bachelors_or_higher</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/level_of_education/grade_9_to_12:label')"/>
+            <value>grade_9_to_12</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/level_of_education/grade_1_to_8:label')"/>
+            <value>grade_1_to_8</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/level_of_education/no_formal_education:label')"/>
+            <value>no_formal_education</value>
+          </item>
+        </select1>
+        <select1 appearance="columns" ref="/data/contact/basic_training">
+          <label ref="jr:itext('/data/contact/basic_training:label')"/>
+          <item>
+            <label ref="jr:itext('/data/contact/basic_training/true:label')"/>
+            <value>true</value>
+          </item>
+          <item>
+            <label ref="jr:itext('/data/contact/basic_training/false:label')"/>
+            <value>false</value>
+          </item>
+        </select1>
+        <input appearance="bikram-sambat" ref="/data/contact/training_date">
+          <label ref="jr:itext('/data/contact/training_date:label')"/>
+          <hint ref="jr:itext('/data/contact/training_date:hint')"/>
+        </input>
+        <input appearance="bikram-sambat" ref="/data/contact/most_recent_fchv_training">
+          <label ref="jr:itext('/data/contact/most_recent_fchv_training:label')"/>
+          <hint ref="jr:itext('/data/contact/most_recent_fchv_training:hint')"/>
+        </input>
+        <input appearance="hidden" ref="/data/contact/external_id">
+          <label ref="jr:itext('/data/contact/external_id:label')"/>
+        </input>
+        <input appearance="multiline" ref="/data/contact/notes">
+          <label ref="jr:itext('/data/contact/notes:label')"/>
+          <hint ref="jr:itext('/data/contact/notes:hint')"/>
+        </input>
+        <group appearance="hidden" ref="/data/contact/meta"/>
+        </group>
+      </group>
+    <group appearance="field-list" ref="/data/g40_clinic">
+      <select1 appearance="columns-pack" ref="/data/g40_clinic/is_name_generated">
+        <label ref="jr:itext('/data/g40_clinic/is_name_generated:label')"/>
+        <item>
+          <label ref="jr:itext('/data/g40_clinic/is_name_generated/true:label')"/>
+          <value>true</value>
+        </item>
+        <item>
+          <label ref="jr:itext('/data/g40_clinic/is_name_generated/false:label')"/>
+          <value>false</value>
+        </item>
+      </select1>
+      <input ref="/data/init/custom_place_name">
+        <label ref="jr:itext('/data/init/custom_place_name:label')"/>
+        <hint ref="jr:itext('/data/init/custom_place_name:hint')"/>
+      </input>
+      <input ref="/data/g40_clinic/external_id">
+        <label ref="jr:itext('/data/g40_clinic/external_id:label')"/>
+      </input>
+      <input appearance="multiline" ref="/data/g40_clinic/notes">
+        <label ref="jr:itext('/data/g40_clinic/notes:label')"/>
+      </input>
+      <group appearance="hidden" ref="/data/g40_clinic/meta"/>
+    </group>
+  </h:body>
+</h:html>

@@ -103,6 +103,7 @@
         </interop_follow_up>
       </instance>
       <instance id="contact-summary"/>
+      <instance id="user-contact-summary"/>
       <bind nodeset="/interop_follow_up/inputs" relevant="./source = 'user'"/>
       <bind nodeset="/interop_follow_up/inputs/source" type="string"/>
       <bind nodeset="/interop_follow_up/inputs/source_id" type="string"/>

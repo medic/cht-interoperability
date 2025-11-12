@@ -17,6 +17,9 @@ services:
       - "CHT_URL=${CHT_URL:-https://nginx}"
       - "CHT_USERNAME=${CHT_USERNAME:-admin}"
       - "CHT_PASSWORD=${CHT_PASSWORD:-password}"
+      - "OPENIMIS_API_URL:${OPENIMIS_API_URL:-https://openimis-test.org}"
+      - "OPENIMIS_USERNAME=${OPENIMIS_USERNAME:-user}"
+      - "OPENIMIS_PASSWORD=${OPENIMIS_PASSWORD:-password}"
 
     depends_on:
       - configurator

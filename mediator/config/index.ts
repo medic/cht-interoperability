@@ -18,10 +18,22 @@ export const FHIR = {
 
 export const CHT = {
   url: getEnvironmentVariable('CHT_URL', 'https://nginx'),
+  apiUrl: getEnvironmentVariable('CHT_API_URL', 'http://api:5988'),
   username: getEnvironmentVariable('CHT_USERNAME', 'admin'),
   password: getEnvironmentVariable('CHT_PASSWORD', 'password'),
 };
 
+export const OPENIMIS = {
+  baseUrl: getEnvironmentVariable('OPENIMIS_API_URL', 'http://localhost:5000'),
+  username: getEnvironmentVariable('OPENIMIS_USERNAME', 'admin'),
+  password: getEnvironmentVariable('OPENIMIS_PASSWORD', 'password'),
+  endpoints: {
+    login: '/api/api_fhir_r4/login/',
+    subscription: '/api/api_fhir_r4/Subscription/',
+    communication: '/api/api_fhir_r4/Communication/',
+  },
+  chtCallbackEndpoint: getEnvironmentVariable('CHT_OPENIMIS_CALLBACK_ENDPOINT', '/mediator/claim-response'),
+};
 
 function getEnvironmentVariable(env: string, def: string) {
   if (process.env.NODE_ENV === 'test') {

@@ -1,6 +1,6 @@
 services:
   couchdb:
-    image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
+    image: public.ecr.aws/medic/cht-couchdb:4.21.0
     volumes:
       - couchdb-data:/opt/couchdb/data
       - cht-credentials:/opt/couchdb/etc/local.d/

@@ -1,4 +1,5 @@
 import { Fhir } from 'fhir';
+import { Subscription } from 'fhir/r4';
 import { FHIR } from '../../config';
 import axios from 'axios';
 import { logger } from '../../logger';
@@ -34,7 +35,7 @@ export function generateFHIRSubscriptionResource(
     );
   }
 
-  const FHIRSubscriptionResource = {
+  return {
     resourceType: 'Subscription',
     id: patientId,
     status: 'requested',
@@ -47,16 +48,14 @@ export function generateFHIRSubscriptionResource(
       header: ['Content-Type: application/fhir+json'],
     },
   };
-
-  return FHIRSubscriptionResource;
 }
 
 export async function createFHIRSubscriptionResource(
-  patientId: string,
-  callbackUrl: string
+  url: string,
+  subscriptionPayload: Subscription,
+  headers: Record<string, unknown> = axiosOptions,
 ) {
-  const res = generateFHIRSubscriptionResource(patientId, callbackUrl);
-  return await axios.post(`${FHIR.url}/Subscription`, res, axiosOptions);
+  return await axios.post(url, subscriptionPayload, headers);
 }
 
 export async function getFHIROrgEndpointResource(id: string) {

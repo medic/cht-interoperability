@@ -8,6 +8,8 @@ import serviceRequestRoutes from './src/routes/service-request';
 import encounterRoutes from './src/routes/encounter';
 import organizationRoutes from './src/routes/organization';
 import endpointRoutes from './src/routes/endpoint';
+import claimResponseRoutes from './src/routes/claim-response';
+import claimsFeedbackRoutes from './src/routes/cht';
 import { registerMediatorCallback } from './src/utils/openhim';
 import os from 'os';
 
@@ -29,6 +31,8 @@ app.use('/service-request', serviceRequestRoutes);
 app.use('/encounter', encounterRoutes);
 app.use('/organization', organizationRoutes);
 app.use('/endpoint', endpointRoutes);
+app.use('/claim-response', claimResponseRoutes);
+app.use('/claims-feedback', claimsFeedbackRoutes);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
