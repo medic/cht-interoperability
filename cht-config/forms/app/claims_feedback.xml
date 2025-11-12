@@ -231,6 +231,7 @@
         </claims_feedback>
       </instance>
       <instance id="contact-summary"/>
+      <instance id="user-contact-summary"/>
       <bind nodeset="/claims_feedback/inputs" relevant="./source = 'user'"/>
       <bind nodeset="/claims_feedback/inputs/source" type="string"/>
       <bind nodeset="/claims_feedback/inputs/source_id" type="string"/>
@@ -249,7 +250,7 @@
       <bind nodeset="/claims_feedback/inputs/contact/parent/parent/parent/parent/_id" type="string"/>
       <bind nodeset="/claims_feedback/patient_age_in_years" type="string" calculate="floor( difference-in-months( ../inputs/contact/date_of_birth, today() ) div 12 )"/>
       <bind nodeset="/claims_feedback/patient_uuid" type="string" calculate="../inputs/contact/_id"/>
-      <bind nodeset="/claims_feedback/patient_id" type="string" calculate="../inputs/contact/patient_id" required="true()"/>
+      <bind nodeset="/claims_feedback/patient_id" type="string" required="true()" calculate="../inputs/contact/patient_id"/>
       <bind nodeset="/claims_feedback/patient_name" type="string" calculate="../inputs/contact/name"/>
       <bind nodeset="/claims_feedback/claim_feedback_group/openimis_id_note" readonly="true()" type="string"/>
       <bind nodeset="/claims_feedback/claim_feedback_group/openimis_claim_id_note" readonly="true()" type="string"/>
