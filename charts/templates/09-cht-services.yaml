@@ -341,7 +341,7 @@ spec:
     port: 443
     targetPort: 443
 ---
-# Expose CHT Nginx externally (only for KIND)
+# Expose CHT Nginx externally via NodePort (for local k3d development)
 {{- if ne .Values.cluster_type "eks" }}
 apiVersion: v1
 kind: Service

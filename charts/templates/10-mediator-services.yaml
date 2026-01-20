@@ -188,7 +188,7 @@ spec:
   - port: 6000
     targetPort: 6000
 ---
-# Expose Mediator externally for testing (only for KIND)
+# Expose Mediator externally via NodePort (for local k3d development)
 {{- if ne .Values.cluster_type "eks" }}
 apiVersion: v1
 kind: Service
