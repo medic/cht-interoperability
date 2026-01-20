@@ -1,10 +1,10 @@
 global:
-  namespace: <namespace> # Override namespace
+  namespace: <namespace> # Override namespace (e.g., "my-namespace")
 
 createNamespace: false
 
 persistence:
-  storageClass: <storageclass> # Override storage
+  storageClass: <storageclass> # Override storage (e.g., "gp2" for AWS)
 
 configurator:
   image: 720541322708.dkr.ecr.eu-west-2.amazonaws.com/cht-interop/configurator:latest
@@ -21,7 +21,7 @@ ingress:
   annotations:
     groupname: "dev-cht-alb"
     tags: "Environment=dev,Team=QA"
-    certificate: "arn:aws:iam::720541322708:server-certificate/2025-q4-wildcard-dev-medicmobile-org-letsencrypt"
+    certificate: "arn:aws:iam::720541322708:server-certificate/2026-q1-wildcard-dev-medicmobile-org-letsencrypt"
   # Ensure the host is not already taken. Valid characters for a subdomain are:
   #   a-z, 0-9, and - (but not as first or last character).
   chtHost: "cht-interop.dev.medicmobile.org" # e.g. "mrjones.dev.medicmobile.org"
@@ -32,6 +32,19 @@ ingress:
   load_balancer: "dualstack.k8s-devchtalb-3eb0781cbb-694321496.eu-west-2.elb.amazonaws.com"
 
 cluster_type: "eks"
+
+# CHT and CouchDB configuration
+# Set to false to use an external CHT instance (common for EKS deployments)
+couchdb:
+  enabled: true
+
+cht:
+  enabled: true
+  # External CHT configuration (used when cht.enabled=false)
+  external:
+    url: ""  # e.g., https://your-cht-instance.example.com
+    username: ""
+    password: ""
 
 resources:
   requests:

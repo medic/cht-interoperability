@@ -14,6 +14,7 @@ spec:
       labels:
         app: mongo
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: mongo
         image: {{ .Values.mongodb.image }}
@@ -21,9 +22,11 @@ spec:
           requests:
             memory: {{ .Values.mongodb.resources.requests.memory | quote }}
             cpu: {{ .Values.mongodb.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.mongodb.resources.requests "ephemeral-storage" | quote }}
           limits:
             memory: {{ .Values.mongodb.resources.limits.memory | quote }}
             cpu: {{ .Values.mongodb.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.mongodb.resources.limits "ephemeral-storage" | quote }}
         ports:
         - containerPort: 27017
         volumeMounts:
@@ -62,6 +65,7 @@ spec:
       labels:
         app: hapi-db
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: hapi-db
         image: {{ .Values.postgresql.image }}
@@ -69,9 +73,11 @@ spec:
           requests:
             memory: {{ .Values.postgresql.resources.requests.memory | quote }}
             cpu: {{ .Values.postgresql.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.postgresql.resources.requests "ephemeral-storage" | quote }}
           limits:
             memory: {{ .Values.postgresql.resources.limits.memory | quote }}
             cpu: {{ .Values.postgresql.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.postgresql.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -112,6 +118,7 @@ spec:
   - port: 5432
     targetPort: 5432
 ---
+{{- if .Values.couchdb.enabled }}
 # CouchDB for CHT
 apiVersion: apps/v1
 kind: Deployment
@@ -128,6 +135,7 @@ spec:
       labels:
         app: couchdb
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: couchdb
         image: {{ .Values.couchdb.image }}
@@ -135,9 +143,11 @@ spec:
           requests:
             memory: {{ .Values.couchdb.resources.requests.memory | quote }}
             cpu: {{ .Values.couchdb.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.couchdb.resources.requests "ephemeral-storage" | quote }}
           limits:
             memory: {{ .Values.couchdb.resources.limits.memory | quote }}
             cpu: {{ .Values.couchdb.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.couchdb.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: COUCHDB_USER
           valueFrom:
@@ -187,3 +197,4 @@ spec:
   ports:
   - port: 5984
     targetPort: 5984
+{{- end }}

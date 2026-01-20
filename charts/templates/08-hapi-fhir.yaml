@@ -13,6 +13,7 @@ spec:
       labels:
         app: hapi-fhir
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: hapi-fhir
         image: {{ .Values.hapiFhir.image }}
@@ -47,11 +48,13 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "500m"
+            memory: {{ .Values.hapiFhir.resources.requests.memory | quote }}
+            cpu: {{ .Values.hapiFhir.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.hapiFhir.resources.requests "ephemeral-storage" | quote }}
           limits:
-            memory: "3Gi"
-            cpu: "1000m"
+            memory: {{ .Values.hapiFhir.resources.limits.memory | quote }}
+            cpu: {{ .Values.hapiFhir.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.hapiFhir.resources.limits "ephemeral-storage" | quote }}
         readinessProbe:
           httpGet:
             path: /fhir/metadata

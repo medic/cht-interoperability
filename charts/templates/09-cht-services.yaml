@@ -1,3 +1,4 @@
+{{- if .Values.cht.enabled }}
 # HAProxy for CouchDB load balancing
 apiVersion: apps/v1
 kind: Deployment
@@ -14,9 +15,19 @@ spec:
       labels:
         app: haproxy
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: haproxy
         image: {{ .Values.cht.haproxy.image }}
+        resources:
+          requests:
+            memory: {{ .Values.cht.haproxy.resources.requests.memory | quote }}
+            cpu: {{ .Values.cht.haproxy.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.haproxy.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.cht.haproxy.resources.limits.memory | quote }}
+            cpu: {{ .Values.cht.haproxy.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.haproxy.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: HAPROXY_IP
           value: "0.0.0.0"
@@ -68,9 +79,19 @@ spec:
       labels:
         app: healthcheck
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: healthcheck
         image: {{ .Values.cht.healthcheck.image }}
+        resources:
+          requests:
+            memory: {{ .Values.cht.healthcheck.resources.requests.memory | quote }}
+            cpu: {{ .Values.cht.healthcheck.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.healthcheck.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.cht.healthcheck.resources.limits.memory | quote }}
+            cpu: {{ .Values.cht.healthcheck.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.healthcheck.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: COUCHDB_SERVERS
           value: "couchdb"
@@ -114,10 +135,20 @@ spec:
       labels:
         app: api
     spec:
+      automountServiceAccountToken: false
       hostname: localhost
       containers:
       - name: api
         image: {{ .Values.cht.api.image }}
+        resources:
+          requests:
+            memory: {{ .Values.cht.api.resources.requests.memory | quote }}
+            cpu: {{ .Values.cht.api.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.api.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.cht.api.resources.limits.memory | quote }}
+            cpu: {{ .Values.cht.api.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.api.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: COUCH_URL
           value: "http://admin:password@haproxy:5984/medic"
@@ -185,9 +216,19 @@ spec:
       labels:
         app: sentinel
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: sentinel
         image: {{ .Values.cht.sentinel.image }}
+        resources:
+          requests:
+            memory: {{ .Values.cht.sentinel.resources.requests.memory | quote }}
+            cpu: {{ .Values.cht.sentinel.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.sentinel.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.cht.sentinel.resources.limits.memory | quote }}
+            cpu: {{ .Values.cht.sentinel.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.sentinel.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: COUCH_URL
           value: "http://admin:password@haproxy:5984/medic"
@@ -215,9 +256,19 @@ spec:
       labels:
         app: nginx
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: nginx
         image: {{ .Values.cht.nginx.image }}
+        resources:
+          requests:
+            memory: {{ .Values.cht.nginx.resources.requests.memory | quote }}
+            cpu: {{ .Values.cht.nginx.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.nginx.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.cht.nginx.resources.limits.memory | quote }}
+            cpu: {{ .Values.cht.nginx.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.cht.nginx.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: API_HOST
           value: "api"
@@ -310,4 +361,5 @@ spec:
     port: 443
     targetPort: 443
     nodePort: {{ .Values.services.nodePort.nginxHttps }}
+{{- end }}
 {{- end }}

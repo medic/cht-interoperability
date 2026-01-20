@@ -7,10 +7,20 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: configurator
         image: {{ .Values.configurator.image }}
         imagePullPolicy: {{ .Values.configurator.imagePullPolicy }}
+        resources:
+          requests:
+            memory: {{ .Values.configurator.resources.requests.memory | quote }}
+            cpu: {{ .Values.configurator.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.configurator.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.configurator.resources.limits.memory | quote }}
+            cpu: {{ .Values.configurator.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.configurator.resources.limits "ephemeral-storage" | quote }}
         env:
         - name: COUCHDB_USER
           valueFrom:
@@ -69,10 +79,20 @@ spec:
       labels:
         app: mediator
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: mediator
         image: {{ .Values.mediator.image }}
         imagePullPolicy: {{ .Values.mediator.imagePullPolicy }}
+        resources:
+          requests:
+            memory: {{ .Values.mediator.resources.requests.memory | quote }}
+            cpu: {{ .Values.mediator.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.mediator.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.mediator.resources.limits.memory | quote }}
+            cpu: {{ .Values.mediator.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.mediator.resources.limits "ephemeral-storage" | quote }}
         ports:
         - containerPort: 6000
         env:
@@ -103,17 +123,29 @@ spec:
               name: mediator-credentials
               key: fhir-password
         - name: CHT_URL
+          {{- if .Values.cht.enabled }}
           value: "https://nginx"
+          {{- else }}
+          value: {{ .Values.cht.external.url | quote }}
+          {{- end }}
         - name: CHT_USERNAME
+          {{- if .Values.cht.enabled }}
           valueFrom:
             secretKeyRef:
               name: mediator-credentials
               key: cht-username
+          {{- else }}
+          value: {{ .Values.cht.external.username | quote }}
+          {{- end }}
         - name: CHT_PASSWORD
+          {{- if .Values.cht.enabled }}
           valueFrom:
             secretKeyRef:
               name: mediator-credentials
               key: cht-password
+          {{- else }}
+          value: {{ .Values.cht.external.password | quote }}
+          {{- end }}
         - name: OPENIMIS_API_URL
           value: "https://openimis.s2.openimis.org"
         - name: OPENIMIS_USERNAME

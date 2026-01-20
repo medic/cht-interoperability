@@ -1,4 +1,4 @@
-{{- if eq .Values.cluster_type "eks" }}
+{{- if and (eq .Values.cluster_type "eks") .Values.cht.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

@@ -13,11 +13,21 @@ spec:
       labels:
         app: openhim-console
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: openhim-console
         image: {{ .Values.openhim.console.image }}
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            memory: {{ .Values.openhim.console.resources.requests.memory | quote }}
+            cpu: {{ .Values.openhim.console.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.openhim.console.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.openhim.console.resources.limits.memory | quote }}
+            cpu: {{ .Values.openhim.console.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.openhim.console.resources.limits "ephemeral-storage" | quote }}
         volumeMounts:
         - name: console-config
           mountPath: /usr/share/nginx/html/config/default.json

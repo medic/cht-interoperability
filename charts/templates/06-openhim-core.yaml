@@ -13,6 +13,7 @@ spec:
       labels:
         app: openhim-core
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: openhim-core
         image: {{ .Values.openhim.core.image }}
@@ -29,6 +30,15 @@ spec:
         - containerPort: 5051
         - containerPort: 5052
         - containerPort: 7788
+        resources:
+          requests:
+            memory: {{ .Values.openhim.core.resources.requests.memory | quote }}
+            cpu: {{ .Values.openhim.core.resources.requests.cpu | quote }}
+            ephemeral-storage: {{ index .Values.openhim.core.resources.requests "ephemeral-storage" | quote }}
+          limits:
+            memory: {{ .Values.openhim.core.resources.limits.memory | quote }}
+            cpu: {{ .Values.openhim.core.resources.limits.cpu | quote }}
+            ephemeral-storage: {{ index .Values.openhim.core.resources.limits "ephemeral-storage" | quote }}
         readinessProbe:
           httpGet:
             path: /heartbeat
@@ -103,7 +113,9 @@ spec:
   - name: router-http
     port: 5000
     targetPort: 5000
+    nodePort: {{ .Values.services.nodePort.openhimRouterHttp | default 30500 }}
   - name: router-https
     port: 5001
     targetPort: 5001
+    nodePort: {{ .Values.services.nodePort.openhimRouterHttps | default 30501 }}
 {{- end }}

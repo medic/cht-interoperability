@@ -1,3 +1,4 @@
+{{- if .Values.couchdb.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -23,7 +24,9 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.chtCredentials }}
+{{- end }}
 ---
+{{- if .Values.cht.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -36,6 +39,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.chtSsl }}
+{{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -1,5 +1,5 @@
 createNamespace: true  # For template/01-namespace.yaml
-cluster_type: "kind"   # Default to KIND
+cluster_type: "k3d"   # Default to k3d for local development
 
 # Default values for health-interop
 global:
@@ -7,6 +7,7 @@ global:
 
 # Database configurations
 couchdb:
+  enabled: true  # Set to false to use external CHT/CouchDB
   image: public.ecr.aws/medic/cht-couchdb:4.1.0-alpha
   storage: 10Gi
   credentials:
@@ -18,9 +19,11 @@ couchdb:
     requests:
       memory: "512Mi"
       cpu: "250m"
+      ephemeral-storage: "500Mi"
     limits:
       memory: "2Gi"
       cpu: "1000m"
+      ephemeral-storage: "2Gi"
 
 mongodb:
   image: mongo:4.2
@@ -29,9 +32,11 @@ mongodb:
     requests:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: "256Mi"
     limits:
       memory: "1Gi"
       cpu: "500m"
+      ephemeral-storage: "1Gi"
 
 postgresql:
   image: postgres:14.1
@@ -44,18 +49,38 @@ postgresql:
     requests:
       memory: "256Mi"
       cpu: "200m"
+      ephemeral-storage: "256Mi"
     limits:
       memory: "1Gi"
       cpu: "500m"
+      ephemeral-storage: "1Gi"
 
 # OpenHIM configuration
 openhim:
   core:
     image: jembi/openhim-core:7
     replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+        ephemeral-storage: "100Mi"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+        ephemeral-storage: "500Mi"
   console:
     image: jembi/openhim-console:1.14.4
     replicas: 1
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+        ephemeral-storage: "50Mi"
+      limits:
+        memory: "128Mi"
+        cpu: "200m"
+        ephemeral-storage: "200Mi"
     config:
       protocol: https
       host: localhost
@@ -63,32 +88,101 @@ openhim:
 
 # CHT configuration
 cht:
+  enabled: true  # Set to false to use external CHT instance
+  # External CHT configuration (used when cht.enabled=false)
+  external:
+    url: ""  # e.g., https://external-cht.example.com
+    username: ""
+    password: ""
   api:
     image: public.ecr.aws/medic/cht-api:4.1.0-alpha
     replicas: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+        ephemeral-storage: "100Mi"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+        ephemeral-storage: "500Mi"
   nginx:
     image: public.ecr.aws/medic/cht-nginx:4.1.0-alpha
     replicas: 1
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+        ephemeral-storage: "50Mi"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+        ephemeral-storage: "200Mi"
   haproxy:
     image: public.ecr.aws/medic/cht-haproxy:4.1.0-alpha
     replicas: 1
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+        ephemeral-storage: "50Mi"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+        ephemeral-storage: "200Mi"
   sentinel:
     image: public.ecr.aws/medic/cht-sentinel:4.1.0-alpha
     replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+        ephemeral-storage: "100Mi"
+      limits:
+        memory: "256Mi"
+        cpu: "300m"
+        ephemeral-storage: "300Mi"
   healthcheck:
     image: public.ecr.aws/medic/cht-haproxy-healthcheck:4.1.0-alpha
     replicas: 1
+    resources:
+      requests:
+        memory: "32Mi"
+        cpu: "25m"
+        ephemeral-storage: "50Mi"
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
+        ephemeral-storage: "100Mi"
 
 # HAPI FHIR configuration
 hapiFhir:
   image: hapiproject/hapi:v5.5.1
   replicas: 1
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+      ephemeral-storage: "500Mi"
+    limits:
+      memory: "3Gi"
+      cpu: "1000m"
+      ephemeral-storage: "2Gi"
 
 # Mediator configuration
 mediator:
   image: mediator:local
   imagePullPolicy: Never
   replicas: 1
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+      ephemeral-storage: "100Mi"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+      ephemeral-storage: "300Mi"
   credentials:
     openhimUsername: interop@openhim.org
     openhimPassword: interop-password
@@ -101,10 +195,19 @@ mediator:
 configurator:
   image: configurator:local
   imagePullPolicy: Never
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+      ephemeral-storage: "100Mi"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+      ephemeral-storage: "300Mi"
 
 # Storage configuration
 persistence:
-  storageClass: standard
+  storageClass: local-path  # k3d default storage class
   chtCredentials: 1Gi
   chtSsl: 1Gi
 
@@ -116,4 +219,6 @@ services:
     console: 30900
     mediator: 30600
     openhimCore: 30081
+    openhimRouterHttp: 30500
+    openhimRouterHttps: 30501
 
